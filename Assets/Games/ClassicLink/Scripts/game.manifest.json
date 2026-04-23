@@ -1,0 +1,8 @@
+{
+  "gameId": "classic-link",
+  "nameKey": "game.classic_link.name",
+  "descriptionKey": "game.classic_link.description",
+  "isPlayable": true,
+  "statusLabelKey": "status.playable",
+  "sortOrder": 10
+}

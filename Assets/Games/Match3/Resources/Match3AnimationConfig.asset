@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b1b73ad63a24a13b812d87c2d2d1f91, type: 3}
+  m_Name: Match3AnimationConfig
+  m_EditorClassIdentifier: 
+  durationScale: 0.5
+  swapDuration: 0.4
+  invalidSwapHoldDuration: 0.2
+  swapSettleDuration: 0.15
+  clearDuration: 0.32
+  clearHoldDuration: 0.18
+  fallDuration: 0.42
+  fallSettleDuration: 0.12
+  shuffleFadeDuration: 0.4

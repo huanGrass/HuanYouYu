@@ -1,0 +1,8 @@
+{
+  "gameId": "match-3",
+  "nameKey": "game.match3.name",
+  "descriptionKey": "game.match3.description",
+  "isPlayable": true,
+  "statusLabelKey": "status.playable",
+  "sortOrder": 20
+}

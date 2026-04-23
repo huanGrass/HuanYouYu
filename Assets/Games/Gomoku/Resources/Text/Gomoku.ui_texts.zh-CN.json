@@ -1,0 +1,64 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.gomoku.name",
+      "value": "五子棋"
+    },
+    {
+      "key": "game.gomoku.description",
+      "value": "和 AI 轮流落子，先连成五子的玩家获胜。"
+    },
+    {
+      "key": "gomoku.hud.status",
+      "value": "状态："
+    },
+    {
+      "key": "gomoku.status.player_turn",
+      "value": "你的回合"
+    },
+    {
+      "key": "gomoku.status.ai_turn",
+      "value": "AI 回合"
+    },
+    {
+      "key": "gomoku.status.player_win",
+      "value": "你赢了"
+    },
+    {
+      "key": "gomoku.status.ai_win",
+      "value": "AI 获胜"
+    },
+    {
+      "key": "gomoku.status.draw",
+      "value": "平局"
+    },
+    {
+      "key": "gomoku.settlement.exit",
+      "value": "五子棋已退出：当前己方棋子 {0}，获得 {1} 金币。"
+    },
+    {
+      "key": "gomoku.settlement.win",
+      "value": "五子棋胜利：己方棋子 {0}，获得 {1} 金币和 {2} 个宝箱。"
+    },
+    {
+      "key": "gomoku.settlement.draw",
+      "value": "五子棋平局：己方棋子 {0}，获得 {1} 金币。"
+    },
+    {
+      "key": "gomoku.settlement.lose",
+      "value": "五子棋失败：己方棋子 {0}，获得 {1} 金币。"
+    },
+    {
+      "key": "gomoku.action.restart",
+      "value": "重新开始"
+    },
+    {
+      "key": "game.gomoku.help",
+      "value": "你与 AI 轮流在棋盘上落子，先在横向、纵向或斜向连成五子的一方获胜。落子时既要主动组织连线，也要及时封堵对手。"
+    },
+    {
+      "key": "game.gomoku.credits",
+      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
+    }
+  ]
+}

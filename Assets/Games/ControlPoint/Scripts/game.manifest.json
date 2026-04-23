@@ -1,0 +1,8 @@
+﻿{
+  "gameId": "control-point",
+  "nameKey": "game.control_point.name",
+  "descriptionKey": "game.control_point.description",
+  "isPlayable": true,
+  "statusLabelKey": "status.playable",
+  "sortOrder": 18
+}

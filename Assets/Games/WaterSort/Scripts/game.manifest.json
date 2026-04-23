@@ -1,0 +1,8 @@
+﻿{
+  "gameId": "water-sort",
+  "nameKey": "game.water_sort.name",
+  "descriptionKey": "game.water_sort.description",
+  "isPlayable": true,
+  "statusLabelKey": "status.playable",
+  "sortOrder": 10
+}

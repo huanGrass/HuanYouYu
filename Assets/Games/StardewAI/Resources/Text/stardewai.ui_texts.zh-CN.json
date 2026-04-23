@@ -1,0 +1,1036 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.stardewai.name",
+      "value": "AI星露谷"
+    },
+    {
+      "key": "game.stardewai.description",
+      "value": "经典农场经营模拟游戏。耕种、浇水、收获、出货。"
+    },
+    {
+      "key": "stardewai.hud.score",
+      "value": "分数"
+    },
+    {
+      "key": "stardewai.action.restart",
+      "value": "重新开始"
+    },
+    {
+      "key": "stardewai.action.next_day",
+      "value": "过天"
+    },
+    {
+      "key": "stardewai.tool.hoe",
+      "value": "锄头"
+    },
+    {
+      "key": "stardewai.tool.watering",
+      "value": "水壶"
+    },
+    {
+      "key": "stardewai.tool.seeds",
+      "value": "种子"
+    },
+    {
+      "key": "stardewai.tool.harvest",
+      "value": "收获"
+    },
+    {
+      "key": "stardewai.tool.hotkey",
+      "value": "{0} {1}"
+    },
+    {
+      "key": "stardewai.tab.overview",
+      "value": "概览"
+    },
+    {
+      "key": "stardewai.tab.event",
+      "value": "事件"
+    },
+    {
+      "key": "stardewai.tab.calendar",
+      "value": "日历"
+    },
+    {
+      "key": "stardewai.tab.backpack",
+      "value": "背包"
+    },
+    {
+      "key": "stardewai.tab.controls",
+      "value": "操作"
+    },
+    {
+      "key": "stardewai.ui.prev",
+      "value": "上一页"
+    },
+    {
+      "key": "stardewai.ui.next",
+      "value": "下一页"
+    },
+    {
+      "key": "stardewai.ui.close",
+      "value": "×"
+    },
+    {
+      "key": "stardewai.backpack.label",
+      "value": "背包栏"
+    },
+    {
+      "key": "stardewai.backpack.slot",
+      "value": "背包格 {0}"
+    },
+    {
+      "key": "stardewai.shipping.label",
+      "value": "出货箱"
+    },
+    {
+      "key": "stardewai.shipping.slot",
+      "value": "出货箱格 {0}"
+    },
+    {
+      "key": "stardewai.seedChest.label",
+      "value": "种子箱"
+    },
+    {
+      "key": "stardewai.world.tile",
+      "value": "地面位置"
+    },
+    {
+      "key": "stardewai.npc.Lumi",
+      "value": "露米"
+    },
+    {
+      "key": "stardewai.npc.XiaoTuanzi",
+      "value": "小团子"
+    },
+    {
+      "key": "stardewai.npc.Qianran",
+      "value": "千然"
+    },
+    {
+      "key": "stardewai.npc.HaiyinAwa",
+      "value": "海音awa"
+    },
+    {
+      "key": "stardewai.npc.Azhai",
+      "value": "阿拽"
+    },
+    {
+      "key": "stardewai.crop.names",
+      "value": "防风草,土豆,胡萝卜,卷心菜,番茄,黄瓜,南瓜,玉米,小麦,水稻,大豆,洋葱,大蒜,辣椒,茄子,草莓,蓝莓,菠菜,生菜,西兰花,花椰菜,萝卜,芜菁,甜菜,芹菜,韭葱,秋葵,四季豆,豌豆,鹰嘴豆,花生,油菜,芝麻,高粱,小米,燕麦,大麦,黑麦,红薯,山药,木薯,芋头,生姜,姜黄,棉花,向日葵,亚麻,荞麦,藜麦,葡萄,西瓜,甜瓜,西葫芦,芦笋"
+    },
+    {
+      "key": "stardewai.msg.day_start",
+      "value": "第 {0} 天开始了。{1}、{2}先��、{3}都在农场，点他们可以互动。"
+    },
+    {
+      "key": "stardewai.msg.close_shop_first",
+      "value": "请先关闭商店面板，再结束今天。"
+    },
+    {
+      "key": "stardewai.msg.path_blocked",
+      "value": "这条路被挡住了，暂时走不过去。"
+    },
+    {
+      "key": "stardewai.msg.walking_to_use_tool",
+      "value": "已前往目标地块，到达后会自动使用{0}。"
+    },
+    {
+      "key": "stardewai.msg.walking_to_interact",
+      "value": "已前往{0}。"
+    },
+    {
+      "key": "stardewai.msg.arrived",
+      "value": "已到达{0}。"
+    },
+    {
+      "key": "stardewai.msg.nothing_to_ship",
+      "value": "背包里没有可出货的作物。"
+    },
+    {
+      "key": "stardewai.msg.shipping_full",
+      "value": "出货箱已经装满了，等明天结算后再来。"
+    },
+    {
+      "key": "stardewai.msg.no_empty_slot",
+      "value": "出货箱已经没有空位了。"
+    },
+    {
+      "key": "stardewai.msg.quickship_no_item",
+      "value": "这个格子里没有可快速出货的物品。"
+    },
+    {
+      "key": "stardewai.msg.quickship_backpack_only",
+      "value": "右键快速出货只能从背包格发货。"
+    },
+    {
+      "key": "stardewai.msg.quickship_some",
+      "value": "已快速出货 {0} 个{1}，出货箱已经快满了。"
+    },
+    {
+      "key": "stardewai.msg.quickship_done",
+      "value": "已快速出货 {0} 个{1}。"
+    },
+    {
+      "key": "stardewai.msg.no_item_to_move",
+      "value": "没有可移动的物品。"
+    },
+    {
+      "key": "stardewai.msg.cannot_place_item",
+      "value": "{0}不能放置{1}。"
+    },
+    {
+      "key": "stardewai.msg.slot_full",
+      "value": "目标格已经堆满了。"
+    },
+    {
+      "key": "stardewai.msg.swap_ok",
+      "value": "已交换 {0} 和 {1}。"
+    },
+    {
+      "key": "stardewai.msg.insufficient_gold",
+      "value": "金币不够，买不起新的种子包。"
+    },
+    {
+      "key": "stardewai.msg.no_backpack_space",
+      "value": "背包空间不够，无法放下这包混合种子。"
+    },
+    {
+      "key": "stardewai.msg.bought_seeds",
+      "value": "花费 {0} 金购买了混合种子包：{1}。"
+    },
+    {
+      "key": "stardewai.msg.festival_no_shop",
+      "value": "今天是村庆日，{0}去广场忙活动了，商店暂停营业。"
+    },
+    {
+      "key": "stardewai.msg.shop_opened",
+      "value": "已打开{0}商店，点击条目可购买对应种子。"
+    },
+    {
+      "key": "stardewai.msg.shop_closed",
+      "value": "已关闭商店。"
+    },
+    {
+      "key": "stardewai.msg.day_ended",
+      "value": "第 {0} 天结束，获得 {1} 金。"
+    },
+    {
+      "key": "stardewai.msg.harvest_ready",
+      "value": "{0} 已经成熟了！"
+    },
+    {
+      "key": "stardewai.msg.crop_growing",
+      "value": "{0} 还需要 {1} 天。"
+    },
+    {
+      "key": "stardewai.msg.already_watered",
+      "value": "这块地已经浇过水了。"
+    },
+    {
+      "key": "stardewai.msg.tilled_already",
+      "value": "这块地已经耕好了。"
+    },
+    {
+      "key": "stardewai.msg.need_till_first",
+      "value": "这块地还没耕，不���播种。"
+    },
+    {
+      "key": "stardewai.msg.planted",
+      "value": "已播种 {0}。"
+    },
+    {
+      "key": "stardewai.msg.watered",
+      "value": "已浇水。"
+    },
+    {
+      "key": "stardewai.msg.hoed",
+      "value": "已耕地。"
+    },
+    {
+      "key": "stardewai.msg.harvested",
+      "value": "已收获 {0} 个{1}。"
+    },
+    {
+      "key": "stardewai.msg.nothing_harvest",
+      "value": "这里没有可收获的作物。"
+    },
+    {
+      "key": "stardewai.msg.no_seed_selected",
+      "value": "请先在背包里选择要播种的种子。"
+    },
+    {
+      "key": "stardewai.msg.talk_npc",
+      "value": "和 {0} 对话中..."
+    },
+    {
+      "key": "stardewai.controls.desc",
+      "value": "点地移动/使用工具，点角色或箱子互动，点“过天”进入明天。"
+    },
+    {
+      "key": "stardewai.overview.day",
+      "value": "第 {0} 天"
+    },
+    {
+      "key": "stardewai.overview.time",
+      "value": "时间 {0}"
+    },
+    {
+      "key": "stardewai.overview.money",
+      "value": "金币 {0}"
+    },
+    {
+      "key": "stardewai.overview.harvest",
+      "value": "收获 {0}"
+    },
+    {
+      "key": "stardewai.overview.event",
+      "value": "今日事件：{0}"
+    },
+    {
+      "key": "stardewai.event.none",
+      "value": "无"
+    },
+    {
+      "key": "stardewai.event.neighbor_visit",
+      "value": "邻居来访"
+    },
+    {
+      "key": "stardewai.event.dew_morning",
+      "value": "晨露"
+    },
+    {
+      "key": "stardewai.event.seed_market",
+      "value": "种子市集"
+    },
+    {
+      "key": "stardewai.event.harvest_day",
+      "value": "收获日"
+    },
+    {
+      "key": "stardewai.event.village_festival",
+      "value": "村庆"
+    },
+    {
+      "key": "stardewai.ui.status",
+      "value": "第 {0} 天  {1}  {2}\n金币 {3}  |  当前工具 {4}  |  目标 {5}"
+    },
+    {
+      "key": "stardewai.ui.status.portrait",
+      "value": "第 {0} 天 {1} {2}\n金币 {3} 工具 {4}"
+    },
+    {
+      "key": "stardewai.ui.controls.shop",
+      "value": "点条目购买，点×关闭"
+    },
+    {
+      "key": "stardewai.ui.controls.explore",
+      "value": "点地行动 | 点箱子/角色互动"
+    },
+    {
+      "key": "stardewai.ui.inventory_title",
+      "value": "背包 {0}/{1} 格\n已选：{2}"
+    },
+    {
+      "key": "stardewai.ui.hud.fallback",
+      "value": "先处理田地、背包和出货，详细信息可点右侧卡片查看。"
+    },
+    {
+      "key": "stardewai.card.overview",
+      "value": "概览卡"
+    },
+    {
+      "key": "stardewai.card.event",
+      "value": "今日事件"
+    },
+    {
+      "key": "stardewai.card.calendar",
+      "value": "村庄日历"
+    },
+    {
+      "key": "stardewai.card.backpack",
+      "value": "背包卡"
+    },
+    {
+      "key": "stardewai.card.controls",
+      "value": "操作说明"
+    },
+    {
+      "key": "stardewai.card.generic",
+      "value": "信息"
+    },
+    {
+      "key": "stardewai.card.overview.body",
+      "value": "{0}\n当前目标：{1}\n当前时段：{2}\n露米动向：{3}"
+    },
+    {
+      "key": "stardewai.card.event.body",
+      "value": "今日事件：{0}\n当前时段：{1}\n事件效果：{2}\n露米安排：{3}"
+    },
+    {
+      "key": "stardewai.card.calendar.view_season",
+      "value": "查看季节："
+    },
+    {
+      "key": "stardewai.card.calendar.current_date",
+      "value": "  |  当前日期："
+    },
+    {
+      "key": "stardewai.card.calendar.next_season_hint",
+      "value": "再次点击“日历”页签可切换到下一季节。"
+    },
+    {
+      "key": "stardewai.card.calendar.festival_full",
+      "value": "节日全称："
+    },
+    {
+      "key": "stardewai.card.calendar.festival_sep",
+      "value": " 日 - "
+    },
+    {
+      "key": "stardewai.card.calendar.no_festival",
+      "value": "本季无节日。"
+    },
+    {
+      "key": "stardewai.card.backpack.body",
+      "value": "已选：{0}\n背包占用：{1}/{2} 格\n可在下方面板拖拽、交换、合并物品。"
+    },
+    {
+      "key": "stardewai.card.controls.body",
+      "value": "触屏：点地移动，点地块使用当前工具，点角色或箱子互动\n工具：底栏按钮切换\n商店：与千然互动后，点击条目购买种子，点×关闭\n背包：切到背包卡后，可点选或拖拽物品；点出货箱出货\n时间：点底部“过天”进入下一天\n键盘：WASD/方向键移动，1-4切工具，空格使用，N/Enter过天"
+    },
+    {
+      "key": "stardewai.common.none",
+      "value": "无"
+    },
+    {
+      "key": "stardewai.common.empty",
+      "value": "空"
+    },
+    {
+      "key": "stardewai.common.unknown_item",
+      "value": "未知物品"
+    },
+    {
+      "key": "stardewai.common.festival_short",
+      "value": "节"
+    },
+    {
+      "key": "stardewai.time.morning",
+      "value": "早晨"
+    },
+    {
+      "key": "stardewai.time.noon",
+      "value": "中午"
+    },
+    {
+      "key": "stardewai.time.evening",
+      "value": "傍晚"
+    },
+    {
+      "key": "stardewai.time.night",
+      "value": "夜晚"
+    },
+    {
+      "key": "stardewai.time.unknown",
+      "value": "时间"
+    },
+    {
+      "key": "stardewai.season.spring",
+      "value": "春季"
+    },
+    {
+      "key": "stardewai.season.summer",
+      "value": "夏季"
+    },
+    {
+      "key": "stardewai.season.autumn",
+      "value": "秋季"
+    },
+    {
+      "key": "stardewai.season.winter",
+      "value": "冬季"
+    },
+    {
+      "key": "stardewai.season.unknown",
+      "value": "季节"
+    },
+    {
+      "key": "stardewai.world.off_farm",
+      "value": "农场外"
+    },
+    {
+      "key": "stardewai.world.ridge",
+      "value": "田埂"
+    },
+    {
+      "key": "stardewai.world.tile_ripe",
+      "value": "成熟{0}"
+    },
+    {
+      "key": "stardewai.world.tile_growing_watered",
+      "value": "生长中 已浇水"
+    },
+    {
+      "key": "stardewai.world.tile_growing",
+      "value": "生长中"
+    },
+    {
+      "key": "stardewai.world.tile_watered_empty",
+      "value": "已浇水空地"
+    },
+    {
+      "key": "stardewai.world.tile_tilled",
+      "value": "已翻地"
+    },
+    {
+      "key": "stardewai.inventory.slot",
+      "value": "物品格"
+    },
+    {
+      "key": "stardewai.inventory.detail.empty",
+      "value": "{0}：空，上限 {1}。"
+    },
+    {
+      "key": "stardewai.inventory.detail.shipping",
+      "value": "{0}：{1} {2} / {3}，明早结算 {4} 金。"
+    },
+    {
+      "key": "stardewai.inventory.detail.seed",
+      "value": "{0}：{1} {2} / {3}，播种会直接消耗这里的种子。"
+    },
+    {
+      "key": "stardewai.inventory.detail.backpack",
+      "value": "{0}：{1} {2} / {3}，可拖到出货箱，或右键快速出货。"
+    },
+    {
+      "key": "stardewai.inventory.select.empty",
+      "value": "已选中{0}。当前为空。"
+    },
+    {
+      "key": "stardewai.inventory.select.filled",
+      "value": "已选中{0}：{1} {2} / {3}。"
+    },
+    {
+      "key": "stardewai.event.effect.neighbor_visit.claimed",
+      "value": "今天已从露米那里领过赠送种子。"
+    },
+    {
+      "key": "stardewai.event.effect.neighbor_visit.available",
+      "value": "与露米对话可领取 2 颗赠送种子。"
+    },
+    {
+      "key": "stardewai.event.effect.dew_morning",
+      "value": "今天清晨已自动润湿所有翻好的地块。"
+    },
+    {
+      "key": "stardewai.event.effect.seed_market",
+      "value": "种子箱今天每次可买到 {0} 颗种子。"
+    },
+    {
+      "key": "stardewai.event.effect.harvest_day",
+      "value": "收获成熟作物时会额外多拿 1 个。"
+    },
+    {
+      "key": "stardewai.event.effect.village_festival",
+      "value": "节日期间全村会切换到庆典行为：广场集合、商店停业、阿拽不再拔苗。"
+    },
+    {
+      "key": "stardewai.event.effect.none",
+      "value": "今天没有额外事件效果。"
+    },
+    {
+      "key": "stardewai.schedule.festival.morning",
+      "value": "全村上午在庆典广场准备活动。"
+    },
+    {
+      "key": "stardewai.schedule.festival.noon",
+      "value": "中午全员围绕广场主舞台互动。"
+    },
+    {
+      "key": "stardewai.schedule.festival.evening",
+      "value": "傍晚进行点灯与摊位巡游。"
+    },
+    {
+      "key": "stardewai.schedule.festival.night",
+      "value": "夜里庆典结束，村民返回休息区。"
+    },
+    {
+      "key": "stardewai.schedule.festival.default",
+      "value": "节日里全村按庆典流程行动。"
+    },
+    {
+      "key": "stardewai.schedule.morning.seed_market",
+      "value": "上午在种子摊附近招呼来客。"
+    },
+    {
+      "key": "stardewai.schedule.morning.default",
+      "value": "上午在田边巡视。"
+    },
+    {
+      "key": "stardewai.schedule.noon.harvest_day",
+      "value": "中午会去田中央看收成。"
+    },
+    {
+      "key": "stardewai.schedule.noon.default",
+      "value": "中午会到路边和箱子附近。"
+    },
+    {
+      "key": "stardewai.schedule.evening",
+      "value": "傍晚会靠近出货区。"
+    },
+    {
+      "key": "stardewai.schedule.night",
+      "value": "夜里回到小屋附近休息。"
+    },
+    {
+      "key": "stardewai.schedule.default",
+      "value": "今天会在农场里四处走动。"
+    },
+    {
+      "key": "stardewai.dialogue.xiaotuanzi.intro1",
+      "value": "我是小团子先生，先在镇上漂着，后面你会明白我为什么一直在盯着这片地。"
+    },
+    {
+      "key": "stardewai.dialogue.xiaotuanzi.intro2",
+      "value": "先把农场稳住，等你季节轮过几次，我们再谈真正重要的事。"
+    },
+    {
+      "key": "stardewai.dialogue.xiaotuanzi.outro",
+      "value": "流浪者不会久留，但我会在关键时刻出现。"
+    },
+    {
+      "key": "stardewai.dialogue.qianran.intro1",
+      "value": "我是千然，镇上商路基本都归我打点。后面你会频繁和我做大宗交易。"
+    },
+    {
+      "key": "stardewai.dialogue.qianran.intro2",
+      "value": "普通买卖只是开始，真正重要的是你能不能稳定供货。"
+    },
+    {
+      "key": "stardewai.dialogue.qianran.outro",
+      "value": "记住我这句话：你的后期上限，取决于你和商路绑定得多深。"
+    },
+    {
+      "key": "stardewai.dialogue.haiyinawa.intro1",
+      "value": "我是海音awa，镇上的渔夫。后期你会需要我提供稳定的水产和航路情报。"
+    },
+    {
+      "key": "stardewai.dialogue.haiyinawa.intro2",
+      "value": "你要是能把出货节奏和天气窗口对上，收益会比现在高很多。"
+    },
+    {
+      "key": "stardewai.dialogue.haiyinawa.outro",
+      "value": "等你准备好，我会带你接触更深水域的交易。"
+    },
+    {
+      "key": "stardewai.dialogue.azhai.intro1",
+      "value": "我叫阿拽，手痒的时候就爱在田里转。"
+    },
+    {
+      "key": "stardewai.dialogue.azhai.intro2",
+      "value": "你地里种得越满，我越想顺手拔一棵。"
+    },
+    {
+      "key": "stardewai.dialogue.azhai.outro",
+      "value": "看住你的田，不然我还会再来。"
+    },
+    {
+      "key": "stardewai.dialogue.neighbor_visit.gift",
+      "value": "今天是邻里来访日，我给你带了 {0} 颗{1}，当作见面礼。"
+    },
+    {
+      "key": "stardewai.dialogue.neighbor_visit.full",
+      "value": "我本来想送你种子，但你的背包太满了，先腾点位置再来找我吧。"
+    },
+    {
+      "key": "stardewai.dialogue.neighbor_visit.claimed",
+      "value": "今天的见面礼你已经收下了，记得把新种子种进地里。"
+    },
+    {
+      "key": "stardewai.dialogue.dew_morning",
+      "value": "晨露日的土地会自己带着湿气，今天一早我就闻到泥土的味道了。"
+    },
+    {
+      "key": "stardewai.dialogue.seed_market",
+      "value": "今天是种子集市，种子箱里的混合种子包会额外多送几颗。"
+    },
+    {
+      "key": "stardewai.dialogue.harvest_day",
+      "value": "今天是丰收日，收获时偶尔能顺手多摘下一份。"
+    },
+    {
+      "key": "stardewai.dialogue.daily_event",
+      "value": "每日事件：{0}。"
+    },
+    {
+      "key": "stardewai.dialogue.festival.lumi.1",
+      "value": "今天是村庆试点日，大家都在广场帮忙布置。"
+    },
+    {
+      "key": "stardewai.dialogue.festival.lumi.2",
+      "value": "你也可以四处看看，今晚会有庆典点灯。"
+    },
+    {
+      "key": "stardewai.dialogue.festival.xiaotuanzi.1",
+      "value": "节日里人群最嘈杂，也最容易看清谁在认真生活。"
+    },
+    {
+      "key": "stardewai.dialogue.festival.xiaotuanzi.2",
+      "value": "今天我不谈别的，只看你会不会把节奏稳住。"
+    },
+    {
+      "key": "stardewai.dialogue.festival.qianran.1",
+      "value": "村庆日商店停业，我今天只负责节庆摊位和物资调度。"
+    },
+    {
+      "key": "stardewai.dialogue.festival.qianran.2",
+      "value": "明天恢复营业，你再来下单。"
+    },
+    {
+      "key": "stardewai.dialogue.festival.haiyinawa.1",
+      "value": "我今天不上船，留在广场给庆典准备海货。"
+    },
+    {
+      "key": "stardewai.dialogue.festival.haiyinawa.2",
+      "value": "想听潮汐情报，等明天清晨再找我。"
+    },
+    {
+      "key": "stardewai.dialogue.festival.azhai.1",
+      "value": "今天是节日，我答应过不捣乱，不拔你的苗。"
+    },
+    {
+      "key": "stardewai.dialogue.festival.azhai.2",
+      "value": "别紧张，等节后我再继续晃田。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.xiaotuanzi.morning",
+      "value": "早。雾散之前，很多东西看起来都比真相简单。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.xiaotuanzi.noon",
+      "value": "太阳最烈的时候，最容易看清一个人会不会半途而废。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.xiaotuanzi.evening",
+      "value": "傍晚的风会带来消息，也会带走没准备好的人。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.xiaotuanzi.night",
+      "value": "夜深了，别急着问答案，先把火留着。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.xiaotuanzi.default",
+      "value": "你我迟早会再认真谈一次。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.qianran.morning",
+      "value": "早。今天先清点货，再谈价。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.qianran.noon",
+      "value": "中午是交易高峰，手快的人才能拿到好价。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.qianran.evening",
+      "value": "傍晚我会看你的出货节奏，这决定后续合作深度。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.qianran.night",
+      "value": "夜里我会整理账本，明天再谈新单。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.qianran.default",
+      "value": "商路要稳，信誉得先稳。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.haiyinawa.morning",
+      "value": "早潮刚起，今天是出海的好窗口。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.haiyinawa.noon",
+      "value": "正午浪稳，适合清点网具和补给。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.haiyinawa.evening",
+      "value": "晚潮最看经验，错一波就少一船货。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.haiyinawa.night",
+      "value": "夜里我会看潮表，明天再给你更准的建议。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.haiyinawa.default",
+      "value": "先稳住节奏，再谈大单。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.azhai.morning",
+      "value": "早，今天地里看着挺热闹。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.azhai.noon",
+      "value": "中午太阳大，拔苗也不费劲。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.azhai.evening",
+      "value": "傍晚风一吹，手就更痒了。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.azhai.night",
+      "value": "夜里我不拔，明天再说。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.azhai.default",
+      "value": "我就爱在田边瞎晃。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.default.morning",
+      "value": "早啊，农夫。清晨的农场最适合安排今天要做的事。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.default.noon",
+      "value": "中午的太阳正好，作物和人一样都得喘口气。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.default.evening",
+      "value": "傍晚的风很舒服，正适合把今天收成整理一下。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.default.night",
+      "value": "夜里别忙太久，农场也需要休息。"
+    },
+    {
+      "key": "stardewai.dialogue.greeting.default.default",
+      "value": "今天过得还顺利吗？"
+    },
+    {
+      "key": "stardewai.dialogue.time_comment.xiaotuanzi.morning",
+      "value": "上午我会在农场边缘转转，顺便看看镇上的风向。"
+    },
+    {
+      "key": "stardewai.dialogue.time_comment.xiaotuanzi.noon",
+      "value": "中午我会走到主路附近，听听路人都在传什么。"
+    },
+    {
+      "key": "stardewai.dialogue.time_comment.xiaotuanzi.evening",
+      "value": "傍晚我常在出货区附近待着，你的节奏我看得出来。"
+    },
+    {
+      "key": "stardewai.dialogue.time_comment.xiaotuanzi.night",
+      "value": "夜里我会靠近小屋，不会打扰你休息。"
+    },
+    {
+      "key": "stardewai.dialogue.time_comment.qianran.morning",
+      "value": "上午我会在仓位附近看货，确认今天能走多少量。"
+    },
+    {
+      "key": "stardewai.dialogue.time_comment.qianran.noon",
+      "value": "中午我会沿主路巡货，顺便盯市场波动。"
+    },
+    {
+      "key": "stardewai.dialogue.time_comment.qianran.evening",
+      "value": "傍晚我会靠近出货区，评估你的履约能力。"
+    },
+    {
+      "key": "stardewai.dialogue.time_comment.qianran.night",
+      "value": "夜里我会靠近小屋记账，次日给你新的报价。"
+    },
+    {
+      "key": "stardewai.dialogue.time_comment.haiyinawa.morning",
+      "value": "上午我会在水边看潮，确认今天能不能走远海。"
+    },
+    {
+      "key": "stardewai.dialogue.time_comment.haiyinawa.noon",
+      "value": "中午我会回到路口整备，顺便处理临时收购。"
+    },
+    {
+      "key": "stardewai.dialogue.time_comment.haiyinawa.evening",
+      "value": "傍晚我会在出货区附近盯行情，给你回报窗口。"
+    },
+    {
+      "key": "stardewai.dialogue.time_comment.haiyinawa.night",
+      "value": "夜里我会去码头边休息，次日清晨继续下网。"
+    },
+    {
+      "key": "stardewai.dialogue.time_comment.azhai.morning",
+      "value": "上午我会沿着田埂晃悠。"
+    },
+    {
+      "key": "stardewai.dialogue.time_comment.azhai.noon",
+      "value": "中午我一般会靠近农田中央。"
+    },
+    {
+      "key": "stardewai.dialogue.time_comment.azhai.evening",
+      "value": "傍晚我常在出货区附近转圈。"
+    },
+    {
+      "key": "stardewai.dialogue.time_comment.azhai.night",
+      "value": "夜里我会回村口，不折腾你的地。"
+    },
+    {
+      "key": "stardewai.dialogue.time_comment.default.morning",
+      "value": "我上午会在田边看看作物，顺便帮你留意今天的风向。"
+    },
+    {
+      "key": "stardewai.dialogue.time_comment.default.noon",
+      "value": "到了中午，我通常会绕到路边和箱子附近转一圈。"
+    },
+    {
+      "key": "stardewai.dialogue.time_comment.default.evening",
+      "value": "傍晚最好把出货箱整理好，明天一早就能结算金币。"
+    },
+    {
+      "key": "stardewai.dialogue.time_comment.default.night",
+      "value": "再过一会儿就会自动休息，时间走到太晚会直接进入下一天。"
+    },
+    {
+      "key": "stardewai.dialogue.continue_hint",
+      "value": "点击或空格继续"
+    },
+    {
+      "key": "stardewai.preview.notice",
+      "value": "当前玩法仅供预览，每次退出都会清空数据"
+    },
+    {
+      "key": "stardewai.shop.title",
+      "value": "千然商店 · 作物种子"
+    },
+    {
+      "key": "stardewai.shop.page",
+      "value": "第 {0} / {1} 页"
+    },
+    {
+      "key": "stardewai.shop.hint",
+      "value": "说明：点击条目购买 1 颗种子。价格按作物价值折算。"
+    },
+    {
+      "key": "stardewai.shop.item",
+      "value": "{0}    {1} 金    背包 {2}"
+    },
+    {
+      "key": "stardewai.inventory.select.none",
+      "value": "已选中物品格。"
+    },
+    {
+      "key": "stardewai.day.settlement.income",
+      "value": "昨晚出货入账 {0} 金。"
+    },
+    {
+      "key": "stardewai.day.settlement.none",
+      "value": "昨晚没有新的出货收入。"
+    },
+    {
+      "key": "stardewai.day.auto_rest",
+      "value": "太晚了，自动回屋休息。"
+    },
+    {
+      "key": "stardewai.day.event_label",
+      "value": " 今日事件：{0}。"
+    },
+    {
+      "key": "stardewai.day.start.grown",
+      "value": "{0}第 {1} 天开始了。{2} 有 {3} 块作物继续生长。{4}"
+    },
+    {
+      "key": "stardewai.day.start.water",
+      "value": "{0}第 {1} 天开始了。{2} 记得给作物浇水。{3}"
+    },
+    {
+      "key": "stardewai.dialogue.continue_hint",
+      "value": "点击或空格继续"
+    },
+    {
+      "key": "stardewai.msg.quickship_no_item_with_item",
+      "value": "{0} 不能直接出货。"
+    },
+    {
+      "key": "stardewai.msg.shipped_some",
+      "value": "已放入 {0} 个{1}，出货箱空间不够，背包还剩 {2} 个。"
+    },
+    {
+      "key": "stardewai.msg.shipped_done",
+      "value": "已放入 {0} 个{1}，明早预计结算 {2} 金。"
+    },
+    {
+      "key": "stardewai.msg.stack_to_slot",
+      "value": "已把 {0} 个{1} 堆到{2}格 {3}。"
+    },
+    {
+      "key": "stardewai.msg.move_to_slot",
+      "value": "已把 {0} 移到{1}格 {2}。"
+    },
+    {
+      "key": "stardewai.msg.swap_slots",
+      "value": "已交换 {0}格 {1} 和 {2}格 {3}。"
+    },
+    {
+      "key": "stardewai.msg.not_for_sale",
+      "value": "该种子暂不可购买。"
+    },
+    {
+      "key": "stardewai.msg.insufficient_gold_for_item",
+      "value": "金币不足，购买 {0} 还差 {1} 金。"
+    },
+    {
+      "key": "stardewai.msg.no_backpack_space_for_item",
+      "value": "背包已满，无法再放入 {0}。"
+    },
+    {
+      "key": "stardewai.msg.bought_seed_item",
+      "value": "购买成功：{0} x1（-{1} 金）。"
+    },
+    {
+      "key": "stardewai.msg.tool_switched",
+      "value": "当前工具已切换为 {0}。"
+    },
+    {
+      "key": "stardewai.msg.time_period_changed",
+      "value": "时间来到{0}，镇上的人都换了个位置。"
+    },
+    {
+      "key": "stardewai.msg.crop_sabotaged",
+      "value": "阿拽溜进田里，拔掉了你的 {0}。"
+    },
+    {
+      "key": "stardewai.msg.npc_greet",
+      "value": "{0} 朝你点了点头。"
+    },
+    {
+      "key": "stardewai.msg.npc_chat_done",
+      "value": "和 {0} 聊完了。"
+    },
+    {
+      "key": "stardewai.tooltip.seed",
+      "value": "数量：{0} / {1}\n类型：种子\n用途：播种在已锄地块。"
+    },
+    {
+      "key": "stardewai.tooltip.shipping",
+      "value": "数量：{0} / {1}\n单价：{2} 金\n用途：可放入出货箱。"
+    },
+    {
+      "key": "stardewai.common.seed_suffix",
+      "value": "{0}种子"
+    },
+    {
+      "key": "stardewai.msg.crop_exists",
+      "value": "这里已经有作物了。"
+    },
+    {
+      "key": "stardewai.msg.already_watered_crop",
+      "value": "作物已经喝到水了。"
+    },
+    {
+      "key": "stardewai.msg.already_watered_tile",
+      "value": "这块地已经浇湿了。"
+    },
+    {
+      "key": "stardewai.msg.no_backpack_space_harvest",
+      "value": "背包已经满了，先整理一下或去出货箱清一清。"
+    },
+    {
+      "key": "stardewai.msg.harvested_bonus",
+      "value": "丰收日加成生效，一共收进背包 {0} 个{1}。"
+    }
+  ]
+}

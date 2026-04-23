@@ -1,0 +1,44 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.goldminer.name",
+      "value": "钩爪拾宝"
+    },
+    {
+      "key": "game.goldminer.description",
+      "value": "单关核心版钩爪拾宝，自动摆钩，拾完目标后结算。"
+    },
+    {
+      "key": "goldminer.hud.score",
+      "value": "分数"
+    },
+    {
+      "key": "goldminer.hud.coin",
+      "value": "金币"
+    },
+    {
+      "key": "goldminer.hud.remaining",
+      "value": "剩余"
+    },
+    {
+      "key": "goldminer.action.restart",
+      "value": "重新开始"
+    },
+    {
+      "key": "goldminer.summary.finished",
+      "value": "场地已经清空，本局得分 {0}，获得 {1} 金币和 {2} 个宝箱。"
+    },
+    {
+      "key": "goldminer.summary.exit",
+      "value": "本局已退出，得分 {0}，获得 {1} 金币和 {2} 个宝箱。"
+    },
+    {
+      "key": "game.goldminer.help",
+      "value": "钩爪会自动左右摆动，点击时发射钩爪抓取目标。不同物品的分值和重量不同，尽量优先抓取高价值目标，在结算前累计更高分数。"
+    },
+    {
+      "key": "game.goldminer.credits",
+      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
+    }
+  ]
+}

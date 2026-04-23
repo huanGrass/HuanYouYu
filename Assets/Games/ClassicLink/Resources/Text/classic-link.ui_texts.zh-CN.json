@@ -1,0 +1,33 @@
+﻿{
+  "entries": [
+    { "key": "game.classic_link.name", "value": "经典连连看" },
+    { "key": "game.classic_link.description", "value": "相同方块若能在三条线内连通即可消除。" },
+    { "key": "classic_link.hud.initial", "value": "选中两个相同方块，三条线内连通即可消除。" },
+    { "key": "classic_link.hud.first_selected", "value": "已选中第一个方块。" },
+    { "key": "classic_link.hud.cancel_selected", "value": "已取消选择。" },
+    { "key": "classic_link.hud.pattern_mismatch", "value": "图案不同，已切换选择。" },
+    { "key": "classic_link.hud.path_blocked", "value": "这两个方块当前无法在三条线内连通。" },
+    { "key": "classic_link.hud.match_success", "value": "连接成功，正在消除。" },
+    { "key": "classic_link.hud.board_cleared", "value": "棋盘已清空，正在结算。" },
+    { "key": "classic_link.hud.auto_shuffle", "value": "当前无解，已自动重排剩余方块。" },
+    { "key": "classic_link.hud.next_pair", "value": "继续寻找下一对。" },
+    { "key": "classic_link.hud.player_shuffle", "value": "已手动重排剩余方块。" },
+    { "key": "classic_link.hud.score", "value": "分数 {0}" },
+    { "key": "classic_link.action.level_select", "value": "选关" },
+    { "key": "classic_link.action.next_level", "value": "下一关" },
+    { "key": "classic_link.settlement.win", "value": "经典连连看通关：得分 {0}，获得 {1} 金币和 {2} 个宝箱。" },
+    { "key": "classic_link.settlement.exit", "value": "经典连连看已退出：得分 {0}，获得 {1} 金币。" },
+    { "key": "classic_link.settlement.title", "value": "连线完成" },
+    { "key": "classic_link.settlement.level", "value": "关卡" },
+    { "key": "classic_link.settlement.score", "value": "分数" },
+    { "key": "classic_link.settlement.reward", "value": "奖励" },
+    {
+      "key": "game.classic_link.help",
+      "value": "选中两个相同图案的方块，如果它们能在不超过三条直线的路径内连通，就能成功消除。清空全部方块即可完成本局，无解时可借助重排继续。"
+    },
+    {
+      "key": "game.classic_link.credits",
+      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
+    }
+  ]
+}

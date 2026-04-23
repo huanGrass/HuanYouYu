@@ -1,0 +1,8 @@
+﻿{
+  "gameId": "tetris",
+  "nameKey": "game.tetris.name",
+  "descriptionKey": "game.tetris.description",
+  "isPlayable": true,
+  "statusLabelKey": "status.playable",
+  "sortOrder": 12
+}

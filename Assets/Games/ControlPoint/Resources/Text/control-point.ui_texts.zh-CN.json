@@ -1,0 +1,80 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.control_point.name",
+      "value": "占点攻防"
+    },
+    {
+      "key": "game.control_point.description",
+      "value": "拖动己方据点建立连线，持续输送兵力争夺全部据点。"
+    },
+    {
+      "key": "game.control_point.help",
+      "value": "从己方据点拖到其他据点即可建立连线。少于 20 兵为 1 级，可连 1 条线；20 到 39 兵为 2 级，可连 2 条线；40 兵及以上为 3 级，可连 3 条线。等级越高涨兵越快，连线满时需要先手动切断已有线才能再连。连线会在源据点保留 1 兵的前提下持续向目标输送。攻击中立或敌方据点会削减其兵量，降到 0 后转为己方据点。控制全部据点即可通关并解锁下一关。"
+    },
+    {
+      "key": "game.control_point.credits",
+      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
+    },
+    {
+      "key": "control_point.hud.score",
+      "value": "我方 {0}/{1}  敌方 {2}/{1}"
+    },
+    {
+      "key": "control_point.hud.reserve",
+      "value": "拖动己方据点连线"
+    },
+    {
+      "key": "control_point.point.neutral",
+      "value": "中立"
+    },
+    {
+      "key": "control_point.point.player",
+      "value": "我方"
+    },
+    {
+      "key": "control_point.point.enemy",
+      "value": "敌方"
+    },
+    {
+      "key": "control_point.point.units",
+      "value": "{0}"
+    },
+    {
+      "key": "control_point.hud.hint",
+      "value": "拖动己方据点连线"
+    },
+    {
+      "key": "control_point.action.restart",
+      "value": "重开"
+    },
+    {
+      "key": "control_point.action.next_level",
+      "value": "下一关"
+    },
+    {
+      "key": "control_point.settlement.title",
+      "value": "占点完成"
+    },
+    {
+      "key": "control_point.settlement.owned",
+      "value": "控制"
+    },
+    {
+      "key": "control_point.settlement.reward",
+      "value": "奖励"
+    },
+    {
+      "key": "control_point.settlement.win",
+      "value": "占点攻防第 {0} 关胜利：控制 {1} 个据点，我方兵力 {2}，击破 {3} 名敌军，获得 {4} 金币和 {5} 个宝箱。"
+    },
+    {
+      "key": "control_point.settlement.lose",
+      "value": "占点攻防失败：控制 {0} 个据点，击退 {1} 支敌军，获得 {2} 金币。"
+    },
+    {
+      "key": "control_point.settlement.exit",
+      "value": "占点攻防已退出：控制 {0} 个据点，击退 {1} 支敌军，获得 {2} 金币。"
+    }
+  ]
+}

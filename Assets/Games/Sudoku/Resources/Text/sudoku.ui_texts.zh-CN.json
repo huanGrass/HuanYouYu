@@ -1,0 +1,72 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.sudoku.name",
+      "value": "数独"
+    },
+    {
+      "key": "game.sudoku.description",
+      "value": "经典 9x9 数独。点击空格格子，再用下方数字键盘填入数字或记录候选数。"
+    },
+    {
+      "key": "sudoku.hud.timer",
+      "value": "用时 {0}"
+    },
+    {
+      "key": "sudoku.hud.summary",
+      "value": "{0}  {1}  {2}"
+    },
+    {
+      "key": "sudoku.hud.difficulty.easy",
+      "value": "简单"
+    },
+    {
+      "key": "sudoku.hud.difficulty.normal",
+      "value": "普通"
+    },
+    {
+      "key": "sudoku.hud.difficulty.hard",
+      "value": "困难"
+    },
+    {
+      "key": "sudoku.hud.progress",
+      "value": "已填 {0}-{1}"
+    },
+    {
+      "key": "sudoku.action.restart",
+      "value": "新开一局"
+    },
+    {
+      "key": "sudoku.action.reset_round",
+      "value": "重置本局"
+    },
+    {
+      "key": "sudoku.action.notes",
+      "value": "候选"
+    },
+    {
+      "key": "sudoku.input.fill",
+      "value": "填数"
+    },
+    {
+      "key": "sudoku.action.auto_candidates",
+      "value": "一键候选"
+    },
+    {
+      "key": "sudoku.action.clear",
+      "value": "清除"
+    },
+    {
+      "key": "sudoku.settlement.win",
+      "value": "完赛用时：{0}，获得 {1} 金币和 {2} 个宝箱"
+    },
+    {
+      "key": "sudoku.settlement.exit",
+      "value": "本局已退出，手动填入 {0} 格，获得 {1} 金币和 {2} 个宝箱"
+    },
+    {
+      "key": "sudoku.help.gameplay",
+      "value": "目标：让每一行、每一列和每个 3x3 宫格都刚好包含 1 到 9。\n\n操作：点击空格格子后，再点击下方数字即可填入。点击\"候选\"可切换到候选数模式，再次点击数字会为当前格增减候选数。\n\n辅助：填数模式下点击\"清除\"会擦除当前填写数字；候选模式下点击\"清除\"会清空当前格全部候选数。当前选中格、相关行列宫，以及相同数字都会高亮显示；出现冲突时会标红。"
+    }
+  ]
+}

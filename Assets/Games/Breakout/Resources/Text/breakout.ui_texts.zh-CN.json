@@ -1,0 +1,156 @@
+﻿{
+  "entries": [
+    {
+      "key": "breakout.action.launch",
+      "value": "发球"
+    },
+    {
+      "key": "breakout.action.restart",
+      "value": "重新开始"
+    },
+    {
+      "key": "breakout.hud.initial",
+      "value": "拖动挡板接球，点击发球开始。"
+    },
+    {
+      "key": "breakout.hud.keep_going",
+      "value": "继续反弹小球，别让它掉下去。"
+    },
+    {
+      "key": "breakout.hud.level",
+      "value": "关卡 {0}"
+    },
+    {
+      "key": "breakout.hud.launched",
+      "value": "拖动挡板反弹小球，清空所有砖块。"
+    },
+    {
+      "key": "breakout.hud.life_lost",
+      "value": "小球掉落，已损失 1 条命。"
+    },
+    {
+      "key": "breakout.hud.lives",
+      "value": "生命 {0}"
+    },
+    {
+      "key": "breakout.hud.lose",
+      "value": "生命耗尽，本局结束。"
+    },
+    {
+      "key": "breakout.hud.score",
+      "value": "分数 {0}"
+    },
+    {
+      "key": "breakout.hud.win",
+      "value": "全部砖块已清空。"
+    },
+    {
+      "key": "breakout.settlement.lose",
+      "value": "打砖块失败：得分 {0}，共击碎砖块 {1}，获得 {2} 金币。"
+    },
+    {
+      "key": "breakout.settlement.exit",
+      "value": "打砖块已退出：得分 {0}，共击碎砖块 {1}，获得 {2} 金币。"
+    },
+    {
+      "key": "breakout.settlement.win",
+      "value": "打砖块通关：得分 {0}，剩余生命 {1}，击碎砖块 {2}，获得 {3} 金币和 {4} 个宝箱。"
+    },
+    {
+      "key": "game.breakout.description",
+      "value": "拖动挡板反弹小球，清空全部砖块即可获胜。"
+    },
+    {
+      "key": "game.breakout.name",
+      "value": "经典打砖块"
+    },
+    {
+      "key": "breakout.level.classic",
+      "value": "经典阵"
+    },
+    {
+      "key": "breakout.level.hollow_box",
+      "value": "空心框"
+    },
+    {
+      "key": "breakout.level.cross",
+      "value": "十字阵"
+    },
+    {
+      "key": "breakout.level.stairs",
+      "value": "阶梯阵"
+    },
+    {
+      "key": "breakout.level.twin_towers",
+      "value": "双塔阵"
+    },
+    {
+      "key": "breakout.level.waves",
+      "value": "波浪阵"
+    },
+    {
+      "key": "breakout.level.arrow",
+      "value": "箭头阵"
+    },
+    {
+      "key": "breakout.level.diamond",
+      "value": "菱形阵"
+    },
+    {
+      "key": "breakout.level.spiral_turn",
+      "value": "回旋阵"
+    },
+    {
+      "key": "breakout.level.sawtooth",
+      "value": "锯齿阵"
+    },
+    {
+      "key": "breakout.level.double_ring",
+      "value": "双环阵"
+    },
+    {
+      "key": "breakout.level.spire",
+      "value": "尖塔阵"
+    },
+    {
+      "key": "breakout.level.wall",
+      "value": "城墙阵"
+    },
+    {
+      "key": "breakout.level.diagonal",
+      "value": "对角阵"
+    },
+    {
+      "key": "breakout.level.funnel",
+      "value": "漏斗阵"
+    },
+    {
+      "key": "breakout.level.bridge",
+      "value": "桥梁阵"
+    },
+    {
+      "key": "breakout.level.wings",
+      "value": "翼展阵"
+    },
+    {
+      "key": "breakout.level.hive",
+      "value": "蜂巢阵"
+    },
+    {
+      "key": "breakout.level.spiral",
+      "value": "螺旋阵"
+    },
+    {
+      "key": "breakout.level.arch",
+      "value": "拱门阵"
+    },
+    {
+      "key": "game.breakout.help",
+      "value": "拖动挡板反弹小球，击碎场上全部砖块即可过关。注意别让小球从底部掉出，合理调整反弹角度可以更快清场。"
+    },
+    {
+      "key": "game.breakout.credits",
+      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
+    }
+  ]
+}

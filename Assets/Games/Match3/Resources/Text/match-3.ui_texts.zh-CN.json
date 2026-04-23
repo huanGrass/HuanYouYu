@@ -1,0 +1,29 @@
+﻿{
+  "entries": [
+    { "key": "game.match3.name", "value": "蔬果消消乐" },
+    { "key": "game.match3.description", "value": "交换相邻蔬果，凑成三连并触发连锁消除。" },
+    { "key": "match3.hud.initial", "value": "选中相邻两个糖块交换，凑成三个或更多即可消除。" },
+    { "key": "match3.hud.cell_busy", "value": "这个位置正在结算中。" },
+    { "key": "match3.hud.first_selected", "value": "已选中第一个糖块。" },
+    { "key": "match3.hud.cancel_selected", "value": "已取消选择。" },
+    { "key": "match3.hud.only_adjacent", "value": "只能交换相邻糖块，已切换选中。" },
+    { "key": "match3.hud.cells_busy", "value": "这两个位置正在结算中。" },
+    { "key": "match3.hud.area_busy", "value": "相关区域正在结算中，稍后再试。" },
+    { "key": "match3.hud.try_swap", "value": "正在尝试交换。" },
+    { "key": "match3.hud.invalid_swap", "value": "这次交换无法形成消除。" },
+    { "key": "match3.hud.auto_shuffle", "value": "消除完成，棋盘无步可走，已自动重排。" },
+    { "key": "match3.hud.cleared", "value": "本次消除 {0} 个糖块。" },
+    { "key": "match3.hud.player_shuffle", "value": "已重新洗牌。" },
+    { "key": "match3.hud.score", "value": "分数 {0}" },
+    { "key": "match3.hud.combo", "value": "连击 x{0}" },
+    { "key": "match3.settlement.summary", "value": "蔬果消消乐结算：得分 {0}，获得 {1} 金币和 {2} 个宝箱。" },
+    {
+      "key": "game.match3.help",
+      "value": "交换相邻蔬果，让三个或更多相同图块连成一线即可消除。连续下落可能触发连锁反应，尽量寻找能同时制造多组消除的位置来提高分数。"
+    },
+    {
+      "key": "game.match3.credits",
+      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
+    }
+  ]
+}

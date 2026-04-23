@@ -1,0 +1,9 @@
+{
+  "name": "PlayModeTests",
+  "references": [
+    "HuanYouYu.Runtime"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

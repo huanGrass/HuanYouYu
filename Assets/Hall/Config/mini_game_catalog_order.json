@@ -1,0 +1,21 @@
+﻿{
+  "gameIds": [
+    "classic-link",
+    "match-3",
+    "snake",
+    "tetris",
+    "game2048",
+    "watermelon-merge",
+    "water-sort",
+    "memory-flip",
+    "minesweeper",
+    "sudoku",
+    "nonogram",
+    "gomoku",
+    "reversi",
+    "breakout",
+    "goldminer",
+    "needlehit",
+    "stardewai"
+  ]
+}

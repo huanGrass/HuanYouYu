@@ -1,0 +1,116 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.water_sort.name",
+      "value": "水排序"
+    },
+    {
+      "key": "game.water_sort.description",
+      "value": "点击容器倒出顶部同色水，把所有颜色分别整理到独立位置。"
+    },
+    {
+      "key": "water_sort.hud.score",
+      "value": "步数 {0}  完成 {1}/{2}"
+    },
+    {
+      "key": "water_sort.hud.level_score",
+      "value": "第 {0}/{1} 关  步数 {2}  完成 {3}/{4}"
+    },
+    {
+      "key": "water_sort.bottle.label",
+      "value": "{0}"
+    },
+    {
+      "key": "water_sort.action.level_select",
+      "value": "选关"
+    },
+    {
+      "key": "water_sort.action.next_level",
+      "value": "下一关"
+    },
+    {
+      "key": "water_sort.level_select.title",
+      "value": "选择关卡"
+    },
+    {
+      "key": "water_sort.level_select.level",
+      "value": "第 {0} 关"
+    },
+    {
+      "key": "water_sort.level_select.locked_level",
+      "value": "第 {0} 关\n未解锁"
+    },
+    {
+      "key": "water_sort.level_select.close",
+      "value": "关闭"
+    },
+    {
+      "key": "water_sort.difficulty.easy",
+      "value": "入门"
+    },
+    {
+      "key": "water_sort.difficulty.normal",
+      "value": "标准"
+    },
+    {
+      "key": "water_sort.difficulty.hard",
+      "value": "挑战"
+    },
+    {
+      "key": "water_sort.settlement.win",
+      "value": "全部颜色整理完成：共用了 {0} 步，获得 {1} 金币和 {2} 个宝箱。"
+    },
+    {
+      "key": "water_sort.settlement.exit",
+      "value": "本局已退出：已完成 {0} 组颜色，获得 {1} 金币和 {2} 个宝箱。"
+    },
+    {
+      "key": "water_sort.settlement.title",
+      "value": "本局结算"
+    },
+    {
+      "key": "water_sort.settlement.steps",
+      "value": "步数："
+    },
+    {
+      "key": "water_sort.settlement.step_unit",
+      "value": "步"
+    },
+    {
+      "key": "water_sort.settlement.rating",
+      "value": "评价："
+    },
+    {
+      "key": "water_sort.settlement.rating_great",
+      "value": "太棒了"
+    },
+    {
+      "key": "water_sort.settlement.rating_good",
+      "value": "不错"
+    },
+    {
+      "key": "water_sort.settlement.rating_done",
+      "value": "已完成"
+    },
+    {
+      "key": "water_sort.settlement.reward",
+      "value": "奖励："
+    },
+    {
+      "key": "water_sort.settlement.coin",
+      "value": "金币"
+    },
+    {
+      "key": "water_sort.settlement.next",
+      "value": "下一关"
+    },
+    {
+      "key": "game.water_sort.help",
+      "value": "先点击一个有水的位置，再点击目标位置即可倒水。只有目标位置为空，或目标顶部颜色与倒出的颜色相同，才能倒入。把每种颜色整理成一组即可完成。"
+    },
+    {
+      "key": "game.water_sort.credits",
+      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
+    }
+  ]
+}

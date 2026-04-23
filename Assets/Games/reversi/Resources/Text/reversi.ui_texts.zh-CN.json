@@ -1,0 +1,29 @@
+﻿{
+  "entries": [
+    { "key": "game.reversi.name", "value": "黑白棋" },
+    { "key": "game.reversi.description", "value": "标准 8x8 黑白棋单机对战，玩家执黑先手，对抗电脑白棋。" },
+    { "key": "reversi.action.restart", "value": "重新开始" },
+    { "key": "reversi.hud.counts", "value": "黑棋 {0} · 白棋 {1}" },
+    { "key": "reversi.hud.turn.player", "value": "当前回合：你" },
+    { "key": "reversi.hud.turn.ai", "value": "当前回合：电脑" },
+    { "key": "reversi.status.start", "value": "你执黑先手，点击能翻转白子的格子落子。" },
+    { "key": "reversi.status.invalid", "value": "该位置当前不能落子。" },
+    { "key": "reversi.status.player_turn", "value": "轮到你落子。" },
+    { "key": "reversi.status.ai_thinking", "value": "电脑正在思考下一步。" },
+    { "key": "reversi.status.player_pass", "value": "你当前无合法落子，已自动跳过。" },
+    { "key": "reversi.status.ai_pass", "value": "电脑无合法落子，回合回到你。" },
+    { "key": "reversi.result.player_win", "value": "你赢了。" },
+    { "key": "reversi.result.ai_win", "value": "电脑获胜。" },
+    { "key": "reversi.result.draw", "value": "本局平手。" },
+    { "key": "reversi.settlement.summary", "value": "{0} 获得 {1} 金币和 {2} 个宝箱。黑棋 {3}，白棋 {4}。" },
+    { "key": "reversi.settlement.exit", "value": "本局已退出，获得 10 金币。当前黑棋 {0}，白棋 {1}。" },
+    {
+      "key": "game.reversi.help",
+      "value": "你执黑先手，在空位落子并夹住对方棋子即可翻转。每一步都要兼顾当前收益与后续局面，尽量争夺角和稳定边，终局时棋子更多的一方获胜。"
+    },
+    {
+      "key": "game.reversi.credits",
+      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
+    }
+  ]
+}

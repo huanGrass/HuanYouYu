@@ -1,0 +1,52 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.snake.name",
+      "value": "贪吃蛇"
+    },
+    {
+      "key": "game.snake.description",
+      "value": "控制小蛇吃掉食物，不断变长；撞墙或撞到自己就会结束。"
+    },
+    {
+      "key": "snake.hud.initial",
+      "value": "点击下方方向键控制小蛇移动，吃到食物会加分并加速。"
+    },
+    {
+      "key": "snake.hud.score",
+      "value": "分数 {0}"
+    },
+    {
+      "key": "snake.hud.length",
+      "value": "长度 {0}"
+    },
+    {
+      "key": "snake.settlement.summary",
+      "value": "本局得分 {0}，获得 {1} 金币和 {2} 个宝箱。"
+    },
+    {
+      "key": "snake.settlement.exit",
+      "value": "本局已退出：得分 {0}，长度 {1}，吃到食物 {2} 个，获得 {3} 金币和 {4} 个宝箱。"
+    },
+    {
+      "key": "snake.settlement.wall",
+      "value": "贪吃蛇撞墙结束：得分 {0}，长度 {1}，吃到食物 {2} 个，获得 {3} 金币和 {4} 个宝箱。"
+    },
+    {
+      "key": "snake.settlement.self",
+      "value": "贪吃蛇撞到自己结束：得分 {0}，长度 {1}，吃到食物 {2} 个，获得 {3} 金币和 {4} 个宝箱。"
+    },
+    {
+      "key": "snake.settlement.win",
+      "value": "贪吃蛇通关：得分 {0}，长度 {1}，吃到食物 {2} 个，获得 {3} 金币和 {4} 个宝箱。"
+    },
+    {
+      "key": "game.snake.help",
+      "value": "控制小蛇吃掉食物来不断变长。移动过程中要避开自身和危险走位，尽量为后续转向预留空间，随着长度增长保持路线有序。"
+    },
+    {
+      "key": "game.snake.credits",
+      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
+    }
+  ]
+}

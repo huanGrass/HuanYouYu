@@ -1,0 +1,72 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.memory_flip.name",
+      "value": "记忆翻牌"
+    },
+    {
+      "key": "game.memory_flip.description",
+      "value": "翻开卡牌寻找相同图案，配对成功后保留正面，全部配对即可通关。"
+    },
+    {
+      "key": "memory_flip.hud.score",
+      "value": "配对 {0}/{1}  金币 {2}"
+    },
+    {
+      "key": "memory_flip.hud.difficulty",
+      "value": "{0} {1}x{2}"
+    },
+    {
+      "key": "memory_flip.difficulty.easy",
+      "value": "入门"
+    },
+    {
+      "key": "memory_flip.difficulty.normal",
+      "value": "标准"
+    },
+    {
+      "key": "memory_flip.difficulty.hard",
+      "value": "挑战"
+    },
+    {
+      "key": "memory_flip.action.level_select",
+      "value": "选关"
+    },
+    {
+      "key": "memory_flip.action.next_level",
+      "value": "下一关"
+    },
+    {
+      "key": "memory_flip.settlement.title",
+      "value": "配对完成"
+    },
+    {
+      "key": "memory_flip.settlement.level",
+      "value": "关卡"
+    },
+    {
+      "key": "memory_flip.settlement.pairs",
+      "value": "配对数"
+    },
+    {
+      "key": "memory_flip.settlement.reward",
+      "value": "奖励"
+    },
+    {
+      "key": "memory_flip.settlement.win",
+      "value": "全部配对完成：成功配对 {0} 对，获得 {1} 金币和 {2} 个宝箱。"
+    },
+    {
+      "key": "memory_flip.settlement.exit",
+      "value": "本局已退出：成功配对 {0}/{1} 对，获得 {2} 金币和 {3} 个宝箱。"
+    },
+    {
+      "key": "game.memory_flip.help",
+      "value": "点击卡牌翻开图案，连续翻开的两张图案相同就会配对成功；不同则会短暂展示后翻回。记住已出现图案的位置，完成全部配对即可通关。"
+    },
+    {
+      "key": "game.memory_flip.credits",
+      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
+    }
+  ]
+}

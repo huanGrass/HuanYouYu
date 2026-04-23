@@ -1,0 +1,56 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.tetris.name",
+      "value": "俄罗斯方块"
+    },
+    {
+      "key": "game.tetris.description",
+      "value": "移动、旋转和快速下落方块，填满横行即可消除得分。"
+    },
+    {
+      "key": "tetris.hud.score",
+      "value": "分数 {0}"
+    },
+    {
+      "key": "tetris.hud.lines",
+      "value": "消除 {0} 行"
+    },
+    {
+      "key": "tetris.hud.level",
+      "value": "速度 {0}"
+    },
+    {
+      "key": "tetris.action.restart",
+      "value": "重新开始"
+    },
+    {
+      "key": "tetris.action.rotate",
+      "value": "旋转"
+    },
+    {
+      "key": "tetris.action.hard_drop",
+      "value": "落下"
+    },
+    {
+      "key": "tetris.preview.next",
+      "value": "下一块"
+    },
+    {
+      "key": "tetris.settlement.exit",
+      "value": "俄罗斯方块已退出：得分 {0}，消除 {1} 行，获得 {2} 金币。"
+    },
+    {
+      "key": "tetris.settlement.game_over",
+      "value": "俄罗斯方块结束：得分 {0}，消除 {1} 行，获得 {2} 金币和 {3} 个宝箱。"
+    },
+    {
+      "key": "game.tetris.help",
+      "value": "左右方向键可按住连续移动方块，下方向键下降一格；点击旋转调整形状，点击落下可快速落到底部。填满任意横行会自动消除并得分；消除行数越多，下落速度越快。"
+    },
+    {
+      "key": "game.tetris.credits",
+      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
+    }
+  ]
+}

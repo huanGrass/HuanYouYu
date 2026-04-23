@@ -1,0 +1,31 @@
+﻿# Unity
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Uu]serSettings/
+/[Mm]emoryCaptures/
+/[Ll]ogs/
+/[Tt]estResults/
+/[Pp]layModeShots/
+
+# Visual Studio / Rider / VSCode
+*.csproj
+*.sln
+*.user
+*.pidb
+*.booproj
+*.svd
+*.unityproj
+*.tmp
+*.userprefs
+.vs/
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc

@@ -1,0 +1,160 @@
+%YAML 1.1
+%TAG !u! tag:yousandi.cn,2023:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 243ce28c359940a6bc24e8abc2f417b7, type: 3}
+  m_Name: MiniGameCatalogConfig
+  m_EditorClassIdentifier: 
+  entries:
+  - Id: classic-link
+    NameKey: game.classic_link.name
+    Name: "\u7ECF\u5178\u8FDE\u8FDE\u770B"
+    DescriptionKey: game.classic_link.description
+    Description: "\u76F8\u540C\u65B9\u5757\u82E5\u80FD\u5728\u4E09\u6761\u7EBF\u5185\u8FDE\u901A\u5373\u53EF\u6D88\u9664\u3002"
+    IsPlayable: 1
+    StatusLabelKey: status.playable
+    StatusLabel: "\u53EF\u6E38\u73A9"
+  - Id: match-3
+    NameKey: game.match3.name
+    Name: "\u852C\u679C\u6D88\u6D88\u4E50"
+    DescriptionKey: game.match3.description
+    Description: "\u4EA4\u6362\u76F8\u90BB\u852C\u679C\uFF0C\u51D1\u6210\u4E09\u8FDE\u5E76\u89E6\u53D1\u8FDE\u9501\u6D88\u9664\u3002"
+    IsPlayable: 1
+    StatusLabelKey: status.playable
+    StatusLabel: "\u53EF\u6E38\u73A9"
+  - Id: snake
+    NameKey: game.snake.name
+    Name: "\u8D2A\u5403\u86C7"
+    DescriptionKey: game.snake.description
+    Description: "\u63A7\u5236\u5C0F\u86C7\u5403\u6389\u98DF\u7269\uFF0C\u4E0D\u65AD\u53D8\u957F\uFF1B\u649E\u5899\u6216\u649E\u5230\u81EA\u5DF1\u5C31\u4F1A\u7ED3\u675F\u3002"
+    IsPlayable: 1
+    StatusLabelKey: status.playable
+    StatusLabel: "\u53EF\u6E38\u73A9"
+  - Id: tetris
+    NameKey: game.tetris.name
+    Name: "\u4FC4\u7F57\u65AF\u65B9\u5757"
+    DescriptionKey: game.tetris.description
+    Description: "\u79FB\u52A8\u3001\u65CB\u8F6C\u548C\u5FEB\u901F\u4E0B\u843D\u65B9\u5757\uFF0C\u586B\u6EE1\u6A2A\u884C\u5373\u53EF\u6D88\u9664\u5F97\u5206\u3002"
+    IsPlayable: 1
+    StatusLabelKey: status.playable
+    StatusLabel: "\u53EF\u6E38\u73A9"
+  - Id: game2048
+    NameKey: game.2048.name
+    Name: 2048
+    DescriptionKey: game.2048.description
+    Description: "\u6ED1\u52A8\u68CB\u76D8\uFF0C\u5408\u5E76\u76F8\u540C\u6570\u5B57\uFF0C\u76EE\u6807\u662F\u5408\u6210
+      2048\u3002"
+    IsPlayable: 1
+    StatusLabelKey: status.playable
+    StatusLabel: "\u53EF\u6E38\u73A9"
+  - Id: watermelon-merge
+    NameKey: game.watermelon_merge.name
+    Name: "\u5408\u6210\u5927\u897F\u74DC"
+    DescriptionKey: game.watermelon_merge.description
+    Description: "\u70B9\u51FB\u4F4D\u7F6E\u6295\u653E\u6C34\u679C\uFF0C\u76F8\u540C\u6C34\u679C\u78B0\u649E\u540E\u4F1A\u5408\u6210\u66F4\u5927\u7684\u6C34\u679C\uFF0C\u5806\u5230\u8B66\u6212\u7EBF\u4EE5\u4E0A\u5C06\u7ED3\u675F\u3002"
+    IsPlayable: 1
+    StatusLabelKey: status.playable
+    StatusLabel: "\u53EF\u6E38\u73A9"
+  - Id: water-sort
+    NameKey: game.water_sort.name
+    Name: "\u6C34\u6392\u5E8F"
+    DescriptionKey: game.water_sort.description
+    Description: "\u70B9\u51FB\u5BB9\u5668\u5012\u51FA\u9876\u90E8\u540C\u8272\u6C34\uFF0C\u628A\u6240\u6709\u989C\u8272\u5206\u522B\u6574\u7406\u5230\u72EC\u7ACB\u4F4D\u7F6E\u3002"
+    IsPlayable: 1
+    StatusLabelKey: status.playable
+    StatusLabel: "\u53EF\u6E38\u73A9"
+  - Id: memory-flip
+    NameKey: game.memory_flip.name
+    Name: "\u8BB0\u5FC6\u7FFB\u724C"
+    DescriptionKey: game.memory_flip.description
+    Description: "\u7FFB\u5F00\u5361\u724C\u5BFB\u627E\u76F8\u540C\u56FE\u6848\uFF0C\u914D\u5BF9\u6210\u529F\u540E\u4FDD\u7559\u6B63\u9762\uFF0C\u5168\u90E8\u914D\u5BF9\u5373\u53EF\u901A\u5173\u3002"
+    IsPlayable: 1
+    StatusLabelKey: status.playable
+    StatusLabel: "\u53EF\u6E38\u73A9"
+  - Id: minesweeper
+    NameKey: game.minesweeper.name
+    Name: "\u626B\u96F7"
+    DescriptionKey: game.minesweeper.description
+    Description: "\u7ECF\u5178\u626B\u96F7\u73A9\u6CD5\uFF1A\u7FFB\u5F00\u5B89\u5168\u683C\u5B50\uFF0C\u5207\u6362\u6A21\u5F0F\u63D2\u65D7\u6807\u8BB0\u5730\u96F7\u3002"
+    IsPlayable: 1
+    StatusLabelKey: status.playable
+    StatusLabel: "\u53EF\u6E38\u73A9"
+  - Id: sudoku
+    NameKey: game.sudoku.name
+    Name: "\u6570\u72EC"
+    DescriptionKey: game.sudoku.description
+    Description: "\u7ECF\u5178 9x9 \u6570\u72EC\u3002\u70B9\u51FB\u7A7A\u683C\u683C\u5B50\uFF0C\u518D\u7528\u4E0B\u65B9\u6570\u5B57\u952E\u76D8\u586B\u5165\u6570\u5B57\u6216\u8BB0\u5F55\u5019\u9009\u6570\u3002"
+    IsPlayable: 1
+    StatusLabelKey: status.playable
+    StatusLabel: "\u53EF\u6E38\u73A9"
+  - Id: nonogram
+    NameKey: game.nonogram.name
+    Name: "\u6570\u7EC7"
+    DescriptionKey: game.nonogram.description
+    Description: "\u6839\u636E\u884C\u5217\u63D0\u793A\u586B\u51FA\u9690\u85CF\u56FE\u6848\u3002"
+    IsPlayable: 1
+    StatusLabelKey: status.playable
+    StatusLabel: "\u53EF\u6E38\u73A9"
+  - Id: gomoku
+    NameKey: game.gomoku.name
+    Name: "\u4E94\u5B50\u68CB"
+    DescriptionKey: game.gomoku.description
+    Description: "\u548C AI \u8F6E\u6D41\u843D\u5B50\uFF0C\u5148\u8FDE\u6210\u4E94\u5B50\u7684\u73A9\u5BB6\u83B7\u80DC\u3002"
+    IsPlayable: 1
+    StatusLabelKey: status.playable
+    StatusLabel: "\u53EF\u6E38\u73A9"
+  - Id: reversi
+    NameKey: game.reversi.name
+    Name: "\u9ED1\u767D\u68CB"
+    DescriptionKey: game.reversi.description
+    Description: "\u6807\u51C6 8x8 \u9ED1\u767D\u68CB\u5355\u673A\u5BF9\u6218\uFF0C\u73A9\u5BB6\u6267\u9ED1\u5148\u624B\uFF0C\u5BF9\u6297\u7535\u8111\u767D\u68CB\u3002"
+    IsPlayable: 1
+    StatusLabelKey: status.playable
+    StatusLabel: "\u53EF\u6E38\u73A9"
+  - Id: breakout
+    NameKey: game.breakout.name
+    Name: "\u7ECF\u5178\u6253\u7816\u5757"
+    DescriptionKey: game.breakout.description
+    Description: "\u62D6\u52A8\u6321\u677F\u53CD\u5F39\u5C0F\u7403\uFF0C\u6E05\u7A7A\u5168\u90E8\u7816\u5757\u5373\u53EF\u83B7\u80DC\u3002"
+    IsPlayable: 1
+    StatusLabelKey: status.playable
+    StatusLabel: "\u53EF\u6E38\u73A9"
+  - Id: goldminer
+    NameKey: game.goldminer.name
+    Name: "\u94A9\u722A\u62FE\u5B9D"
+    DescriptionKey: game.goldminer.description
+    Description: "\u5355\u5173\u6838\u5FC3\u7248\u94A9\u722A\u62FE\u5B9D\uFF0C\u81EA\u52A8\u6446\u94A9\uFF0C\u62FE\u5B8C\u76EE\u6807\u540E\u7ED3\u7B97\u3002"
+    IsPlayable: 1
+    StatusLabelKey: status.playable
+    StatusLabel: "\u53EF\u6E38\u73A9"
+  - Id: needlehit
+    NameKey: game.needlehit.name
+    Name: "\u89C1\u7F1D\u63D2\u9488"
+    DescriptionKey: game.needlehit.description
+    Description: "\u70B9\u51FB\u53D1\u5C04\u9488\u4F53\u63D2\u5165\u65CB\u8F6C\u5706\u76D8\uFF0C\u649E\u9488\u5373\u5931\u8D25\u7ED3\u7B97\u3002"
+    IsPlayable: 1
+    StatusLabelKey: status.playable
+    StatusLabel: "\u53EF\u6E38\u73A9"
+  - Id: stardewai
+    NameKey: game.stardewai.name
+    Name: "AI\u661F\u9732\u8C37"
+    DescriptionKey: game.stardewai.description
+    Description: "\u7ECF\u5178\u519C\u573A\u7ECF\u8425\u6A21\u62DF\u6E38\u620F\u3002\u8015\u79CD\u3001\u6D47\u6C34\u3001\u6536\u83B7\u3001\u51FA\u8D27\u3002"
+    IsPlayable: 1
+    StatusLabelKey: status.playable
+    StatusLabel: "\u53EF\u6E38\u73A9"
+  - Id: control-point
+    NameKey: game.control_point.name
+    Name: "\u5360\u70B9\u653B\u9632"
+    DescriptionKey: game.control_point.description
+    Description: "\u62D6\u52A8\u5DF1\u65B9\u636E\u70B9\u5EFA\u7ACB\u8FDE\u7EBF\uFF0C\u6301\u7EED\u8F93\u9001\u5175\u529B\u4E89\u593A\u5168\u90E8\u636E\u70B9\u3002"
+    IsPlayable: 1
+    StatusLabelKey: status.playable
+    StatusLabel: "\u53EF\u6E38\u73A9"

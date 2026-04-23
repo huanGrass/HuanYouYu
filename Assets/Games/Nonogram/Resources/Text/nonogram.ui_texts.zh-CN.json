@@ -1,0 +1,168 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.nonogram.name",
+      "value": "数织"
+    },
+    {
+      "key": "game.nonogram.description",
+      "value": "根据行列提示填出隐藏图案。"
+    },
+    {
+      "key": "nonogram.title",
+      "value": "数织"
+    },
+    {
+      "key": "nonogram.hint",
+      "value": "根据行列数字推理出图案，空白格也要全部打叉才算完成。"
+    },
+    {
+      "key": "nonogram.mode.fill",
+      "value": "当前模式：按下或滑动可连续涂黑"
+    },
+    {
+      "key": "nonogram.mode.cross",
+      "value": "当前模式：按下或滑动可连续打叉"
+    },
+    {
+      "key": "nonogram.button.fill",
+      "value": "涂黑"
+    },
+    {
+      "key": "nonogram.button.cross",
+      "value": "打叉"
+    },
+    {
+      "key": "nonogram.button.reset",
+      "value": "重置"
+    },
+    {
+      "key": "nonogram.button.next",
+      "value": "换题"
+    },
+    {
+      "key": "nonogram.action.next_level",
+      "value": "下一关"
+    },
+    {
+      "key": "nonogram.progress",
+      "value": "{0} · {1}x{2}"
+    },
+    {
+      "key": "nonogram.solved",
+      "value": "你完成了“{0}”。点击按钮进入下一题。"
+    },
+    {
+      "key": "nonogram.settlement.exit",
+      "value": "本局已退出，获得 20 金币。"
+    },
+    {
+      "key": "nonogram.puzzle.apple",
+      "value": "苹果"
+    },
+    {
+      "key": "nonogram.puzzle.boat",
+      "value": "小船"
+    },
+    {
+      "key": "nonogram.puzzle.smile",
+      "value": "笑脸"
+    },
+    {
+      "key": "nonogram.puzzle.house",
+      "value": "小屋"
+    },
+    {
+      "key": "nonogram.puzzle.fish",
+      "value": "小鱼"
+    },
+    {
+      "key": "nonogram.puzzle.star",
+      "value": "星星"
+    },
+    {
+      "key": "nonogram.puzzle.heart",
+      "value": "爱心"
+    },
+    {
+      "key": "nonogram.puzzle.tree",
+      "value": "大树"
+    },
+    {
+      "key": "nonogram.puzzle.smile_big",
+      "value": "大笑脸"
+    },
+    {
+      "key": "nonogram.puzzle.cat",
+      "value": "小猫"
+    },
+    {
+      "key": "nonogram.puzzle.dog",
+      "value": "小狗"
+    },
+    {
+      "key": "nonogram.puzzle.cup",
+      "value": "杯子"
+    },
+    {
+      "key": "nonogram.puzzle.rocket",
+      "value": "火箭"
+    },
+    {
+      "key": "nonogram.puzzle.flower",
+      "value": "花朵"
+    },
+    {
+      "key": "nonogram.puzzle.moon",
+      "value": "月亮"
+    },
+    {
+      "key": "nonogram.puzzle.bird",
+      "value": "小鸟"
+    },
+    {
+      "key": "nonogram.puzzle.snail",
+      "value": "蜗牛"
+    },
+    {
+      "key": "nonogram.puzzle.car",
+      "value": "小车"
+    },
+    {
+      "key": "nonogram.puzzle.pine",
+      "value": "松树"
+    },
+    {
+      "key": "nonogram.puzzle.sun",
+      "value": "太阳"
+    },
+    {
+      "key": "nonogram.puzzle.camera",
+      "value": "相机"
+    },
+    {
+      "key": "nonogram.puzzle.panda",
+      "value": "熊猫"
+    },
+    {
+      "key": "nonogram.puzzle.ship",
+      "value": "大船"
+    },
+    {
+      "key": "nonogram.puzzle.gem",
+      "value": "宝石"
+    },
+    {
+      "key": "nonogram.puzzle.whale",
+      "value": "鲸鱼"
+    },
+    {
+      "key": "game.nonogram.help",
+      "value": "根据每一行和每一列给出的数字提示推理图案。连续数字代表连续涂黑的格子，不同数字组之间至少要空一格，所有非图案格也需要打叉确认。"
+    },
+    {
+      "key": "game.nonogram.credits",
+      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
+    }
+  ]
+}

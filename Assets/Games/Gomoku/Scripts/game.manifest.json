@@ -1,0 +1,8 @@
+{
+  "gameId": "gomoku",
+  "nameKey": "game.gomoku.name",
+  "descriptionKey": "game.gomoku.description",
+  "isPlayable": true,
+  "statusLabelKey": "status.playable",
+  "sortOrder": 10
+}
