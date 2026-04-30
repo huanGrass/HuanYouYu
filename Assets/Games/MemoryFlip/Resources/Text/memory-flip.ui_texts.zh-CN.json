@@ -29,28 +29,12 @@
       "value": "挑战"
     },
     {
-      "key": "memory_flip.action.level_select",
-      "value": "选关"
-    },
-    {
-      "key": "memory_flip.action.next_level",
-      "value": "下一关"
-    },
-    {
       "key": "memory_flip.settlement.title",
       "value": "配对完成"
     },
     {
-      "key": "memory_flip.settlement.level",
-      "value": "关卡"
-    },
-    {
       "key": "memory_flip.settlement.pairs",
       "value": "配对数"
-    },
-    {
-      "key": "memory_flip.settlement.reward",
-      "value": "奖励"
     },
     {
       "key": "memory_flip.settlement.win",
@@ -63,10 +47,6 @@
     {
       "key": "game.memory_flip.help",
       "value": "点击卡牌翻开图案，连续翻开的两张图案相同就会配对成功；不同则会短暂展示后翻回。记住已出现图案的位置，完成全部配对即可通关。"
-    },
-    {
-      "key": "game.memory_flip.credits",
-      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
     }
   ]
 }

@@ -62,6 +62,13 @@ namespace Tests
             AssertCardIconTextureName("needlehit_Card", "needlehit");
             AssertCardIconTextureName("reversi_Card", "reversi");
             AssertCardIconTextureName("nonogram_Card", "nonogram");
+            AssertCardIconTextureName("jumpjump_Card", "jumpjump");
+            AssertCardIconTextureName("whacamole_Card", "whacamole");
+            AssertCardIconTextureName("lightsout_Card", "lightsout");
+            AssertCardIconTextureName("rivercrossing_Card", "rivercrossing");
+            AssertCardIconTextureName("slidingpuzzle_Card", "slidingpuzzle");
+            AssertCardIconTextureName("towerofhanoi_Card", "towerofhanoi");
+            AssertCardIconTextureName("waterpouring_Card", "waterpouring");
             AssertCardIconTextureName("control-point_Card", "control-point");
             AssertCardIconTextureName("more-games-in-progress_Card", "more_games_in_progress");
             Assert.IsNull(GameObject.Find("point-defense_Card"), "Point Defense card should no longer exist in all games.");

@@ -90,8 +90,6 @@ namespace HuanYouYu.MiniGameHall
 
         protected override void BuildOrBindSections()
         {
-            Shell.SetPauseButtonVisible(true);
-
             var topConfig = MiniGameShellTopBarBuilder.CreateDefaultConfig("GoldMinerTop");
             topConfig.RootAnchoredPosition = new Vector2(0f, -TopSectionNudgeDown);
             var topBarRefs = MiniGameShellTopBarBuilder.CreateTopBar(Shell.TopHost, topConfig);
@@ -161,7 +159,7 @@ namespace HuanYouYu.MiniGameHall
 
         protected override (string helpKey, string creditsKey)? GetPauseHelpKeys()
         {
-            return ("game.goldminer.help", "game.goldminer.credits");
+            return ("game.goldminer.help", null);
         }
 
         private void BuildPlayfield()
@@ -648,7 +646,36 @@ namespace HuanYouYu.MiniGameHall
                 pendingSettlement.Summary = BuildSettlementSummary(isExit);
             }
 
-            Shell.ShowSettlementPopup(pendingSettlement.Summary, CompleteSettlement);
+            if (isExit)
+            {
+                ShowBackHallRewardSettlementPanel(
+                    pendingSettlement,
+                    "GoldMinerSettlementPanel",
+                    new MiniGameSettlementInfoRow(UiTextCatalog.Get("goldminer.hud.score"), score.ToString()),
+                    new MiniGameSettlementInfoRow(UiTextCatalog.Get("goldminer.settlement.targets"), targets.Count.ToString()),
+                    CompleteSettlement);
+            }
+            else
+            {
+                ShowRewardSettlementPanel(
+                    pendingSettlement,
+                    new MiniGameRewardSettlementPanelParams
+                    {
+                        RootName = "GoldMinerSettlementPanel",
+                        Style = MiniGameRewardSettlementPanelStyle.Success,
+                        PrimaryAction = MiniGameRewardSettlementPrimaryAction.Retry,
+                        Title = UiTextCatalog.Get("goldminer.settlement.win_title"),
+                        PrimaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("goldminer.hud.score"), score.ToString()),
+                        SecondaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("goldminer.settlement.targets"), targets.Count.ToString()),
+                        RewardLabel = UiTextCatalog.Get("settlement.reward_label"),
+                        CoinCount = pendingSettlement.CoinCount,
+                        ChestCount = pendingSettlement.ChestCount
+                    },
+                    ResetGame,
+                    CompleteSettlement,
+                    true);
+            }
+
             MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 0.72f, 1f);
         }
 

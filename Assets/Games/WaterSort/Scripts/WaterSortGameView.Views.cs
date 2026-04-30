@@ -7,8 +7,6 @@ namespace HuanYouYu.MiniGameHall
 {
     public sealed partial class WaterSortGameView
     {
-        private const string FontResourcePath = "Fonts & Materials/NotoSansCJKsc-Subset SDF";
-
         private void BuildContentSection()
         {
             var rootObject = CreateRectObject("WaterSortContent", Shell.ContentHost);

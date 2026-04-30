@@ -14,25 +14,29 @@ namespace HuanYouYu.MiniGameHall
         private const string LevelResourcePath = "Levels/control-point.levels";
         private const int MinPointCount = 5;
         private const int MaxPointCount = 10;
-        private const float MinPointDistance = 128f;
+        private const float MinPointDistance = 168f;
         private const float MinPointX = -285f;
         private const float MaxPointX = 285f;
         private const float MinPointY = -305f;
         private const float MaxPointY = 245f;
-        private const float PointSize = 132f;
+        private const float LevelOnePointSize = 96f;
+        private const float LevelTwoPointSize = 114f;
+        private const float LevelThreePointSize = 132f;
         private const float LevelOneProduceInterval = 1f;
         private const float LevelTwoProduceInterval = 0.8f;
         private const float LevelThreeProduceInterval = 0.6f;
         private const float TransferInterval = 0.55f;
         private const float EnemyThinkInterval = 1.2f;
         private const float LineThickness = 18f;
-        private const float LineEndpointInset = 58f;
+        private const float MaxLineEndpointInset = 58f;
         private const float ArrowWidth = 34f;
         private const float ArrowHeight = 44f;
         private const float SoldierSize = 30f;
         private const float SoldierTravelSpeed = 318f;
         private const float SoldierDestinationEpsilon = 0.5f;
         private const float CutLinePadding = 20f;
+        private const float CutTrailThickness = 28f;
+        private const float CutTrailMinPointDistance = 10f;
 
         private static readonly Color NeutralColor = new Color32(238, 229, 198, 255);
         private static readonly Color PlayerColor = new Color32(70, 145, 106, 255);
@@ -60,7 +64,6 @@ namespace HuanYouYu.MiniGameHall
         private readonly List<ControlPointConnection> connections = new List<ControlPointConnection>();
         private readonly List<MovingUnitView> detachedMovingUnits = new List<MovingUnitView>();
         private readonly List<Vector2> cutGesturePoints = new List<Vector2>();
-        private readonly List<RectTransform> cutGestureLines = new List<RectTransform>();
         private readonly float[] enemyThinkTimers = new float[EnemyOwners.Length];
 
         private TextMeshProUGUI titleLabel;
@@ -71,10 +74,9 @@ namespace HuanYouYu.MiniGameHall
         private RectTransform lineLayer;
         private RectTransform pointLayer;
         private RectTransform previewLine;
+        private CutGestureTrailGraphic cutGestureTrail;
         private MiniGameLevelProgressController levelProgress;
         private MiniGameLevelSelectView levelSelectView;
-        private MiniGameWinSettlementView winSettlementView;
-        private MiniGameSettlement activeWinSettlement;
         private int currentLevelIndex;
         private int dragSourceIndex = -1;
         private bool isCuttingGesture;
@@ -104,11 +106,6 @@ namespace HuanYouYu.MiniGameHall
 
         public override void Tick(float deltaTime)
         {
-            if (winSettlementView != null)
-            {
-                winSettlementView.Tick(deltaTime);
-            }
-
             if (isSettled)
             {
                 return;
@@ -126,8 +123,6 @@ namespace HuanYouYu.MiniGameHall
 
         protected override void BuildOrBindSections()
         {
-            Shell.SetPauseButtonVisible(true);
-
             var topRefs = MiniGameShellTopBarBuilder.CreateTopBar(
                 Shell.TopHost,
                 MiniGameShellTopBarBuilder.CreateDefaultConfig("ControlPointTop"));
@@ -142,7 +137,7 @@ namespace HuanYouYu.MiniGameHall
         {
             Shell.ClosePopup();
             CloseLevelSelectView();
-            CloseWinSettlementView();
+            CloseRewardSettlementPanel();
             EnsureLevelProgress();
             currentLevelIndex = levelProgress.CurrentLevelIndex;
             ClearConnections();
@@ -184,7 +179,7 @@ namespace HuanYouYu.MiniGameHall
             HideCutGestureLine();
             ClearPointViews();
             CloseLevelSelectView();
-            CloseWinSettlementView();
+            CloseRewardSettlementPanel();
 
             if (restartButton != null)
             {
@@ -199,7 +194,7 @@ namespace HuanYouYu.MiniGameHall
 
         protected override (string helpKey, string creditsKey)? GetPauseHelpKeys()
         {
-            return ("game.control_point.help", "game.control_point.credits");
+            return ("game.control_point.help", null);
         }
 
         private void BuildContent(Transform parent)
@@ -250,14 +245,14 @@ namespace HuanYouYu.MiniGameHall
             rect.anchorMin = new Vector2(0.5f, 0.5f);
             rect.anchorMax = new Vector2(0.5f, 0.5f);
             rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(PointSize, PointSize);
+            rect.sizeDelta = new Vector2(LevelOnePointSize, LevelOnePointSize);
             rect.anchoredPosition = position;
 
             var graphic = root.AddComponent<RoundedRectGraphic>();
             graphic.color = NeutralColor;
-            graphic.CornerRadius = PointSize * 0.5f;
+            graphic.CornerRadius = LevelOnePointSize * 0.5f;
 
-            var label = CreateText("Units", rect, 48f, FontStyles.Bold);
+            var label = CreateText("Units", rect, 40f, FontStyles.Bold);
             Stretch(label.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
             var levelLabel = CreateText("Level", rect, 18f, FontStyles.Bold);
@@ -603,6 +598,11 @@ namespace HuanYouYu.MiniGameHall
                     continue;
                 }
 
+                if (CountOutgoingConnections(sourceIndex) >= GetConnectionCapacity(points[sourceIndex].UnitCount))
+                {
+                    continue;
+                }
+
                 var targetIndex = SelectEnemyTarget(sourceIndex, owner);
                 if (targetIndex >= 0)
                 {
@@ -631,45 +631,81 @@ namespace HuanYouYu.MiniGameHall
 
         private int SelectEnemyTarget(int sourceIndex, ControlPointOwner side)
         {
-            var neutralTarget = FindFirstTarget(sourceIndex, ControlPointOwner.Neutral);
-            if (neutralTarget >= 0)
-            {
-                return neutralTarget;
-            }
-
-            var playerTarget = FindFirstTarget(sourceIndex, ControlPointOwner.Player);
-            if (playerTarget >= 0)
-            {
-                return playerTarget;
-            }
-
-            return FindFirstEnemyTarget(sourceIndex, side);
-        }
-
-        private int FindFirstTarget(int sourceIndex, ControlPointOwner owner)
-        {
+            var bestIndex = -1;
+            var bestScore = float.MinValue;
             for (var i = 0; i < points.Length; i++)
             {
-                if (i != sourceIndex && points[i].Owner == owner)
+                if (i == sourceIndex || points[i].Owner == side || HasSameConnection(sourceIndex, i, side))
                 {
-                    return i;
+                    continue;
+                }
+
+                var score = ScoreEnemyTarget(sourceIndex, i, side);
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    bestIndex = i;
                 }
             }
 
-            return -1;
+            return bestIndex;
         }
 
-        private int FindFirstEnemyTarget(int sourceIndex, ControlPointOwner side)
+        private float ScoreEnemyTarget(int sourceIndex, int targetIndex, ControlPointOwner side)
         {
-            for (var i = 0; i < points.Length; i++)
+            var target = points[targetIndex];
+            var distance = Vector2.Distance(GetPointPosition(sourceIndex), GetPointPosition(targetIndex));
+            var levelPressure = Mathf.Clamp01(currentLevelIndex / 99f);
+            var sourceUnits = points[sourceIndex].UnitCount;
+            var unitAdvantage = sourceUnits - target.UnitCount;
+            var score = unitAdvantage * 1.4f - distance * 0.18f;
+
+            if (target.Owner == ControlPointOwner.Player)
             {
-                if (i != sourceIndex && IsEnemyOwner(points[i].Owner) && points[i].Owner != side)
+                if (CountEnemyConnectionsTargetingPlayer() >= GetMaxEnemyPlayerPressureConnections())
                 {
-                    return i;
+                    return float.MinValue;
+                }
+
+                return score + 55f + (levelPressure * 145f);
+            }
+
+            if (target.Owner == ControlPointOwner.Neutral)
+            {
+                return score + 80f - (levelPressure * 70f) - (target.UnitCount * 0.8f);
+            }
+
+            if (IsEnemyOwner(target.Owner) && target.Owner != side)
+            {
+                return score + 18f - (levelPressure * 35f);
+            }
+
+            return score;
+        }
+
+        private int CountEnemyConnectionsTargetingPlayer()
+        {
+            var count = 0;
+            for (var i = 0; i < connections.Count; i++)
+            {
+                var connection = connections[i];
+                if (IsEnemyOwner(connection.Side) && IsValidPointIndex(connection.TargetIndex) && points[connection.TargetIndex].Owner == ControlPointOwner.Player)
+                {
+                    count++;
                 }
             }
 
-            return -1;
+            return count;
+        }
+
+        private int GetMaxEnemyPlayerPressureConnections()
+        {
+            if (currentLevelIndex >= 70)
+            {
+                return 1;
+            }
+
+            return currentLevelIndex >= 30 ? 2 : 1;
         }
 
         private void BeginPlayerDrag(int pointIndex)
@@ -742,6 +778,7 @@ namespace HuanYouYu.MiniGameHall
             lastCutLocalPoint = localPoint;
             cutGesturePoints.Clear();
             cutGesturePoints.Add(localPoint);
+            ShowCutGestureTrail();
         }
 
         private void UpdateCutGesture(Vector2 screenPosition, Camera eventCamera)
@@ -757,9 +794,9 @@ namespace HuanYouYu.MiniGameHall
                 return;
             }
 
-            AddCutGestureLineSegment(lastCutLocalPoint, localPoint);
             cutGesturePoints.Add(localPoint);
             lastCutLocalPoint = localPoint;
+            RefreshCutGestureTrail();
         }
 
         private void EndCutGesture()
@@ -851,7 +888,30 @@ namespace HuanYouYu.MiniGameHall
                 IsValidPointIndex(sourceIndex) &&
                 IsValidPointIndex(targetIndex) &&
                 sourceIndex != targetIndex &&
-                points[sourceIndex].Owner == side;
+                points[sourceIndex].Owner == side &&
+                IsConnectionPathClear(sourceIndex, targetIndex);
+        }
+
+        private bool IsConnectionPathClear(int sourceIndex, int targetIndex)
+        {
+            var sourcePosition = GetPointPosition(sourceIndex);
+            var targetPosition = GetPointPosition(targetIndex);
+            for (var i = 0; i < points.Length; i++)
+            {
+                if (i == sourceIndex || i == targetIndex)
+                {
+                    continue;
+                }
+
+                var pointRadius = GetPointSize(points[i].UnitCount) * 0.5f;
+                var pointPosition = GetPointPosition(i);
+                if (DistancePointToSegmentSquared(pointPosition, sourcePosition, targetPosition) <= pointRadius * pointRadius)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private bool IsConnectionStillValid(ControlPointConnection connection)
@@ -913,11 +973,11 @@ namespace HuanYouYu.MiniGameHall
             var end = GetPointPosition(connection.TargetIndex);
             if (IsContestedConnection(connection))
             {
-                PositionLine(connection.Line, start, (start + end) * 0.5f, true, false);
+                PositionLine(connection.Line, start, (start + end) * 0.5f, GetLineEndpointInset(connection.SourceIndex), 0f);
                 return;
             }
 
-            PositionLine(connection.Line, start, end, true, true);
+            PositionLine(connection.Line, start, end, GetLineEndpointInset(connection.SourceIndex), GetLineEndpointInset(connection.TargetIndex));
         }
 
         private void CutPlayerConnectionsCrossingSegment(Vector2 cutStart, Vector2 cutEnd)
@@ -976,32 +1036,32 @@ namespace HuanYouYu.MiniGameHall
             if (IsContestedConnection(connection))
             {
                 end = (start + end) * 0.5f;
-                ApplyLineInset(ref start, ref end, true, false);
+                ApplyLineInset(ref start, ref end, GetLineEndpointInset(connection.SourceIndex), 0f);
                 return;
             }
 
-            ApplyLineInset(ref start, ref end, true, true);
+            ApplyLineInset(ref start, ref end, GetLineEndpointInset(connection.SourceIndex), GetLineEndpointInset(connection.TargetIndex));
         }
 
-        private static void ApplyLineInset(ref Vector2 start, ref Vector2 end, bool insetStart, bool insetEnd)
+        private static void ApplyLineInset(ref Vector2 start, ref Vector2 end, float startInset, float endInset)
         {
             var delta = end - start;
             var length = delta.magnitude;
-            var inset = (insetStart ? LineEndpointInset : 0f) + (insetEnd ? LineEndpointInset : 0f);
+            var inset = Mathf.Max(0f, startInset) + Mathf.Max(0f, endInset);
             if (length <= inset)
             {
                 return;
             }
 
             var direction = delta / length;
-            if (insetStart)
+            if (startInset > 0f)
             {
-                start += direction * LineEndpointInset;
+                start += direction * startInset;
             }
 
-            if (insetEnd)
+            if (endInset > 0f)
             {
-                end -= direction * LineEndpointInset;
+                end -= direction * endInset;
             }
         }
 
@@ -1098,7 +1158,8 @@ namespace HuanYouYu.MiniGameHall
             }
 
             previewLine.gameObject.SetActive(true);
-            PositionLine(previewLine, start, end, true, true);
+            var startInset = dragSourceIndex >= 0 ? GetLineEndpointInset(dragSourceIndex) : MaxLineEndpointInset;
+            PositionLine(previewLine, start, end, startInset, 0f);
         }
 
         private void HidePreviewLine()
@@ -1110,31 +1171,45 @@ namespace HuanYouYu.MiniGameHall
             }
         }
 
-        private void AddCutGestureLineSegment(Vector2 start, Vector2 end)
+        private void ShowCutGestureTrail()
         {
-            if ((end - start).sqrMagnitude <= 4f)
+            if (cutGestureTrail == null)
             {
-                return;
+                var trailObject = CreateRectObject("CutGestureLine", lineLayer);
+                var rect = trailObject.GetComponent<RectTransform>();
+                Stretch(rect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+                cutGestureTrail = trailObject.AddComponent<CutGestureTrailGraphic>();
+                cutGestureTrail.color = CutGestureLineColor;
+                cutGestureTrail.raycastTarget = false;
+                cutGestureTrail.Thickness = CutTrailThickness;
+                cutGestureTrail.MinPointDistance = CutTrailMinPointDistance;
             }
 
-            var segment = CreatePlainLine("CutGestureLine", CutGestureLineColor);
-            PositionLine(segment, start, end, false, false);
-            segment.transform.SetAsLastSibling();
-            cutGestureLines.Add(segment);
+            cutGestureTrail.gameObject.SetActive(true);
+            cutGestureTrail.transform.SetAsLastSibling();
+            RefreshCutGestureTrail();
+        }
+
+        private void RefreshCutGestureTrail()
+        {
+            if (cutGestureTrail != null)
+            {
+                cutGestureTrail.SetPoints(cutGesturePoints);
+            }
         }
 
         private void HideCutGestureLine()
         {
-            for (var i = cutGestureLines.Count - 1; i >= 0; i--)
+            if (cutGestureTrail != null)
             {
-                DestroyLine(cutGestureLines[i]);
+                UnityEngine.Object.Destroy(cutGestureTrail.gameObject);
+                cutGestureTrail = null;
             }
 
-            cutGestureLines.Clear();
             cutGesturePoints.Clear();
         }
 
-        private static void PositionLine(RectTransform line, Vector2 start, Vector2 end, bool insetStart, bool insetEnd)
+        private static void PositionLine(RectTransform line, Vector2 start, Vector2 end, float startInset, float endInset)
         {
             if (line == null)
             {
@@ -1143,13 +1218,13 @@ namespace HuanYouYu.MiniGameHall
 
             var delta = end - start;
             var length = delta.magnitude;
-            var inset = (insetStart ? LineEndpointInset : 0f) + (insetEnd ? LineEndpointInset : 0f);
+            var inset = Mathf.Max(0f, startInset) + Mathf.Max(0f, endInset);
             if (length > inset)
             {
                 var direction = delta / length;
-                if (insetStart)
+                if (startInset > 0f)
                 {
-                    start += direction * LineEndpointInset;
+                    start += direction * startInset;
                 }
 
                 length -= inset;
@@ -1413,6 +1488,10 @@ namespace HuanYouYu.MiniGameHall
                 }
 
                 view.Background.color = GetOwnerColor(point.Owner);
+                var pointSize = GetPointSize(point.UnitCount);
+                view.Root.sizeDelta = new Vector2(pointSize, pointSize);
+                view.Background.CornerRadius = pointSize * 0.5f;
+                view.UnitLabel.fontSize = pointSize >= LevelThreePointSize ? 48f : pointSize >= LevelTwoPointSize ? 44f : 40f;
                 view.UnitLabel.text = point.UnitCount.ToString();
                 view.LevelLabel.text = "Lv" + GetPointLevel(point.UnitCount);
             }
@@ -1433,7 +1512,13 @@ namespace HuanYouYu.MiniGameHall
             roundResult = ControlPointRoundResult.Exit;
             isSettled = true;
             MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 1f);
-            ShowSettlementAndComplete(BuildSettlement());
+            var settlement = BuildSettlement();
+            ShowBackHallRewardSettlementPanel(
+                settlement,
+                "ControlPointSettlementPanel",
+                MiniGameSettlementInfoRow.CreateLevel(currentLevelIndex + 1),
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("control_point.settlement.owned"), CountOwned(ControlPointOwner.Player) + "/" + points.Length),
+                delegate { CompleteGame?.Invoke(settlement); });
         }
 
         private void OnRestartClicked()
@@ -1446,7 +1531,7 @@ namespace HuanYouYu.MiniGameHall
         {
             EnsureLevelProgress();
             Shell.ClosePopup();
-            CloseWinSettlementView();
+            CloseRewardSettlementPanel();
             CloseLevelSelectView();
             levelSelectView = MiniGameLevelSelectView.Create(
                 Shell.PopupHost,
@@ -1472,16 +1557,16 @@ namespace HuanYouYu.MiniGameHall
             ResetGame();
         }
 
-        private void LoadNextLevel()
+        private void LoadNextLevel(MiniGameSettlement settlement)
         {
             EnsureLevelProgress();
             if (!levelProgress.GoNext())
             {
-                CompleteWinSettlement();
+                CompleteGame?.Invoke(settlement);
                 return;
             }
 
-            CloseWinSettlementView();
+            GrantSettlementReward(settlement);
             ResetGame();
         }
 
@@ -1492,37 +1577,22 @@ namespace HuanYouYu.MiniGameHall
                 return;
             }
 
-            Shell.ClosePopup();
-            CloseWinSettlementView();
-            activeWinSettlement = settlement;
-            winSettlementView = MiniGameWinSettlementView.Create(
-                Shell.PopupHost,
-                titleLabel == null ? null : titleLabel.font,
+            ShowRewardSettlementPanel(
+                settlement,
                 new MiniGameRewardSettlementPanelParams
                 {
                     RootName = "ControlPointSettlementPanel",
                     Title = UiTextCatalog.Get("control_point.settlement.title"),
                     PrimaryInfo = MiniGameSettlementInfoRow.CreateLevel(currentLevelIndex + 1),
                     SecondaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("control_point.settlement.owned"), CountOwned(ControlPointOwner.Player) + "/" + points.Length),
-                    RewardLabel = UiTextCatalog.Get("control_point.settlement.reward"),
-                    NextButtonText = UiTextCatalog.Get("control_point.action.next_level"),
+                    RewardLabel = UiTextCatalog.Get("settlement.reward_label"),
+                    PrimaryAction = MiniGameRewardSettlementPrimaryAction.NextLevel,
                     CoinCount = settlement.CoinCount,
                     ChestCount = settlement.ChestCount
                 },
-                LoadNextLevel,
-                CompleteWinSettlement);
-        }
-
-        private void CompleteWinSettlement()
-        {
-            if (activeWinSettlement == null)
-            {
-                return;
-            }
-
-            var settlement = activeWinSettlement;
-            CloseWinSettlementView();
-            CompleteGame?.Invoke(settlement);
+                delegate { LoadNextLevel(settlement); },
+                delegate { CompleteGame?.Invoke(settlement); },
+                false);
         }
 
         private void CloseLevelSelectView()
@@ -1532,17 +1602,6 @@ namespace HuanYouYu.MiniGameHall
                 levelSelectView.Dispose();
                 levelSelectView = null;
             }
-        }
-
-        private void CloseWinSettlementView()
-        {
-            if (winSettlementView != null)
-            {
-                winSettlementView.Dispose();
-                winSettlementView = null;
-            }
-
-            activeWinSettlement = null;
         }
 
         private void EnsureLevelProgress()
@@ -1668,6 +1727,29 @@ namespace HuanYouYu.MiniGameHall
             return unitCount >= 20 ? 2 : 1;
         }
 
+        private static float GetPointSize(int unitCount)
+        {
+            switch (GetPointLevel(unitCount))
+            {
+                case 3:
+                    return LevelThreePointSize;
+                case 2:
+                    return LevelTwoPointSize;
+                default:
+                    return LevelOnePointSize;
+            }
+        }
+
+        private float GetLineEndpointInset(int pointIndex)
+        {
+            if (!IsValidPointIndex(pointIndex))
+            {
+                return MaxLineEndpointInset;
+            }
+
+            return Mathf.Min(MaxLineEndpointInset, Mathf.Max(0f, (GetPointSize(points[pointIndex].UnitCount) * 0.5f) - 8f));
+        }
+
         private static int GetConnectionCapacity(int unitCount)
         {
             return GetPointLevel(unitCount);
@@ -1736,7 +1818,7 @@ namespace HuanYouYu.MiniGameHall
 
         private static void ConfigureText(TextMeshProUGUI text, float fontSize, FontStyles fontStyle, TextAlignmentOptions alignment)
         {
-            text.font = TMP_Settings.defaultFontAsset;
+            text.font = MiniGameFontProvider.DefaultFont;
             text.fontSize = fontSize;
             text.fontStyle = fontStyle;
             text.alignment = alignment;
@@ -1863,6 +1945,124 @@ namespace HuanYouYu.MiniGameHall
             public Vector2 End;
             public float Elapsed;
             public bool WaitingAtFront;
+        }
+
+        private sealed class CutGestureTrailGraphic : MaskableGraphic
+        {
+            [SerializeField] private float thickness = 28f;
+            [SerializeField] private float minPointDistance = 10f;
+
+            private readonly List<Vector2> trailPoints = new List<Vector2>();
+
+            public float Thickness
+            {
+                get { return thickness; }
+                set
+                {
+                    thickness = Mathf.Max(1f, value);
+                    SetVerticesDirty();
+                }
+            }
+
+            public float MinPointDistance
+            {
+                get { return minPointDistance; }
+                set
+                {
+                    minPointDistance = Mathf.Max(0f, value);
+                    SetVerticesDirty();
+                }
+            }
+
+            public void SetPoints(IList<Vector2> points)
+            {
+                trailPoints.Clear();
+                if (points != null)
+                {
+                    var minDistanceSquared = minPointDistance * minPointDistance;
+                    for (var i = 0; i < points.Count; i++)
+                    {
+                        var point = points[i];
+                        if (trailPoints.Count == 0 ||
+                            (point - trailPoints[trailPoints.Count - 1]).sqrMagnitude >= minDistanceSquared ||
+                            i == points.Count - 1)
+                        {
+                            trailPoints.Add(point);
+                        }
+                    }
+                }
+
+                SetVerticesDirty();
+            }
+
+            protected override void OnPopulateMesh(VertexHelper vh)
+            {
+                vh.Clear();
+                if (trailPoints.Count < 2)
+                {
+                    return;
+                }
+
+                for (var i = 0; i < trailPoints.Count; i++)
+                {
+                    var tangent = GetTangent(i);
+                    var normal = new Vector2(-tangent.y, tangent.x);
+                    var amount = trailPoints.Count <= 1 ? 1f : i / (float)(trailPoints.Count - 1);
+                    var width = thickness * GetWidthScale(amount, trailPoints.Count) * 0.5f;
+                    var vertexColor = color;
+                    vertexColor.a *= Mathf.Lerp(0.16f, 1f, amount);
+
+                    AddVertex(vh, trailPoints[i] + (normal * width), vertexColor);
+                    AddVertex(vh, trailPoints[i] - (normal * width), vertexColor);
+                }
+
+                for (var i = 0; i < trailPoints.Count - 1; i++)
+                {
+                    var left = i * 2;
+                    var right = left + 1;
+                    var nextLeft = left + 2;
+                    var nextRight = left + 3;
+                    vh.AddTriangle(left, right, nextLeft);
+                    vh.AddTriangle(right, nextRight, nextLeft);
+                }
+            }
+
+            private Vector2 GetTangent(int index)
+            {
+                Vector2 tangent;
+                if (index <= 0)
+                {
+                    tangent = trailPoints[1] - trailPoints[0];
+                }
+                else if (index >= trailPoints.Count - 1)
+                {
+                    tangent = trailPoints[index] - trailPoints[index - 1];
+                }
+                else
+                {
+                    tangent = trailPoints[index + 1] - trailPoints[index - 1];
+                }
+
+                return tangent.sqrMagnitude <= 0.0001f ? Vector2.right : tangent.normalized;
+            }
+
+            private static float GetWidthScale(float amount, int pointCount)
+            {
+                if (pointCount <= 2)
+                {
+                    return 1f;
+                }
+
+                return Mathf.Max(0.34f, Mathf.Sin(amount * Mathf.PI));
+            }
+
+            private static void AddVertex(VertexHelper vh, Vector2 position, Color vertexColor)
+            {
+                var vertex = UIVertex.simpleVert;
+                vertex.position = position;
+                vertex.color = vertexColor;
+                vh.AddVert(vertex);
+            }
         }
 
         private enum ControlPointOwner

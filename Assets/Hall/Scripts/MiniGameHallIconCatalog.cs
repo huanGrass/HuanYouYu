@@ -27,7 +27,15 @@ namespace HuanYouYu.MiniGameHall
             { "snake", "snake" },
             { "water-sort", "water-sort" },
             { "watermelon-merge", "watermelon-merge" },
-            { "memory-flip", "memory-flip" }
+            { "memory-flip", "memory-flip" },
+            { "akari", "akari" },
+            { "jumpjump", "jumpjump" },
+            { "whacamole", "whacamole" },
+            { "lightsout", "lightsout" },
+            { "rivercrossing", "rivercrossing" },
+            { "slidingpuzzle", "slidingpuzzle" },
+            { "towerofhanoi", "towerofhanoi" },
+            { "waterpouring", "waterpouring" }
         };
 
         private static readonly Dictionary<string, Texture2D> TextureCache = new Dictionary<string, Texture2D>();

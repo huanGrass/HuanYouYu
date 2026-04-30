@@ -55,6 +55,12 @@ namespace Tests
 
                 var hasPlayer = false;
                 var hasEnemy = false;
+                var playerUnits = 0;
+                var neutralUnits = 0;
+                var enemyUnits = 0;
+                var strongestEnemy = 0;
+                var playerPointCount = 0;
+                var enemyPointCount = 0;
                 for (var pointIndex = 0; pointIndex < points.Length; pointIndex++)
                 {
                     var owner = GetField<object>(points[pointIndex], "Owner").ToString();
@@ -62,6 +68,22 @@ namespace Tests
                     Assert.GreaterOrEqual(units, 1, "Point units should be positive.");
                     hasPlayer |= owner == "Player";
                     hasEnemy |= IsEnemyOwnerName(owner);
+                    if (owner == "Player")
+                    {
+                        playerUnits += units;
+                        playerPointCount++;
+                    }
+                    else if (owner == "Neutral")
+                    {
+                        neutralUnits += units;
+                    }
+                    else if (IsEnemyOwnerName(owner))
+                    {
+                        enemyUnits += units;
+                        strongestEnemy = Mathf.Max(strongestEnemy, units);
+                        enemyPointCount++;
+                    }
+
                     Assert.GreaterOrEqual(positions[pointIndex].x, -285f, "Point x should be inside content range.");
                     Assert.LessOrEqual(positions[pointIndex].x, 285f, "Point x should be inside content range.");
                     Assert.GreaterOrEqual(positions[pointIndex].y, -305f, "Point y should be inside content range.");
@@ -71,13 +93,17 @@ namespace Tests
                     {
                         Assert.GreaterOrEqual(
                             Vector2.Distance(positions[pointIndex], positions[previousIndex]),
-                            128f,
+                            168f,
                             "Point positions should not overlap.");
                     }
                 }
 
                 Assert.IsTrue(hasPlayer, "Level should contain a player point.");
                 Assert.IsTrue(hasEnemy, "Level should contain an enemy point.");
+                Assert.LessOrEqual(enemyPointCount, 4, "Level should keep enemy point count within the winnable budget.");
+                Assert.LessOrEqual(strongestEnemy, playerUnits + 12, "Strongest enemy point should stay attackable.");
+                Assert.LessOrEqual(enemyUnits, (playerUnits * 2.45f) + (neutralUnits * 0.55f) + (playerPointCount * 10f), "Enemy budget should stay winnable.");
+                Assert.LessOrEqual(neutralUnits, (playerUnits * 2.9f) + 28f, "Neutral budget should not stall player expansion.");
                 scores[i] = ScoreLevelDefinition(levels[i]);
             }
 
@@ -122,6 +148,7 @@ namespace Tests
                 Assert.IsNotNull(point, "Point object should exist.");
                 Assert.AreEqual(2, CountTextMeshProLabels(point), "Point should show unit number and level label.");
                 AssertLevelLabel(i, "Lv1");
+                AssertPointSize(i, 96f);
             }
 
             yield return DestroyGameRoot(game, root);
@@ -188,6 +215,23 @@ namespace Tests
         }
 
         [UnityTest]
+        public IEnumerator ConnectionCannotPassThroughAnotherPoint()
+        {
+            GameControlPointView game;
+            var root = CreateGameRoot(out game);
+            yield return null;
+
+            DisableEnemyAi(game);
+            SetPointPosition(0, GetMiddlePosition(1, 2));
+            EstablishConnection(game, 1, 2, "Player");
+
+            Assert.AreEqual(0, GetListCount(GetPrivateObject<object>(game, "connections")), "Connection should be blocked when another point sits between source and target.");
+            Assert.IsNull(GameObject.Find("Connection_1_2"), "Blocked connection should not create a line.");
+
+            yield return DestroyGameRoot(game, root);
+        }
+
+        [UnityTest]
         public IEnumerator PointLevelThresholdsUpdateLevelLabel()
         {
             GameControlPointView game;
@@ -198,18 +242,22 @@ namespace Tests
             SetField(GetPoint(game, 1), "UnitCount", 19);
             game.Tick(0f);
             AssertLevelLabel(1, "Lv1");
+            AssertPointSize(1, 96f);
 
             SetField(GetPoint(game, 1), "UnitCount", 20);
             game.Tick(0f);
             AssertLevelLabel(1, "Lv2");
+            AssertPointSize(1, 114f);
 
             SetField(GetPoint(game, 1), "UnitCount", 39);
             game.Tick(0f);
             AssertLevelLabel(1, "Lv2");
+            AssertPointSize(1, 114f);
 
             SetField(GetPoint(game, 1), "UnitCount", 40);
             game.Tick(0f);
             AssertLevelLabel(1, "Lv3");
+            AssertPointSize(1, 132f);
 
             yield return DestroyGameRoot(game, root);
         }
@@ -357,12 +405,15 @@ namespace Tests
 
             var contentRect = GameObject.Find("ControlPointContent").GetComponent<RectTransform>();
             var start = RectTransformUtility.WorldToScreenPoint(null, contentRect.TransformPoint(new Vector2(-120f, 0f)));
+            var middle = RectTransformUtility.WorldToScreenPoint(null, contentRect.TransformPoint(new Vector2(0f, 36f)));
             var end = RectTransformUtility.WorldToScreenPoint(null, contentRect.TransformPoint(new Vector2(120f, 0f)));
 
             InvokePrivate(game, "BeginCutGesture", start, null);
+            InvokePrivate(game, "UpdateCutGesture", middle, null);
             InvokePrivate(game, "UpdateCutGesture", end, null);
 
             Assert.IsNotNull(GameObject.Find("CutGestureLine"), "Swipe should show a temporary line while dragging.");
+            Assert.AreEqual(1, CountObjectsNamed("CutGestureLine"), "Swipe should render as one continuous trail object.");
 
             InvokePrivate(game, "EndCutGesture");
             yield return null;
@@ -538,9 +589,9 @@ namespace Tests
             TickGame(game, 18);
 
             Assert.AreEqual(3, GetListCount(GetPrivateObject<object>(game, "connections")), "Each enemy AI should create one outgoing connection.");
-            AssertConnection(game, 0, 2, 0, "Enemy");
-            AssertConnection(game, 1, 5, 0, "EnemyTwo");
-            AssertConnection(game, 2, 6, 0, "EnemyThree");
+            AssertConnectionSourceAndSide(game, 0, 2, "Enemy");
+            AssertConnectionSourceAndSide(game, 1, 5, "EnemyTwo");
+            AssertConnectionSourceAndSide(game, 2, 6, "EnemyThree");
 
             yield return DestroyGameRoot(game, root);
         }
@@ -555,16 +606,32 @@ namespace Tests
             TickGame(game, 26);
 
             Assert.AreEqual(3, GetListCount(GetPrivateObject<object>(game, "connections")), "Enemy AI should keep existing connections.");
-            AssertConnection(game, 0, 2, 0, "Enemy");
-            AssertConnection(game, 1, 5, 0, "EnemyTwo");
-            AssertConnection(game, 2, 6, 0, "EnemyThree");
-            Assert.IsNotNull(GameObject.Find("Soldier_2_0"), "Enemy soldier should still be travelling instead of being cleared by the next AI decision.");
-            AssertPoint(game, 0, "Neutral", 8);
+            AssertConnectionSourceAndSide(game, 0, 2, "Enemy");
+            AssertConnectionSourceAndSide(game, 1, 5, "EnemyTwo");
+            AssertConnectionSourceAndSide(game, 2, 6, "EnemyThree");
+            Assert.IsTrue(HasMovingSoldierFromSource(2), "Enemy soldier should still be travelling instead of being cleared by the next AI decision.");
 
             TickGame(game, 10);
 
-            Assert.AreEqual("Neutral", GetField<object>(GetPoint(game, 0), "Owner").ToString(), "Enemy soldiers should not capture the neutral point yet.");
-            Assert.Less(GetField<int>(GetPoint(game, 0), "UnitCount"), 8, "Enemy soldiers should reduce the neutral point after arrival.");
+            Assert.AreEqual(3, GetListCount(GetPrivateObject<object>(game, "connections")), "Enemy AI should not duplicate an existing route while retargeting.");
+
+            yield return DestroyGameRoot(game, root);
+        }
+
+        [UnityTest]
+        public IEnumerator LateLevelEnemyAiUsesMeasuredPlayerPressure()
+        {
+            GameControlPointView game;
+            var root = CreateGameRoot(out game);
+            yield return null;
+
+            var levels = GetLevelDefinitions();
+            SetPrivateValue(game, "currentLevelIndex", 99);
+            InvokePrivate(game, "ApplyLevel", levels[99]);
+            TickGame(game, 18);
+
+            Assert.AreEqual(1, CountConnectionsTargetingOwner(game, "Player"), "Late level enemies should pressure the player without opening with a full multi-faction rush.");
+            Assert.GreaterOrEqual(CountConnectionsTargetingOwner(game, "Neutral"), 1, "Late level enemies should still expand through neutral points during the first wave.");
 
             yield return DestroyGameRoot(game, root);
         }
@@ -619,12 +686,12 @@ namespace Tests
             Assert.IsFalse(GetPrivateValue<bool>(game, "isSettled"), "Next level should start a fresh round.");
             Assert.AreEqual(1, GetPrivateValue<int>(game, "currentLevelIndex"), "Next level should become current.");
             Assert.AreEqual(6, GetPointCount(game), "Second level should rebuild the point list with its generated point count.");
-            AssertPoint(game, 0, "Neutral", 11);
-            AssertPoint(game, 1, "Neutral", 7);
+            AssertPoint(game, 0, "Neutral", 10);
+            AssertPoint(game, 1, "Neutral", 6);
             AssertPoint(game, 2, "Enemy", 13);
-            AssertPoint(game, 3, "Player", 16);
-            AssertPoint(game, 4, "Neutral", 8);
-            AssertPoint(game, 5, "Neutral", 7);
+            AssertPoint(game, 3, "Player", 17);
+            AssertPoint(game, 4, "Neutral", 7);
+            AssertPoint(game, 5, "Neutral", 6);
             Assert.IsNull(GameObject.Find("ControlPoint_6"), "Point views from the previous level should be removed.");
 
             yield return DestroyGameRoot(game, root);
@@ -762,6 +829,13 @@ namespace Tests
             return (first + second) * 0.5f;
         }
 
+        private static void SetPointPosition(int pointIndex, Vector2 position)
+        {
+            var point = GameObject.Find("ControlPoint_" + pointIndex);
+            Assert.IsNotNull(point, "Point object should exist.");
+            point.GetComponent<RectTransform>().anchoredPosition = position;
+        }
+
         private static void BeginAndUpdateCutAcrossConnection(GameControlPointView game, int sourceIndex, int targetIndex)
         {
             var source = GameObject.Find("ControlPoint_" + sourceIndex).GetComponent<RectTransform>().anchoredPosition;
@@ -812,6 +886,15 @@ namespace Tests
             Assert.AreEqual(side, GetField<object>(connection, "Side").ToString());
         }
 
+        private static void AssertConnectionSourceAndSide(GameControlPointView game, int index, int source, string side)
+        {
+            var connections = GetPrivateObject<System.Collections.IList>(game, "connections");
+            Assert.Greater(connections.Count, index, "Connection should exist.");
+            var connection = connections[index];
+            Assert.AreEqual(source, GetField<int>(connection, "SourceIndex"));
+            Assert.AreEqual(side, GetField<object>(connection, "Side").ToString());
+        }
+
         private static void AssertLevelLabel(int pointIndex, string expected)
         {
             var levelObject = GameObject.Find("ControlPoint_" + pointIndex + "/Level");
@@ -821,6 +904,15 @@ namespace Tests
             Assert.AreEqual(expected, GetProperty<string>(levelLabel, "text"), "Unexpected level label at point " + pointIndex);
         }
 
+        private static void AssertPointSize(int pointIndex, float expected)
+        {
+            var point = GameObject.Find("ControlPoint_" + pointIndex);
+            Assert.IsNotNull(point, "Point object should exist.");
+            var rect = point.GetComponent<RectTransform>();
+            Assert.AreEqual(expected, rect.sizeDelta.x, 0.01f, "Unexpected point width at " + pointIndex);
+            Assert.AreEqual(expected, rect.sizeDelta.y, 0.01f, "Unexpected point height at " + pointIndex);
+        }
+
         private static void AssertPointPosition(int pointIndex, Vector2 expected)
         {
             var point = GameObject.Find("ControlPoint_" + pointIndex);
@@ -828,6 +920,52 @@ namespace Tests
             var rect = point.GetComponent<RectTransform>();
             Assert.AreEqual(expected.x, rect.anchoredPosition.x, 0.01f, "Unexpected point x at " + pointIndex);
             Assert.AreEqual(expected.y, rect.anchoredPosition.y, 0.01f, "Unexpected point y at " + pointIndex);
+        }
+
+        private static bool HasMovingSoldierFromSource(int sourceIndex)
+        {
+            var prefix = "Soldier_" + sourceIndex + "_";
+            var transforms = Object.FindObjectsOfType<Transform>();
+            for (var i = 0; i < transforms.Length; i++)
+            {
+                if (transforms[i] != null && transforms[i].name.StartsWith(prefix, System.StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static int CountObjectsNamed(string objectName)
+        {
+            var total = 0;
+            var transforms = Object.FindObjectsOfType<Transform>();
+            for (var i = 0; i < transforms.Length; i++)
+            {
+                if (transforms[i] != null && transforms[i].name == objectName)
+                {
+                    total++;
+                }
+            }
+
+            return total;
+        }
+
+        private static int CountConnectionsTargetingOwner(GameControlPointView game, string ownerName)
+        {
+            var total = 0;
+            var connections = GetPrivateObject<System.Collections.IList>(game, "connections");
+            for (var i = 0; i < connections.Count; i++)
+            {
+                var targetIndex = GetField<int>(connections[i], "TargetIndex");
+                if (GetField<object>(GetPoint(game, targetIndex), "Owner").ToString() == ownerName)
+                {
+                    total++;
+                }
+            }
+
+            return total;
         }
 
         private static void AssertLevelDefinitionPoint(object level, int pointIndex, string ownerName, int units, Vector2 position)

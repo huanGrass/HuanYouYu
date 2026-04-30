@@ -50,13 +50,13 @@
       "points": [
         {
           "owner": "Neutral",
-          "units": 11,
-          "x": -95,
+          "units": 10,
+          "x": -106,
           "y": -182
         },
         {
           "owner": "Neutral",
-          "units": 7,
+          "units": 6,
           "x": 120,
           "y": 139
         },
@@ -68,20 +68,20 @@
         },
         {
           "owner": "Player",
-          "units": 16,
+          "units": 17,
           "x": -182,
           "y": 7
         },
         {
           "owner": "Neutral",
-          "units": 8,
+          "units": 7,
           "x": -73,
           "y": 140
         },
         {
           "owner": "Neutral",
-          "units": 7,
-          "x": 57,
+          "units": 6,
+          "x": 68,
           "y": -186
         }
       ]
@@ -90,31 +90,31 @@
       "points": [
         {
           "owner": "Enemy",
-          "units": 11,
+          "units": 10,
           "x": 146,
           "y": 121
         },
         {
           "owner": "Enemy",
-          "units": 14,
+          "units": 13,
           "x": -123,
           "y": 139
         },
         {
           "owner": "Neutral",
-          "units": 10,
+          "units": 9,
           "x": -190,
           "y": -51
         },
         {
           "owner": "Player",
-          "units": 15,
+          "units": 16,
           "x": -6,
           "y": -188
         },
         {
           "owner": "Neutral",
-          "units": 7,
+          "units": 6,
           "x": 190,
           "y": -59
         }
@@ -124,39 +124,39 @@
       "points": [
         {
           "owner": "Neutral",
-          "units": 8,
+          "units": 7,
           "x": 44,
           "y": -178
         },
         {
           "owner": "Neutral",
-          "units": 9,
-          "x": -181,
-          "y": 0
+          "units": 8,
+          "x": -187,
+          "y": 8
         },
         {
           "owner": "Neutral",
-          "units": 9,
-          "x": -127,
-          "y": -142
+          "units": 8,
+          "x": -123,
+          "y": -152
         },
         {
           "owner": "Player",
-          "units": 18,
-          "x": -53,
-          "y": 127
+          "units": 19,
+          "x": -64,
+          "y": 130
         },
         {
           "owner": "Neutral",
-          "units": 9,
-          "x": 173,
-          "y": -37
+          "units": 8,
+          "x": 176,
+          "y": -43
         },
         {
           "owner": "Enemy",
-          "units": 12,
-          "x": 96,
-          "y": 111
+          "units": 11,
+          "x": 106,
+          "y": 116
         }
       ]
     },
@@ -164,31 +164,31 @@
       "points": [
         {
           "owner": "Enemy",
-          "units": 16,
+          "units": 14,
           "x": -141,
           "y": -131
         },
         {
           "owner": "Enemy",
-          "units": 14,
+          "units": 12,
           "x": 162,
           "y": 4
         },
         {
           "owner": "Player",
-          "units": 17,
+          "units": 18,
           "x": -162,
           "y": 36
         },
         {
           "owner": "Neutral",
-          "units": 7,
+          "units": 6,
           "x": 46,
           "y": 168
         },
         {
           "owner": "Neutral",
-          "units": 11,
+          "units": 9,
           "x": 80,
           "y": -164
         }
@@ -198,37 +198,37 @@
       "points": [
         {
           "owner": "Neutral",
-          "units": 11,
+          "units": 9,
           "x": 135,
           "y": 108
         },
         {
           "owner": "Neutral",
-          "units": 9,
+          "units": 7,
           "x": -199,
           "y": -12
         },
         {
           "owner": "Neutral",
-          "units": 7,
-          "x": 197,
-          "y": -58
+          "units": 6,
+          "x": 200,
+          "y": -55
         },
         {
           "owner": "Neutral",
-          "units": 12,
+          "units": 10,
           "x": -103,
           "y": 139
         },
         {
           "owner": "Player",
-          "units": 14,
-          "x": 73,
-          "y": -168
+          "units": 15,
+          "x": 70,
+          "y": -171
         },
         {
           "owner": "Enemy",
-          "units": 12,
+          "units": 10,
           "x": -108,
           "y": -169
         }
@@ -237,34 +237,256 @@
     {
       "points": [
         {
+          "owner": "Player",
+          "units": 16,
+          "x": -164,
+          "y": 84
+        },
+        {
+          "owner": "Neutral",
+          "units": 7,
+          "x": -149,
+          "y": -117
+        },
+        {
+          "owner": "Neutral",
+          "units": 8,
+          "x": 193,
+          "y": 8
+        },
+        {
+          "owner": "Neutral",
+          "units": 7,
+          "x": 43,
+          "y": 137
+        },
+        {
           "owner": "Enemy",
-          "units": 11,
-          "x": -5,
-          "y": 139
+          "units": 9,
+          "x": 95,
+          "y": -207
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 9,
+          "x": -120,
+          "y": -166
+        },
+        {
+          "owner": "Enemy",
+          "units": 15,
+          "x": 85,
+          "y": 125
+        },
+        {
+          "owner": "Neutral",
+          "units": 6,
+          "x": -215,
+          "y": -21
+        },
+        {
+          "owner": "Neutral",
+          "units": 8,
+          "x": -113,
+          "y": 135
         },
         {
           "owner": "Neutral",
           "units": 10,
-          "x": -152,
-          "y": 22
+          "x": 174,
+          "y": -24
+        },
+        {
+          "owner": "Player",
+          "units": 20,
+          "x": 64,
+          "y": -180
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 11,
+          "x": -170,
+          "y": 61
+        },
+        {
+          "owner": "Player",
+          "units": 15,
+          "x": 28,
+          "y": 149
         },
         {
           "owner": "Neutral",
           "units": 11,
-          "x": -118,
-          "y": -160
+          "x": 62,
+          "y": -208
+        },
+        {
+          "owner": "Enemy",
+          "units": 12,
+          "x": -139,
+          "y": -114
         },
         {
           "owner": "Neutral",
+          "units": 9,
+          "x": 189,
+          "y": -1
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 9,
+          "x": 164,
+          "y": 104
+        },
+        {
+          "owner": "Enemy",
           "units": 10,
-          "x": 210,
-          "y": 45
+          "x": 38,
+          "y": -210
         },
         {
           "owner": "Player",
           "units": 19,
+          "x": 165,
+          "y": -70
+        },
+        {
+          "owner": "Neutral",
+          "units": 11,
+          "x": -20,
+          "y": 146
+        },
+        {
+          "owner": "Enemy",
+          "units": 11,
+          "x": -172,
+          "y": 42
+        },
+        {
+          "owner": "Neutral",
+          "units": 7,
+          "x": -170,
+          "y": -137
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Enemy",
+          "units": 10,
+          "x": -162,
+          "y": -67
+        },
+        {
+          "owner": "Neutral",
+          "units": 10,
+          "x": -93,
+          "y": 124
+        },
+        {
+          "owner": "Enemy",
+          "units": 13,
+          "x": 105,
+          "y": 143
+        },
+        {
+          "owner": "Player",
+          "units": 18,
+          "x": 194,
+          "y": -68
+        },
+        {
+          "owner": "Neutral",
+          "units": 6,
+          "x": 4,
+          "y": -199
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 7,
+          "x": 103,
+          "y": -172
+        },
+        {
+          "owner": "Enemy",
+          "units": 10,
+          "x": 62,
+          "y": 152
+        },
+        {
+          "owner": "Neutral",
+          "units": 8,
+          "x": -143,
+          "y": 142
+        },
+        {
+          "owner": "Enemy",
+          "units": 10,
+          "x": 179,
+          "y": 23
+        },
+        {
+          "owner": "Player",
+          "units": 17,
+          "x": -207,
+          "y": -57
+        },
+        {
+          "owner": "Neutral",
+          "units": 6,
+          "x": -93,
+          "y": -189
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 9,
+          "x": 35,
+          "y": -219
+        },
+        {
+          "owner": "Enemy",
+          "units": 16,
+          "x": 190,
+          "y": -71
+        },
+        {
+          "owner": "Enemy",
+          "units": 11,
+          "x": -167,
+          "y": -108
+        },
+        {
+          "owner": "Neutral",
+          "units": 10,
+          "x": -126,
+          "y": 132
+        },
+        {
+          "owner": "Player",
+          "units": 17,
           "x": 98,
-          "y": -157
+          "y": 127
         }
       ]
     },
@@ -273,38 +495,146 @@
         {
           "owner": "Neutral",
           "units": 10,
-          "x": -185,
-          "y": -75
+          "x": -192,
+          "y": -3
+        },
+        {
+          "owner": "Neutral",
+          "units": 10,
+          "x": 68,
+          "y": -170
+        },
+        {
+          "owner": "Player",
+          "units": 17,
+          "x": 125,
+          "y": 115
+        },
+        {
+          "owner": "Neutral",
+          "units": 12,
+          "x": -105,
+          "y": -167
+        },
+        {
+          "owner": "Enemy",
+          "units": 11,
+          "x": -92,
+          "y": 140
+        },
+        {
+          "owner": "Enemy",
+          "units": 14,
+          "x": 196,
+          "y": -51
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 11,
+          "x": 13,
+          "y": 143
+        },
+        {
+          "owner": "Neutral",
+          "units": 12,
+          "x": -155,
+          "y": -160
         },
         {
           "owner": "Enemy",
           "units": 15,
-          "x": 32,
-          "y": 149
+          "x": 209,
+          "y": -22
         },
+        {
+          "owner": "Player",
+          "units": 17,
+          "x": 85,
+          "y": -185
+        },
+        {
+          "owner": "Enemy",
+          "units": 12,
+          "x": -143,
+          "y": 51
+        }
+      ]
+    },
+    {
+      "points": [
         {
           "owner": "Neutral",
           "units": 9,
-          "x": -120,
-          "y": 130
-        },
-        {
-          "owner": "Neutral",
-          "units": 13,
-          "x": 129,
-          "y": -163
+          "x": 173,
+          "y": -102
         },
         {
           "owner": "Player",
           "units": 16,
-          "x": -84,
-          "y": -193
+          "x": -46,
+          "y": 180
+        },
+        {
+          "owner": "Enemy",
+          "units": 10,
+          "x": -147,
+          "y": -134
+        },
+        {
+          "owner": "Enemy",
+          "units": 11,
+          "x": 144,
+          "y": 93
         },
         {
           "owner": "Neutral",
           "units": 11,
-          "x": 193,
-          "y": 33
+          "x": -181,
+          "y": 51
+        },
+        {
+          "owner": "Neutral",
+          "units": 11,
+          "x": 16,
+          "y": -194
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 7,
+          "x": -185,
+          "y": -98
+        },
+        {
+          "owner": "Neutral",
+          "units": 11,
+          "x": -152,
+          "y": 98
+        },
+        {
+          "owner": "Player",
+          "units": 18,
+          "x": 185,
+          "y": -47
+        },
+        {
+          "owner": "Enemy",
+          "units": 16,
+          "x": 107,
+          "y": 134
+        },
+        {
+          "owner": "Enemy",
+          "units": 14,
+          "x": 40,
+          "y": -199
         }
       ]
     },
@@ -313,31 +643,1751 @@
         {
           "owner": "Neutral",
           "units": 8,
-          "x": -171,
-          "y": -76
+          "x": 108,
+          "y": -157
         },
         {
           "owner": "Player",
-          "units": 17,
-          "x": -148,
-          "y": 102
+          "units": 16,
+          "x": -107,
+          "y": 124
         },
         {
           "owner": "Enemy",
-          "units": 14,
-          "x": 70,
+          "units": 11,
+          "x": 81,
           "y": 134
         },
         {
           "owner": "Neutral",
+          "units": 9,
+          "x": -226,
+          "y": -41
+        },
+        {
+          "owner": "Enemy",
+          "units": 17,
+          "x": -60,
+          "y": -197
+        },
+        {
+          "owner": "Neutral",
+          "units": 9,
+          "x": 201,
+          "y": 8
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Enemy",
+          "units": 17,
+          "x": -161,
+          "y": 130
+        },
+        {
+          "owner": "Neutral",
           "units": 11,
+          "x": 199,
+          "y": -64
+        },
+        {
+          "owner": "Player",
+          "units": 20,
+          "x": -176,
+          "y": -78
+        },
+        {
+          "owner": "Enemy",
+          "units": 17,
+          "x": 47,
+          "y": -185
+        },
+        {
+          "owner": "Neutral",
+          "units": 12,
+          "x": 105,
+          "y": 167
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Player",
+          "units": 16,
+          "x": 214,
+          "y": -51
+        },
+        {
+          "owner": "Neutral",
+          "units": 10,
+          "x": -94,
+          "y": 159
+        },
+        {
+          "owner": "Enemy",
+          "units": 14,
+          "x": 96,
+          "y": -208
+        },
+        {
+          "owner": "Neutral",
+          "units": 11,
+          "x": 87,
+          "y": 123
+        },
+        {
+          "owner": "Enemy",
+          "units": 14,
+          "x": -103,
+          "y": -177
+        },
+        {
+          "owner": "Neutral",
+          "units": 13,
+          "x": -188,
+          "y": -25
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 10,
+          "x": -201,
+          "y": 66
+        },
+        {
+          "owner": "Enemy",
+          "units": 17,
+          "x": 75,
+          "y": -220
+        },
+        {
+          "owner": "Player",
+          "units": 17,
+          "x": 211,
+          "y": -117
+        },
+        {
+          "owner": "Neutral",
+          "units": 11,
+          "x": 217,
+          "y": 51
+        },
+        {
+          "owner": "Enemy",
+          "units": 13,
+          "x": -230,
+          "y": -101
+        },
+        {
+          "owner": "Neutral",
+          "units": 8,
+          "x": -98,
+          "y": -211
+        },
+        {
+          "owner": "Neutral",
+          "units": 8,
+          "x": 108,
+          "y": 183
+        },
+        {
+          "owner": "Enemy",
+          "units": 11,
+          "x": -62,
+          "y": 172
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 12,
+          "x": -225,
+          "y": -60
+        },
+        {
+          "owner": "Player",
+          "units": 18,
+          "x": -151,
+          "y": 105
+        },
+        {
+          "owner": "Enemy",
+          "units": 17,
+          "x": 215,
+          "y": 32
+        },
+        {
+          "owner": "Enemy",
+          "units": 14,
+          "x": 64,
+          "y": 169
+        },
+        {
+          "owner": "Enemy",
+          "units": 17,
+          "x": -60,
+          "y": -190
+        },
+        {
+          "owner": "Neutral",
+          "units": 10,
+          "x": 111,
+          "y": -163
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 9,
+          "x": 5,
+          "y": 188
+        },
+        {
+          "owner": "Enemy",
+          "units": 16,
+          "x": -194,
+          "y": -72
+        },
+        {
+          "owner": "Neutral",
+          "units": 13,
+          "x": 87,
+          "y": -197
+        },
+        {
+          "owner": "Neutral",
+          "units": 8,
+          "x": 162,
+          "y": 100
+        },
+        {
+          "owner": "Player",
+          "units": 20,
+          "x": 200,
+          "y": -69
+        },
+        {
+          "owner": "Enemy",
+          "units": 13,
+          "x": -91,
+          "y": -213
+        },
+        {
+          "owner": "Enemy",
+          "units": 13,
+          "x": -139,
+          "y": 94
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Enemy",
+          "units": 17,
+          "x": 90,
+          "y": -223
+        },
+        {
+          "owner": "Enemy",
+          "units": 15,
+          "x": -83,
+          "y": -207
+        },
+        {
+          "owner": "Neutral",
+          "units": 8,
+          "x": -83,
+          "y": 210
+        },
+        {
+          "owner": "Enemy",
+          "units": 12,
+          "x": -217,
+          "y": -101
+        },
+        {
+          "owner": "Neutral",
+          "units": 9,
+          "x": 82,
+          "y": 158
+        },
+        {
+          "owner": "Player",
+          "units": 20,
+          "x": 224,
+          "y": 63
+        },
+        {
+          "owner": "Neutral",
+          "units": 10,
+          "x": 216,
+          "y": -109
+        },
+        {
+          "owner": "Neutral",
+          "units": 12,
+          "x": -181,
+          "y": 69
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 13,
+          "x": 161,
+          "y": 126
+        },
+        {
+          "owner": "Neutral",
+          "units": 10,
+          "x": 178,
+          "y": -47
+        },
+        {
+          "owner": "Enemy",
+          "units": 18,
+          "x": 74,
+          "y": -202
+        },
+        {
+          "owner": "Enemy",
+          "units": 17,
+          "x": -58,
+          "y": 167
+        },
+        {
+          "owner": "Player",
+          "units": 20,
+          "x": -177,
+          "y": 7
+        },
+        {
+          "owner": "Enemy",
+          "units": 12,
+          "x": -127,
+          "y": -159
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Enemy",
+          "units": 18,
+          "x": 236,
+          "y": -51
+        },
+        {
+          "owner": "Neutral",
+          "units": 10,
+          "x": 5,
+          "y": 169
+        },
+        {
+          "owner": "Player",
+          "units": 19,
+          "x": -72,
+          "y": -193
+        },
+        {
+          "owner": "Enemy",
+          "units": 18,
+          "x": 162,
+          "y": 102
+        },
+        {
+          "owner": "Neutral",
+          "units": 11,
+          "x": -142,
+          "y": 81
+        },
+        {
+          "owner": "Enemy",
+          "units": 14,
+          "x": -210,
+          "y": -78
+        },
+        {
+          "owner": "Neutral",
+          "units": 11,
+          "x": 99,
+          "y": -162
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Player",
+          "units": 16,
+          "x": -256,
+          "y": 12
+        },
+        {
+          "owner": "Neutral",
+          "units": 12,
+          "x": -56,
+          "y": -243
+        },
+        {
+          "owner": "Neutral",
+          "units": 10,
+          "x": 236,
+          "y": -73
+        },
+        {
+          "owner": "Enemy",
+          "units": 17,
+          "x": 107,
+          "y": -183
+        },
+        {
+          "owner": "Enemy",
+          "units": 12,
+          "x": 182,
+          "y": 89
+        },
+        {
+          "owner": "Neutral",
+          "units": 12,
+          "x": -197,
+          "y": -151
+        },
+        {
+          "owner": "Enemy",
+          "units": 17,
+          "x": 36,
+          "y": 179
+        },
+        {
+          "owner": "Neutral",
+          "units": 9,
+          "x": -129,
+          "y": 123
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Player",
+          "units": 18,
+          "x": -201,
+          "y": -12
+        },
+        {
+          "owner": "Neutral",
+          "units": 13,
+          "x": 201,
+          "y": -26
+        },
+        {
+          "owner": "Neutral",
+          "units": 13,
+          "x": 115,
+          "y": -203
+        },
+        {
+          "owner": "Enemy",
+          "units": 17,
+          "x": -83,
+          "y": 141
+        },
+        {
+          "owner": "Enemy",
+          "units": 16,
+          "x": 98,
+          "y": 128
+        },
+        {
+          "owner": "Enemy",
+          "units": 16,
+          "x": -118,
+          "y": -165
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Player",
+          "units": 20,
+          "x": -176,
+          "y": -174
+        },
+        {
+          "owner": "Neutral",
+          "units": 12,
+          "x": -8,
+          "y": -196
+        },
+        {
+          "owner": "Enemy",
+          "units": 19,
+          "x": 195,
+          "y": 27
+        },
+        {
+          "owner": "Enemy",
+          "units": 16,
+          "x": -199,
+          "y": -5
+        },
+        {
+          "owner": "Neutral",
+          "units": 9,
+          "x": 156,
+          "y": -140
+        },
+        {
+          "owner": "Neutral",
+          "units": 9,
+          "x": 74,
+          "y": 156
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 17,
+          "x": -98,
+          "y": 135
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Player",
+          "units": 20,
+          "x": -39,
+          "y": 208
+        },
+        {
+          "owner": "Neutral",
+          "units": 12,
+          "x": 25,
+          "y": -243
+        },
+        {
+          "owner": "Enemy",
+          "units": 15,
+          "x": -187,
+          "y": 119
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 16,
+          "x": 177,
+          "y": -158
+        },
+        {
+          "owner": "Neutral",
+          "units": 12,
+          "x": -236,
+          "y": -47
+        },
+        {
+          "owner": "Neutral",
+          "units": 11,
+          "x": 108,
+          "y": 119
+        },
+        {
+          "owner": "Enemy",
+          "units": 18,
+          "x": 233,
+          "y": 3
+        },
+        {
+          "owner": "Neutral",
+          "units": 12,
+          "x": -136,
+          "y": -182
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Enemy",
+          "units": 19,
+          "x": -213,
+          "y": -58
+        },
+        {
+          "owner": "Neutral",
+          "units": 13,
+          "x": 138,
+          "y": -166
+        },
+        {
+          "owner": "Player",
+          "units": 20,
+          "x": -135,
+          "y": 108
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 17,
+          "x": -95,
+          "y": -208
+        },
+        {
+          "owner": "Neutral",
+          "units": 11,
+          "x": 199,
+          "y": 9
+        },
+        {
+          "owner": "Enemy",
+          "units": 19,
+          "x": 64,
+          "y": 159
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 14,
+          "x": 44,
+          "y": -220
+        },
+        {
+          "owner": "Neutral",
+          "units": 12,
+          "x": -150,
+          "y": -180
+        },
+        {
+          "owner": "Enemy",
+          "units": 18,
+          "x": -96,
+          "y": 123
+        },
+        {
+          "owner": "Player",
+          "units": 17,
+          "x": 74,
+          "y": 143
+        },
+        {
+          "owner": "Enemy",
+          "units": 19,
+          "x": 202,
+          "y": -124
+        },
+        {
+          "owner": "Neutral",
+          "units": 10,
+          "x": 225,
+          "y": 58
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 18,
+          "x": -199,
+          "y": -10
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Enemy",
+          "units": 15,
+          "x": -88,
+          "y": 162
+        },
+        {
+          "owner": "Neutral",
+          "units": 11,
+          "x": 80,
+          "y": 154
+        },
+        {
+          "owner": "Enemy",
+          "units": 19,
+          "x": -184,
+          "y": -112
+        },
+        {
+          "owner": "Neutral",
+          "units": 12,
+          "x": 107,
+          "y": -245
+        },
+        {
+          "owner": "Neutral",
+          "units": 15,
+          "x": 198,
+          "y": -96
+        },
+        {
+          "owner": "Player",
+          "units": 17,
+          "x": 232,
+          "y": 70
+        },
+        {
+          "owner": "Neutral",
+          "units": 13,
+          "x": -65,
+          "y": -236
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 20,
+          "x": -220,
+          "y": 53
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 15,
+          "x": -179,
+          "y": -178
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 19,
+          "x": 207,
+          "y": -67
+        },
+        {
+          "owner": "Neutral",
+          "units": 15,
+          "x": -219,
+          "y": 35
+        },
+        {
+          "owner": "Player",
+          "units": 18,
+          "x": 136,
+          "y": 102
+        },
+        {
+          "owner": "Enemy",
+          "units": 17,
+          "x": -34,
+          "y": 144
+        },
+        {
+          "owner": "Enemy",
+          "units": 20,
+          "x": 61,
+          "y": -232
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 11,
+          "x": 171,
+          "y": -110
+        },
+        {
+          "owner": "Enemy",
+          "units": 19,
+          "x": -126,
+          "y": 155
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 18,
+          "x": -162,
+          "y": -167
+        },
+        {
+          "owner": "Neutral",
+          "units": 14,
           "x": 26,
-          "y": -200
+          "y": -225
         },
         {
           "owner": "Neutral",
           "units": 13,
           "x": 175,
+          "y": 64
+        },
+        {
+          "owner": "Player",
+          "units": 19,
+          "x": -195,
+          "y": -1
+        },
+        {
+          "owner": "Enemy",
+          "units": 19,
+          "x": 46,
+          "y": 185
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Enemy",
+          "units": 20,
+          "x": -148,
+          "y": -181
+        },
+        {
+          "owner": "Neutral",
+          "units": 15,
+          "x": -201,
+          "y": -15
+        },
+        {
+          "owner": "Neutral",
+          "units": 14,
+          "x": -8,
+          "y": 206
+        },
+        {
+          "owner": "Neutral",
+          "units": 14,
+          "x": 244,
+          "y": -16
+        },
+        {
+          "owner": "Player",
+          "units": 20,
+          "x": 13,
+          "y": -239
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 16,
+          "x": 172,
+          "y": -175
+        },
+        {
+          "owner": "Neutral",
+          "units": 10,
+          "x": 144,
+          "y": 122
+        },
+        {
+          "owner": "Enemy",
+          "units": 19,
+          "x": -168,
+          "y": 154
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "EnemyTwo",
+          "units": 19,
+          "x": 80,
+          "y": 170
+        },
+        {
+          "owner": "Neutral",
+          "units": 13,
+          "x": 114,
+          "y": -175
+        },
+        {
+          "owner": "Neutral",
+          "units": 14,
+          "x": -71,
+          "y": -212
+        },
+        {
+          "owner": "Enemy",
+          "units": 19,
+          "x": 193,
+          "y": -20
+        },
+        {
+          "owner": "Enemy",
+          "units": 20,
+          "x": -209,
+          "y": -35
+        },
+        {
+          "owner": "Player",
+          "units": 20,
+          "x": -132,
+          "y": 159
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "EnemyTwo",
+          "units": 21,
+          "x": 24,
+          "y": -217
+        },
+        {
+          "owner": "Enemy",
+          "units": 21,
+          "x": -165,
+          "y": -164
+        },
+        {
+          "owner": "Neutral",
+          "units": 15,
+          "x": -139,
+          "y": 171
+        },
+        {
+          "owner": "Enemy",
+          "units": 21,
+          "x": 179,
+          "y": 41
+        },
+        {
+          "owner": "Player",
+          "units": 20,
+          "x": 71,
+          "y": 178
+        },
+        {
+          "owner": "Neutral",
+          "units": 15,
+          "x": -188,
+          "y": 5
+        },
+        {
+          "owner": "Neutral",
+          "units": 14,
+          "x": 169,
+          "y": -130
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Enemy",
+          "units": 21,
+          "x": 100,
+          "y": 167
+        },
+        {
+          "owner": "Neutral",
+          "units": 16,
+          "x": 208,
+          "y": 38
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 15,
+          "x": -111,
+          "y": -227
+        },
+        {
+          "owner": "Neutral",
+          "units": 14,
+          "x": 63,
+          "y": -240
+        },
+        {
+          "owner": "Neutral",
+          "units": 15,
+          "x": -217,
+          "y": -91
+        },
+        {
+          "owner": "Player",
+          "units": 17,
+          "x": -70,
+          "y": 185
+        },
+        {
+          "owner": "Enemy",
+          "units": 17,
+          "x": -204,
+          "y": 78
+        },
+        {
+          "owner": "Neutral",
+          "units": 14,
+          "x": 195,
+          "y": -135
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "EnemyTwo",
+          "units": 21,
+          "x": -194,
+          "y": -58
+        },
+        {
+          "owner": "Neutral",
+          "units": 15,
+          "x": -79,
+          "y": -192
+        },
+        {
+          "owner": "Neutral",
+          "units": 15,
+          "x": 209,
+          "y": -6
+        },
+        {
+          "owner": "Enemy",
+          "units": 21,
+          "x": 51,
+          "y": 173
+        },
+        {
+          "owner": "Player",
+          "units": 17,
+          "x": -138,
+          "y": 125
+        },
+        {
+          "owner": "Enemy",
+          "units": 17,
+          "x": 154,
+          "y": -175
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "EnemyTwo",
+          "units": 21,
+          "x": 74,
+          "y": 128
+        },
+        {
+          "owner": "Neutral",
+          "units": 11,
+          "x": -145,
+          "y": -129
+        },
+        {
+          "owner": "Neutral",
+          "units": 15,
+          "x": 212,
+          "y": 28
+        },
+        {
+          "owner": "Enemy",
+          "units": 21,
+          "x": -94,
+          "y": 170
+        },
+        {
+          "owner": "Player",
+          "units": 18,
+          "x": -198,
+          "y": 36
+        },
+        {
+          "owner": "Enemy",
+          "units": 21,
+          "x": 164,
+          "y": -152
+        },
+        {
+          "owner": "Neutral",
+          "units": 15,
+          "x": -15,
+          "y": -237
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Player",
+          "units": 20,
+          "x": 16,
+          "y": 161
+        },
+        {
+          "owner": "Neutral",
+          "units": 16,
+          "x": -161,
+          "y": -147
+        },
+        {
+          "owner": "Neutral",
+          "units": 13,
+          "x": 205,
+          "y": -41
+        },
+        {
+          "owner": "Enemy",
+          "units": 21,
+          "x": -156,
+          "y": 168
+        },
+        {
+          "owner": "Enemy",
+          "units": 20,
+          "x": 182,
+          "y": 130
+        },
+        {
+          "owner": "Neutral",
+          "units": 16,
+          "x": -223,
+          "y": 12
+        },
+        {
+          "owner": "Neutral",
+          "units": 11,
+          "x": 136,
+          "y": -195
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 18,
+          "x": -25,
+          "y": -256
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 13,
+          "x": -117,
+          "y": -216
+        },
+        {
+          "owner": "Enemy",
+          "units": 21,
+          "x": 187,
+          "y": -14
+        },
+        {
+          "owner": "Player",
+          "units": 18,
+          "x": 84,
+          "y": 139
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 22,
+          "x": -130,
+          "y": 135
+        },
+        {
+          "owner": "Neutral",
+          "units": 15,
+          "x": -236,
+          "y": -52
+        },
+        {
+          "owner": "Enemy",
+          "units": 21,
+          "x": 91,
+          "y": -161
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Enemy",
+          "units": 17,
+          "x": -16,
+          "y": 164
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 21,
+          "x": 193,
+          "y": -43
+        },
+        {
+          "owner": "Enemy",
+          "units": 18,
+          "x": -218,
+          "y": -94
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 18,
+          "x": -53,
+          "y": -207
+        },
+        {
+          "owner": "Neutral",
+          "units": 15,
+          "x": 126,
+          "y": -204
+        },
+        {
+          "owner": "Neutral",
+          "units": 16,
+          "x": 152,
+          "y": 123
+        },
+        {
+          "owner": "Player",
+          "units": 21,
+          "x": -179,
+          "y": 79
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "EnemyTwo",
+          "units": 18,
+          "x": -100,
+          "y": -181
+        },
+        {
+          "owner": "Neutral",
+          "units": 16,
+          "x": -64,
+          "y": 173
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 22,
+          "x": -240,
+          "y": -84
+        },
+        {
+          "owner": "Enemy",
+          "units": 17,
+          "x": 212,
+          "y": -120
+        },
+        {
+          "owner": "Enemy",
+          "units": 22,
+          "x": -209,
+          "y": 87
+        },
+        {
+          "owner": "Neutral",
+          "units": 14,
+          "x": 252,
+          "y": 49
+        },
+        {
+          "owner": "Player",
+          "units": 19,
+          "x": 69,
+          "y": -223
+        },
+        {
+          "owner": "Neutral",
+          "units": 13,
+          "x": 107,
+          "y": 140
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 14,
+          "x": -159,
+          "y": 140
+        },
+        {
+          "owner": "Enemy",
+          "units": 21,
+          "x": -193,
+          "y": -79
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 22,
+          "x": 126,
+          "y": -177
+        },
+        {
+          "owner": "Enemy",
+          "units": 22,
+          "x": 221,
+          "y": 25
+        },
+        {
+          "owner": "Player",
+          "units": 17,
+          "x": -56,
+          "y": -191
+        },
+        {
+          "owner": "Neutral",
+          "units": 12,
+          "x": 54,
+          "y": 178
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "EnemyTwo",
+          "units": 18,
+          "x": -193,
+          "y": -145
+        },
+        {
+          "owner": "Neutral",
+          "units": 15,
+          "x": 85,
+          "y": 156
+        },
+        {
+          "owner": "Enemy",
+          "units": 21,
+          "x": -88,
+          "y": 160
+        },
+        {
+          "owner": "Neutral",
+          "units": 17,
+          "x": -6,
+          "y": -210
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 20,
+          "x": 169,
+          "y": -151
+        },
+        {
+          "owner": "Enemy",
+          "units": 21,
+          "x": 217,
+          "y": 21
+        },
+        {
+          "owner": "Player",
+          "units": 22,
+          "x": -226,
+          "y": 52
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Enemy",
+          "units": 21,
+          "x": -230,
+          "y": -98
+        },
+        {
+          "owner": "Neutral",
+          "units": 15,
+          "x": 79,
+          "y": -244
+        },
+        {
+          "owner": "Enemy",
+          "units": 20,
+          "x": 236,
+          "y": 49
+        },
+        {
+          "owner": "Neutral",
+          "units": 17,
+          "x": -79,
+          "y": -186
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 21,
+          "x": -223,
+          "y": 71
+        },
+        {
+          "owner": "Neutral",
+          "units": 17,
+          "x": 195,
+          "y": -114
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 16,
+          "x": 104,
+          "y": 158
+        },
+        {
+          "owner": "Player",
+          "units": 18,
+          "x": -69,
+          "y": 143
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Enemy",
+          "units": 22,
+          "x": 48,
+          "y": 177
+        },
+        {
+          "owner": "Enemy",
+          "units": 23,
+          "x": -59,
+          "y": -189
+        },
+        {
+          "owner": "Neutral",
+          "units": 12,
+          "x": 228,
+          "y": -4
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 23,
+          "x": -233,
+          "y": -45
+        },
+        {
+          "owner": "Neutral",
+          "units": 14,
+          "x": 167,
+          "y": -169
+        },
+        {
+          "owner": "Player",
+          "units": 19,
+          "x": -137,
+          "y": 119
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Enemy",
+          "units": 17,
+          "x": 216,
+          "y": -54
+        },
+        {
+          "owner": "Neutral",
+          "units": 16,
+          "x": -156,
+          "y": 78
+        },
+        {
+          "owner": "Neutral",
+          "units": 15,
+          "x": -217,
+          "y": -79
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 23,
+          "x": -9,
+          "y": 166
+        },
+        {
+          "owner": "Player",
+          "units": 22,
+          "x": 155,
+          "y": 107
+        },
+        {
+          "owner": "Enemy",
+          "units": 22,
+          "x": -80,
+          "y": -201
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 17,
+          "x": 107,
+          "y": -188
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 17,
+          "x": -164,
+          "y": 169
+        },
+        {
+          "owner": "Neutral",
+          "units": 13,
+          "x": 277,
+          "y": 13
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 23,
+          "x": 81,
+          "y": -261
+        },
+        {
+          "owner": "Player",
+          "units": 19,
+          "x": -245,
+          "y": -151
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 18,
+          "x": -252,
+          "y": 18
+        },
+        {
+          "owner": "Neutral",
+          "units": 18,
+          "x": 155,
+          "y": 132
+        },
+        {
+          "owner": "Enemy",
+          "units": 21,
+          "x": 2,
+          "y": 212
+        },
+        {
+          "owner": "Neutral",
+          "units": 18,
+          "x": 198,
+          "y": -140
+        },
+        {
+          "owner": "Enemy",
+          "units": 22,
+          "x": -86,
+          "y": -210
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 18,
+          "x": 31,
+          "y": 192
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 21,
+          "x": 200,
+          "y": -108
+        },
+        {
+          "owner": "Player",
+          "units": 22,
+          "x": 61,
+          "y": -213
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 20,
+          "x": 156,
+          "y": 68
+        },
+        {
+          "owner": "Enemy",
+          "units": 22,
+          "x": -110,
+          "y": -214
+        },
+        {
+          "owner": "Enemy",
+          "units": 18,
+          "x": -158,
+          "y": 102
+        },
+        {
+          "owner": "Neutral",
+          "units": 18,
+          "x": -238,
+          "y": -52
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 18,
+          "x": 208,
+          "y": 6
+        },
+        {
+          "owner": "Player",
+          "units": 21,
+          "x": -218,
+          "y": 115
+        },
+        {
+          "owner": "Enemy",
+          "units": 23,
+          "x": -53,
+          "y": 168
+        },
+        {
+          "owner": "Neutral",
+          "units": 16,
+          "x": 118,
+          "y": 152
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 18,
+          "x": -139,
+          "y": -213
+        },
+        {
+          "owner": "Neutral",
+          "units": 18,
+          "x": 207,
+          "y": -164
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 21,
+          "x": 32,
+          "y": -205
+        },
+        {
+          "owner": "Enemy",
+          "units": 22,
+          "x": -211,
+          "y": -58
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "EnemyTwo",
+          "units": 24,
+          "x": -125,
+          "y": -170
+        },
+        {
+          "owner": "Neutral",
+          "units": 18,
+          "x": 10,
+          "y": -280
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 24,
+          "x": -96,
+          "y": 147
+        },
+        {
+          "owner": "Neutral",
+          "units": 16,
+          "x": 66,
+          "y": 200
+        },
+        {
+          "owner": "Enemy",
+          "units": 22,
+          "x": -261,
+          "y": 92
+        },
+        {
+          "owner": "Neutral",
+          "units": 13,
+          "x": 250,
+          "y": -40
+        },
+        {
+          "owner": "Enemy",
+          "units": 22,
+          "x": 220,
+          "y": 128
+        },
+        {
+          "owner": "Player",
+          "units": 23,
+          "x": -265,
+          "y": -76
+        },
+        {
+          "owner": "Neutral",
+          "units": 18,
+          "x": 136,
+          "y": -166
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Player",
+          "units": 23,
+          "x": 221,
+          "y": -103
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 22,
+          "x": 91,
+          "y": -222
+        },
+        {
+          "owner": "Neutral",
+          "units": 18,
+          "x": -110,
+          "y": -191
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 23,
+          "x": -164,
+          "y": 123
+        },
+        {
+          "owner": "Enemy",
+          "units": 18,
+          "x": 173,
+          "y": 72
+        },
+        {
+          "owner": "Neutral",
+          "units": 17,
+          "x": 4,
+          "y": 168
+        },
+        {
+          "owner": "Enemy",
+          "units": 20,
+          "x": -223,
           "y": -59
         }
       ]
@@ -346,1426 +2396,154 @@
       "points": [
         {
           "owner": "Enemy",
-          "units": 17,
-          "x": -108,
-          "y": -155
-        },
-        {
-          "owner": "Player",
-          "units": 16,
-          "x": 43,
-          "y": -200
+          "units": 19,
+          "x": 153,
+          "y": -175
         },
         {
           "owner": "Neutral",
-          "units": 12,
-          "x": 151,
+          "units": 18,
+          "x": -158,
           "y": 127
         },
         {
           "owner": "Neutral",
-          "units": 13,
-          "x": 199,
-          "y": -34
-        },
-        {
-          "owner": "Neutral",
-          "units": 10,
-          "x": -60,
-          "y": 155
-        },
-        {
-          "owner": "Neutral",
-          "units": 10,
-          "x": -217,
-          "y": 25
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 10,
-          "x": -153,
-          "y": -131
-        },
-        {
-          "owner": "Neutral",
-          "units": 11,
-          "x": -159,
-          "y": 57
-        },
-        {
-          "owner": "Enemy",
-          "units": 14,
-          "x": 196,
-          "y": -14
-        },
-        {
-          "owner": "Enemy",
-          "units": 19,
-          "x": 64,
-          "y": -205
-        },
-        {
-          "owner": "Player",
-          "units": 19,
-          "x": 41,
-          "y": 146
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 10,
-          "x": 189,
-          "y": -21
-        },
-        {
-          "owner": "Player",
           "units": 18,
-          "x": -76,
-          "y": 147
-        },
-        {
-          "owner": "Neutral",
-          "units": 10,
-          "x": 70,
-          "y": -182
-        },
-        {
-          "owner": "Enemy",
-          "units": 19,
-          "x": 110,
-          "y": 114
-        },
-        {
-          "owner": "Enemy",
-          "units": 13,
-          "x": -127,
-          "y": -159
-        },
-        {
-          "owner": "Neutral",
-          "units": 9,
-          "x": -210,
-          "y": -1
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 10,
-          "x": -165,
-          "y": -85
-        },
-        {
-          "owner": "Enemy",
-          "units": 15,
-          "x": 13,
-          "y": -186
-        },
-        {
-          "owner": "Player",
-          "units": 20,
-          "x": -144,
-          "y": 109
-        },
-        {
-          "owner": "Neutral",
-          "units": 9,
-          "x": 80,
-          "y": 137
-        },
-        {
-          "owner": "Enemy",
-          "units": 16,
-          "x": 200,
-          "y": -26
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Enemy",
-          "units": 19,
-          "x": 131,
-          "y": -160
-        },
-        {
-          "owner": "Neutral",
-          "units": 12,
-          "x": -142,
-          "y": 120
-        },
-        {
-          "owner": "Enemy",
-          "units": 15,
-          "x": 51,
-          "y": 160
-        },
-        {
-          "owner": "Player",
-          "units": 15,
-          "x": -91,
-          "y": -172
-        },
-        {
-          "owner": "Neutral",
-          "units": 11,
-          "x": 188,
-          "y": 7
-        },
-        {
-          "owner": "Neutral",
-          "units": 14,
-          "x": -202,
-          "y": -68
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 10,
-          "x": -186,
-          "y": 109
-        },
-        {
-          "owner": "Enemy",
-          "units": 21,
-          "x": 194,
-          "y": -21
-        },
-        {
-          "owner": "Enemy",
-          "units": 15,
-          "x": 67,
-          "y": 168
-        },
-        {
-          "owner": "Neutral",
-          "units": 15,
-          "x": 85,
-          "y": -179
-        },
-        {
-          "owner": "Player",
-          "units": 16,
-          "x": -153,
-          "y": -127
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 14,
-          "x": -172,
-          "y": 36
-        },
-        {
-          "owner": "Enemy",
-          "units": 20,
-          "x": 50,
-          "y": -216
-        },
-        {
-          "owner": "Neutral",
-          "units": 13,
-          "x": 182,
-          "y": 75
-        },
-        {
-          "owner": "Neutral",
-          "units": 11,
-          "x": 193,
-          "y": -86
-        },
-        {
-          "owner": "Neutral",
-          "units": 13,
-          "x": -44,
+          "x": 5,
           "y": 180
         },
         {
-          "owner": "Player",
-          "units": 17,
-          "x": -154,
-          "y": -148
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 15,
-          "x": 142,
-          "y": 106
-        },
-        {
-          "owner": "Player",
-          "units": 17,
-          "x": -129,
-          "y": 150
-        },
-        {
-          "owner": "Enemy",
-          "units": 16,
-          "x": -4,
-          "y": -227
-        },
-        {
-          "owner": "Neutral",
-          "units": 14,
-          "x": 202,
-          "y": -63
-        },
-        {
-          "owner": "Enemy",
-          "units": 16,
-          "x": -185,
-          "y": -56
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 13,
-          "x": 149,
-          "y": 99
-        },
-        {
-          "owner": "Enemy",
-          "units": 20,
-          "x": -183,
-          "y": 25
-        },
-        {
-          "owner": "Neutral",
-          "units": 13,
-          "x": 62,
-          "y": -182
-        },
-        {
-          "owner": "Neutral",
-          "units": 14,
-          "x": 219,
-          "y": -57
-        },
-        {
-          "owner": "Neutral",
-          "units": 15,
-          "x": -30,
-          "y": 154
-        },
-        {
-          "owner": "Player",
-          "units": 16,
-          "x": -132,
-          "y": -134
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Player",
-          "units": 15,
-          "x": -133,
-          "y": -119
-        },
-        {
-          "owner": "Enemy",
-          "units": 21,
-          "x": 37,
-          "y": -187
-        },
-        {
-          "owner": "Enemy",
-          "units": 18,
-          "x": -188,
-          "y": 98
-        },
-        {
-          "owner": "Neutral",
-          "units": 12,
-          "x": 58,
-          "y": 149
-        },
-        {
-          "owner": "Enemy",
-          "units": 17,
-          "x": 177,
-          "y": -4
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 12,
-          "x": 137,
-          "y": -143
-        },
-        {
-          "owner": "Player",
-          "units": 16,
-          "x": -43,
-          "y": -209
-        },
-        {
-          "owner": "Enemy",
-          "units": 17,
-          "x": 64,
-          "y": 173
-        },
-        {
-          "owner": "Enemy",
-          "units": 19,
-          "x": -160,
-          "y": 116
-        },
-        {
-          "owner": "Neutral",
-          "units": 17,
-          "x": 202,
-          "y": 28
-        },
-        {
-          "owner": "Neutral",
-          "units": 12,
-          "x": -223,
-          "y": -56
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Enemy",
-          "units": 22,
-          "x": 162,
-          "y": 41
-        },
-        {
-          "owner": "Neutral",
-          "units": 12,
-          "x": -184,
-          "y": 50
-        },
-        {
-          "owner": "Neutral",
-          "units": 13,
-          "x": -83,
-          "y": 132
-        },
-        {
-          "owner": "Player",
-          "units": 16,
-          "x": 184,
-          "y": -101
-        },
-        {
-          "owner": "Neutral",
-          "units": 12,
-          "x": -43,
-          "y": -180
-        },
-        {
-          "owner": "Enemy",
-          "units": 21,
-          "x": 48,
-          "y": 158
-        },
-        {
-          "owner": "Neutral",
-          "units": 14,
-          "x": -183,
-          "y": -127
-        },
-        {
-          "owner": "Enemy",
-          "units": 22,
-          "x": 102,
-          "y": -207
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Player",
-          "units": 16,
-          "x": -153,
-          "y": 113
-        },
-        {
-          "owner": "Neutral",
-          "units": 15,
-          "x": 204,
-          "y": 51
-        },
-        {
-          "owner": "Enemy",
-          "units": 24,
-          "x": -168,
-          "y": -101
-        },
-        {
-          "owner": "Neutral",
-          "units": 15,
-          "x": 161,
-          "y": -127
-        },
-        {
-          "owner": "Enemy",
-          "units": 18,
-          "x": 21,
-          "y": 158
-        },
-        {
-          "owner": "Neutral",
-          "units": 16,
-          "x": -34,
-          "y": -214
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 18,
-          "x": 11,
-          "y": -231
-        },
-        {
-          "owner": "Enemy",
-          "units": 25,
-          "x": -63,
-          "y": 146
-        },
-        {
-          "owner": "Enemy",
-          "units": 19,
-          "x": 199,
-          "y": 45
-        },
-        {
-          "owner": "Enemy",
-          "units": 21,
-          "x": -185,
-          "y": 25
-        },
-        {
-          "owner": "Neutral",
-          "units": 18,
-          "x": -174,
-          "y": -128
-        },
-        {
-          "owner": "Player",
-          "units": 16,
-          "x": 154,
-          "y": -125
-        },
-        {
-          "owner": "Neutral",
-          "units": 16,
-          "x": 85,
-          "y": 165
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Enemy",
-          "units": 26,
-          "x": -129,
-          "y": 115
-        },
-        {
-          "owner": "Enemy",
-          "units": 21,
-          "x": 152,
-          "y": -153
-        },
-        {
-          "owner": "Neutral",
-          "units": 15,
-          "x": -214,
-          "y": -3
-        },
-        {
-          "owner": "Neutral",
-          "units": 17,
-          "x": -22,
-          "y": -218
-        },
-        {
-          "owner": "Neutral",
-          "units": 13,
-          "x": 220,
-          "y": -37
-        },
-        {
-          "owner": "Neutral",
-          "units": 13,
-          "x": 132,
-          "y": 130
-        },
-        {
-          "owner": "Player",
-          "units": 16,
-          "x": -5,
-          "y": 168
-        },
-        {
-          "owner": "Enemy",
-          "units": 24,
-          "x": -171,
-          "y": -137
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 13,
-          "x": -62,
-          "y": -181
-        },
-        {
-          "owner": "Player",
-          "units": 16,
-          "x": -221,
-          "y": -80
-        },
-        {
-          "owner": "Neutral",
-          "units": 15,
-          "x": 195,
-          "y": 26
-        },
-        {
-          "owner": "Enemy",
-          "units": 26,
-          "x": 146,
-          "y": -145
-        },
-        {
-          "owner": "Enemy",
-          "units": 21,
-          "x": 24,
-          "y": 179
-        },
-        {
-          "owner": "Enemy",
-          "units": 21,
-          "x": -131,
-          "y": 85
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Enemy",
-          "units": 25,
-          "x": 1,
-          "y": 142
-        },
-        {
-          "owner": "Enemy",
-          "units": 22,
-          "x": -100,
-          "y": -183
-        },
-        {
-          "owner": "Player",
-          "units": 21,
-          "x": -138,
-          "y": 105
-        },
-        {
-          "owner": "Neutral",
-          "units": 14,
-          "x": -226,
-          "y": -33
-        },
-        {
-          "owner": "Neutral",
-          "units": 17,
-          "x": 180,
-          "y": 91
-        },
-        {
-          "owner": "Neutral",
-          "units": 18,
-          "x": 72,
-          "y": -192
-        },
-        {
-          "owner": "Neutral",
-          "units": 15,
-          "x": 212,
-          "y": -73
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Player",
-          "units": 21,
-          "x": 187,
-          "y": -57
-        },
-        {
-          "owner": "Enemy",
-          "units": 21,
-          "x": 161,
-          "y": 74
-        },
-        {
-          "owner": "Neutral",
-          "units": 18,
-          "x": 64,
-          "y": 163
-        },
-        {
-          "owner": "Enemy",
-          "units": 25,
-          "x": -194,
-          "y": 44
-        },
-        {
-          "owner": "Neutral",
-          "units": 19,
-          "x": -32,
-          "y": -211
-        },
-        {
-          "owner": "Neutral",
-          "units": 19,
-          "x": -84,
-          "y": 139
-        },
-        {
-          "owner": "Enemy",
-          "units": 25,
-          "x": -189,
-          "y": -109
-        },
-        {
-          "owner": "Neutral",
-          "units": 16,
-          "x": 102,
-          "y": -163
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 14,
-          "x": -186,
-          "y": -8
-        },
-        {
-          "owner": "Neutral",
-          "units": 14,
-          "x": 200,
-          "y": -22
-        },
-        {
-          "owner": "Enemy",
-          "units": 22,
-          "x": -102,
-          "y": -159
-        },
-        {
-          "owner": "Enemy",
-          "units": 26,
-          "x": 98,
-          "y": -173
-        },
-        {
-          "owner": "Player",
-          "units": 17,
-          "x": -90,
-          "y": 137
-        },
-        {
-          "owner": "Enemy",
-          "units": 27,
-          "x": 121,
-          "y": 117
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 14,
-          "x": 198,
-          "y": 65
-        },
-        {
-          "owner": "Enemy",
-          "units": 28,
-          "x": 29,
-          "y": 144
-        },
-        {
           "owner": "EnemyTwo",
-          "units": 28,
-          "x": 93,
-          "y": -213
-        },
-        {
-          "owner": "Neutral",
-          "units": 15,
-          "x": 201,
-          "y": -69
-        },
-        {
-          "owner": "Player",
-          "units": 19,
-          "x": -224,
-          "y": -47
-        },
-        {
-          "owner": "Enemy",
-          "units": 25,
-          "x": -174,
-          "y": 119
-        },
-        {
-          "owner": "Neutral",
-          "units": 19,
-          "x": -112,
-          "y": -203
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 18,
-          "x": 110,
-          "y": -178
-        },
-        {
-          "owner": "Neutral",
-          "units": 17,
-          "x": 216,
-          "y": -63
-        },
-        {
-          "owner": "Neutral",
-          "units": 20,
-          "x": 26,
-          "y": 157
-        },
-        {
-          "owner": "Enemy",
-          "units": 29,
-          "x": -113,
-          "y": 153
-        },
-        {
-          "owner": "Player",
-          "units": 18,
-          "x": -221,
-          "y": 6
-        },
-        {
-          "owner": "Neutral",
-          "units": 17,
-          "x": 164,
-          "y": 96
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 25,
-          "x": -166,
-          "y": -115
-        },
-        {
-          "owner": "Neutral",
-          "units": 16,
-          "x": -22,
-          "y": -197
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 16,
-          "x": -74,
-          "y": -200
-        },
-        {
-          "owner": "Player",
-          "units": 16,
-          "x": 110,
-          "y": 170
-        },
-        {
-          "owner": "Enemy",
-          "units": 23,
-          "x": 119,
-          "y": -163
-        },
-        {
-          "owner": "Neutral",
-          "units": 18,
-          "x": -122,
-          "y": 135
-        },
-        {
-          "owner": "Enemy",
-          "units": 29,
-          "x": -207,
-          "y": -18
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 25,
-          "x": 209,
+          "units": 22,
+          "x": -232,
           "y": -30
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "EnemyTwo",
-          "units": 28,
-          "x": 136,
-          "y": -155
         },
         {
           "owner": "Player",
-          "units": 19,
-          "x": -202,
-          "y": 43
+          "units": 20,
+          "x": 1,
+          "y": -253
         },
         {
-          "owner": "Neutral",
-          "units": 17,
-          "x": -71,
-          "y": 146
-        },
-        {
-          "owner": "Enemy",
-          "units": 25,
-          "x": -18,
-          "y": -236
-        },
-        {
-          "owner": "Enemy",
-          "units": 25,
-          "x": 96,
-          "y": 157
-        },
-        {
-          "owner": "Neutral",
-          "units": 18,
-          "x": -188,
-          "y": -120
+          "owner": "EnemyTwo",
+          "units": 22,
+          "x": 165,
+          "y": 120
         },
         {
           "owner": "Neutral",
           "units": 15,
-          "x": 180,
-          "y": 9
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Enemy",
-          "units": 27,
-          "x": 93,
-          "y": 127
-        },
-        {
-          "owner": "Neutral",
-          "units": 20,
-          "x": 216,
-          "y": 52
+          "x": 243,
+          "y": -32
         },
         {
           "owner": "Enemy",
           "units": 24,
-          "x": -67,
-          "y": 154
-        },
-        {
-          "owner": "Neutral",
-          "units": 16,
-          "x": -209,
-          "y": -79
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 25,
-          "x": 203,
-          "y": -85
-        },
-        {
-          "owner": "Player",
-          "units": 20,
-          "x": -102,
+          "x": -159,
           "y": -183
-        },
+        }
+      ]
+    },
+    {
+      "points": [
         {
           "owner": "Neutral",
           "units": 18,
-          "x": 65,
-          "y": -216
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 28,
-          "x": -183,
-          "y": 65
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Enemy",
-          "units": 30,
-          "x": 171,
-          "y": 112
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 25,
-          "x": -71,
-          "y": 185
-        },
-        {
-          "owner": "Neutral",
-          "units": 20,
-          "x": 61,
-          "y": -206
-        },
-        {
-          "owner": "Player",
-          "units": 20,
-          "x": -182,
-          "y": 33
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 28,
-          "x": 225,
-          "y": -66
-        },
-        {
-          "owner": "Enemy",
-          "units": 28,
-          "x": -142,
-          "y": -165
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Enemy",
-          "units": 28,
-          "x": 161,
-          "y": 108
-        },
-        {
-          "owner": "Enemy",
-          "units": 28,
-          "x": -63,
-          "y": -211
-        },
-        {
-          "owner": "Neutral",
-          "units": 19,
-          "x": 222,
-          "y": -69
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 25,
-          "x": -215,
-          "y": -55
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 30,
-          "x": -13,
-          "y": 147
-        },
-        {
-          "owner": "Neutral",
-          "units": 18,
-          "x": 65,
-          "y": -211
-        },
-        {
-          "owner": "Player",
-          "units": 21,
-          "x": -176,
-          "y": 80
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 22,
-          "x": -96,
-          "y": -213
-        },
-        {
-          "owner": "Neutral",
-          "units": 19,
-          "x": -186,
-          "y": 86
-        },
-        {
-          "owner": "Enemy",
-          "units": 28,
-          "x": -47,
-          "y": 173
-        },
-        {
-          "owner": "Neutral",
-          "units": 21,
-          "x": 89,
-          "y": 123
-        },
-        {
-          "owner": "Enemy",
-          "units": 28,
-          "x": 48,
-          "y": -225
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 26,
-          "x": 185,
-          "y": -104
-        },
-        {
-          "owner": "Player",
-          "units": 20,
-          "x": -207,
-          "y": -61
-        },
-        {
-          "owner": "Neutral",
-          "units": 21,
-          "x": 207,
-          "y": 33
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Enemy",
-          "units": 29,
-          "x": 214,
-          "y": -56
-        },
-        {
-          "owner": "Neutral",
-          "units": 19,
-          "x": -173,
-          "y": -138
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 32,
-          "x": -38,
-          "y": 146
-        },
-        {
-          "owner": "Enemy",
-          "units": 30,
-          "x": -194,
-          "y": 19
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 26,
-          "x": 26,
-          "y": -225
-        },
-        {
-          "owner": "Player",
-          "units": 17,
-          "x": 152,
-          "y": 120
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Enemy",
-          "units": 27,
-          "x": -5,
-          "y": -197
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 30,
-          "x": 184,
-          "y": 19
-        },
-        {
-          "owner": "Neutral",
-          "units": 18,
-          "x": 92,
-          "y": 120
-        },
-        {
-          "owner": "Player",
-          "units": 18,
-          "x": -185,
-          "y": 54
-        },
-        {
-          "owner": "Neutral",
-          "units": 17,
-          "x": -167,
-          "y": -119
-        },
-        {
-          "owner": "Neutral",
-          "units": 20,
-          "x": -53,
-          "y": 144
-        },
-        {
-          "owner": "Enemy",
-          "units": 32,
-          "x": 156,
-          "y": -156
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Enemy",
-          "units": 30,
-          "x": -47,
-          "y": 164
-        },
-        {
-          "owner": "Enemy",
-          "units": 31,
-          "x": 190,
-          "y": -16
-        },
-        {
-          "owner": "Player",
-          "units": 21,
-          "x": -168,
-          "y": 90
-        },
-        {
-          "owner": "Neutral",
-          "units": 20,
-          "x": -126,
-          "y": -180
-        },
-        {
-          "owner": "Neutral",
-          "units": 19,
-          "x": -187,
-          "y": -60
-        },
-        {
-          "owner": "Neutral",
-          "units": 20,
-          "x": 21,
-          "y": -222
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 27,
-          "x": 153,
-          "y": 138
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 32,
-          "x": 161,
-          "y": -167
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Enemy",
-          "units": 28,
-          "x": 238,
-          "y": -33
-        },
-        {
-          "owner": "Neutral",
-          "units": 18,
-          "x": -230,
-          "y": -11
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 30,
-          "x": -95,
-          "y": 160
-        },
-        {
-          "owner": "Player",
-          "units": 20,
-          "x": 127,
-          "y": 129
-        },
-        {
-          "owner": "Enemy",
-          "units": 29,
-          "x": 118,
-          "y": -201
-        },
-        {
-          "owner": "Neutral",
-          "units": 21,
-          "x": -124,
-          "y": -202
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 21,
-          "x": 197,
-          "y": -151
-        },
-        {
-          "owner": "Neutral",
-          "units": 21,
-          "x": 27,
-          "y": -216
-        },
-        {
-          "owner": "Player",
-          "units": 18,
-          "x": -151,
+          "x": -226,
           "y": -135
         },
         {
-          "owner": "Enemy",
-          "units": 31,
-          "x": 183,
-          "y": 31
+          "owner": "Neutral",
+          "units": 13,
+          "x": -87,
+          "y": -241
         },
         {
           "owner": "Neutral",
-          "units": 22,
-          "x": 110,
-          "y": 163
+          "units": 16,
+          "x": 235,
+          "y": 9
+        },
+        {
+          "owner": "Player",
+          "units": 21,
+          "x": 158,
+          "y": 159
         },
         {
           "owner": "EnemyTwo",
-          "units": 30,
-          "x": -84,
-          "y": 151
+          "units": 24,
+          "x": -3,
+          "y": 210
         },
         {
           "owner": "Enemy",
-          "units": 33,
-          "x": -183,
-          "y": 34
+          "units": 23,
+          "x": 75,
+          "y": -195
+        },
+        {
+          "owner": "Neutral",
+          "units": 18,
+          "x": -173,
+          "y": 172
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 24,
+          "x": -268,
+          "y": 28
+        },
+        {
+          "owner": "Enemy",
+          "units": 24,
+          "x": 246,
+          "y": -163
         }
       ]
     },
     {
       "points": [
         {
-          "owner": "Enemy",
-          "units": 35,
-          "x": 40,
-          "y": 168
-        },
-        {
-          "owner": "Enemy",
-          "units": 33,
-          "x": 232,
-          "y": -63
-        },
-        {
           "owner": "EnemyTwo",
-          "units": 35,
-          "x": -48,
-          "y": -223
+          "units": 20,
+          "x": 113,
+          "y": 150
         },
         {
           "owner": "Neutral",
-          "units": 22,
-          "x": -104,
-          "y": 122
+          "units": 17,
+          "x": -208,
+          "y": 12
+        },
+        {
+          "owner": "Enemy",
+          "units": 24,
+          "x": 178,
+          "y": -172
         },
         {
           "owner": "Player",
           "units": 23,
-          "x": -203,
-          "y": 1
+          "x": 200,
+          "y": -1
         },
         {
-          "owner": "Neutral",
-          "units": 21,
-          "x": 202,
-          "y": 96
+          "owner": "Enemy",
+          "units": 18,
+          "x": -161,
+          "y": -156
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 20,
+          "x": -106,
+          "y": 150
         },
         {
           "owner": "Neutral",
           "units": 19,
-          "x": -181,
-          "y": -144
-        },
-        {
-          "owner": "Neutral",
-          "units": 20,
-          "x": 85,
+          "x": 2,
           "y": -210
         }
       ]
@@ -1773,316 +2551,52 @@
     {
       "points": [
         {
-          "owner": "Enemy",
-          "units": 35,
-          "x": 151,
-          "y": -178
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 33,
-          "x": -196,
-          "y": -81
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 31,
-          "x": 186,
-          "y": 17
-        },
-        {
           "owner": "Player",
-          "units": 18,
-          "x": -159,
-          "y": 104
+          "units": 22,
+          "x": -235,
+          "y": -95
         },
         {
           "owner": "Enemy",
-          "units": 34,
-          "x": 62,
-          "y": 180
-        },
-        {
-          "owner": "Neutral",
           "units": 23,
-          "x": -62,
-          "y": -190
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Player",
-          "units": 22,
-          "x": -209,
-          "y": -3
-        },
-        {
-          "owner": "Enemy",
-          "units": 32,
-          "x": 223,
-          "y": 55
-        },
-        {
-          "owner": "Enemy",
-          "units": 33,
-          "x": 83,
-          "y": 159
-        },
-        {
-          "owner": "Neutral",
-          "units": 20,
-          "x": -140,
-          "y": -175
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 34,
-          "x": 62,
-          "y": -234
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 33,
-          "x": -115,
-          "y": 140
-        },
-        {
-          "owner": "Neutral",
-          "units": 21,
-          "x": 173,
-          "y": -100
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Enemy",
-          "units": 32,
-          "x": 180,
-          "y": 42
-        },
-        {
-          "owner": "Neutral",
-          "units": 23,
-          "x": -182,
-          "y": 78
-        },
-        {
-          "owner": "Enemy",
-          "units": 34,
-          "x": 110,
-          "y": 154
-        },
-        {
-          "owner": "Neutral",
-          "units": 23,
-          "x": 204,
-          "y": -122
-        },
-        {
-          "owner": "Neutral",
-          "units": 22,
-          "x": -36,
-          "y": 151
-        },
-        {
-          "owner": "Neutral",
-          "units": 25,
-          "x": 58,
-          "y": -225
-        },
-        {
-          "owner": "Player",
-          "units": 23,
-          "x": -180,
-          "y": -101
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 35,
-          "x": -78,
-          "y": -187
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Player",
-          "units": 21,
-          "x": 26,
-          "y": 177
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 35,
-          "x": -32,
-          "y": -233
-        },
-        {
-          "owner": "Enemy",
-          "units": 34,
-          "x": 188,
-          "y": 35
-        },
-        {
-          "owner": "Enemy",
-          "units": 33,
-          "x": 190,
-          "y": -163
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 35,
-          "x": -187,
-          "y": 113
-        },
-        {
-          "owner": "Neutral",
-          "units": 22,
-          "x": -219,
-          "y": -99
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Player",
-          "units": 19,
-          "x": -193,
-          "y": -1
-        },
-        {
-          "owner": "Enemy",
-          "units": 32,
-          "x": 208,
-          "y": 68
-        },
-        {
-          "owner": "Neutral",
-          "units": 25,
-          "x": 158,
-          "y": -121
-        },
-        {
-          "owner": "Neutral",
-          "units": 24,
-          "x": 53,
-          "y": 156
-        },
-        {
-          "owner": "Enemy",
-          "units": 33,
-          "x": -149,
-          "y": -185
-        },
-        {
-          "owner": "Neutral",
-          "units": 24,
-          "x": 31,
-          "y": -198
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 36,
-          "x": -117,
-          "y": 116
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 21,
-          "x": 225,
-          "y": 2
-        },
-        {
-          "owner": "Enemy",
-          "units": 33,
-          "x": 122,
-          "y": 121
-        },
-        {
-          "owner": "Neutral",
-          "units": 22,
-          "x": -213,
-          "y": -74
-        },
-        {
-          "owner": "Neutral",
-          "units": 22,
-          "x": -7,
-          "y": 180
-        },
-        {
-          "owner": "Neutral",
-          "units": 24,
-          "x": -123,
-          "y": -199
-        },
-        {
-          "owner": "Enemy",
-          "units": 38,
-          "x": 168,
-          "y": -159
-        },
-        {
-          "owner": "Player",
-          "units": 19,
-          "x": 39,
-          "y": -212
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 34,
-          "x": -186,
+          "x": -200,
           "y": 70
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Player",
-          "units": 18,
-          "x": 121,
-          "y": -156
         },
         {
           "owner": "Neutral",
+          "units": 18,
+          "x": 244,
+          "y": 56
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 22,
+          "x": -113,
+          "y": -223
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 19,
+          "x": 187,
+          "y": -108
+        },
+        {
+          "owner": "Neutral",
+          "units": 16,
+          "x": 89,
+          "y": 135
+        },
+        {
+          "owner": "Neutral",
+          "units": 16,
+          "x": 78,
+          "y": -239
+        },
+        {
+          "owner": "Enemy",
           "units": 25,
-          "x": -144,
-          "y": 120
-        },
-        {
-          "owner": "Enemy",
-          "units": 37,
-          "x": -202,
-          "y": -50
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 34,
-          "x": 194,
-          "y": 31
-        },
-        {
-          "owner": "Neutral",
-          "units": 21,
-          "x": 53,
-          "y": 144
-        },
-        {
-          "owner": "Enemy",
-          "units": 37,
-          "x": -85,
-          "y": -190
+          "x": -74,
+          "y": 186
         }
       ]
     },
@@ -2090,44 +2604,56 @@
       "points": [
         {
           "owner": "Enemy",
-          "units": 38,
-          "x": 32,
-          "y": 146
-        },
-        {
-          "owner": "Player",
-          "units": 18,
-          "x": -135,
-          "y": 116
+          "units": 19,
+          "x": 185,
+          "y": -186
         },
         {
           "owner": "EnemyTwo",
-          "units": 38,
-          "x": 19,
-          "y": -227
-        },
-        {
-          "owner": "Neutral",
-          "units": 24,
-          "x": 170,
-          "y": -104
+          "units": 25,
+          "x": -136,
+          "y": -186
         },
         {
           "owner": "Enemy",
-          "units": 37,
-          "x": -126,
-          "y": -171
+          "units": 20,
+          "x": -122,
+          "y": 203
         },
         {
           "owner": "Neutral",
-          "units": 26,
-          "x": -240,
-          "y": -7
+          "units": 16,
+          "x": 23,
+          "y": -250
+        },
+        {
+          "owner": "Neutral",
+          "units": 19,
+          "x": 51,
+          "y": 185
         },
         {
           "owner": "EnemyTwo",
-          "units": 39,
-          "x": 219,
+          "units": 24,
+          "x": -283,
+          "y": -99
+        },
+        {
+          "owner": "Neutral",
+          "units": 19,
+          "x": 276,
+          "y": -40
+        },
+        {
+          "owner": "Neutral",
+          "units": 17,
+          "x": 207,
+          "y": 114
+        },
+        {
+          "owner": "Player",
+          "units": 20,
+          "x": -197,
           "y": 52
         }
       ]
@@ -2135,58 +2661,202 @@
     {
       "points": [
         {
-          "owner": "Neutral",
-          "units": 22,
-          "x": -220,
-          "y": -46
-        },
-        {
           "owner": "Enemy",
-          "units": 36,
-          "x": 205,
-          "y": 63
-        },
-        {
-          "owner": "Neutral",
-          "units": 26,
-          "x": 116,
-          "y": 163
-        },
-        {
-          "owner": "Neutral",
-          "units": 27,
-          "x": 209,
-          "y": -93
-        },
-        {
-          "owner": "Enemy",
-          "units": 37,
-          "x": -16,
-          "y": -225
-        },
-        {
-          "owner": "Neutral",
-          "units": 22,
-          "x": -191,
-          "y": 99
+          "units": 20,
+          "x": -150,
+          "y": 110
         },
         {
           "owner": "EnemyTwo",
-          "units": 38,
-          "x": 114,
+          "units": 24,
+          "x": 219,
+          "y": -91
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 19,
+          "x": -127,
+          "y": -218
+        },
+        {
+          "owner": "Neutral",
+          "units": 16,
+          "x": 211,
+          "y": 84
+        },
+        {
+          "owner": "Enemy",
+          "units": 19,
+          "x": 9,
+          "y": 167
+        },
+        {
+          "owner": "Neutral",
+          "units": 19,
+          "x": 87,
+          "y": -231
+        },
+        {
+          "owner": "Player",
+          "units": 22,
+          "x": -212,
+          "y": -52
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Player",
+          "units": 23,
+          "x": 257,
+          "y": 50
+        },
+        {
+          "owner": "Enemy",
+          "units": 25,
+          "x": -47,
+          "y": 178
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 21,
+          "x": 187,
+          "y": -103
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 25,
+          "x": 126,
+          "y": 161
+        },
+        {
+          "owner": "Neutral",
+          "units": 19,
+          "x": -195,
+          "y": 96
+        },
+        {
+          "owner": "Neutral",
+          "units": 17,
+          "x": -241,
+          "y": -71
+        },
+        {
+          "owner": "Enemy",
+          "units": 22,
+          "x": 58,
+          "y": -220
+        },
+        {
+          "owner": "Neutral",
+          "units": 16,
+          "x": -110,
           "y": -191
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 19,
+          "x": -278,
+          "y": -1
+        },
+        {
+          "owner": "Enemy",
+          "units": 22,
+          "x": 176,
+          "y": -108
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 23,
+          "x": -66,
+          "y": -218
+        },
+        {
+          "owner": "Neutral",
+          "units": 19,
+          "x": 267,
+          "y": 39
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 23,
+          "x": -18,
+          "y": 216
+        },
+        {
+          "owner": "Neutral",
+          "units": 18,
+          "x": -231,
+          "y": -166
         },
         {
           "owner": "Player",
           "units": 21,
-          "x": -75,
-          "y": 160
+          "x": 100,
+          "y": -258
         },
         {
           "owner": "Neutral",
+          "units": 15,
+          "x": 143,
+          "y": 156
+        },
+        {
+          "owner": "Enemy",
+          "units": 25,
+          "x": -165,
+          "y": 128
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Player",
+          "units": 18,
+          "x": 110,
+          "y": 143
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 26,
+          "x": -212,
+          "y": -124
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 26,
+          "x": -189,
+          "y": 64
+        },
+        {
+          "owner": "Neutral",
+          "units": 16,
+          "x": 157,
+          "y": -181
+        },
+        {
+          "owner": "Player",
+          "units": 19,
+          "x": -56,
+          "y": -208
+        },
+        {
+          "owner": "Enemy",
+          "units": 25,
+          "x": -60,
+          "y": 181
+        },
+        {
+          "owner": "Enemy",
           "units": 24,
-          "x": -159,
-          "y": -176
+          "x": 237,
+          "y": -3
         }
       ]
     },
@@ -2194,252 +2864,784 @@
       "points": [
         {
           "owner": "Enemy",
-          "units": 34,
-          "x": -217,
-          "y": -65
+          "units": 26,
+          "x": -202,
+          "y": 95
+        },
+        {
+          "owner": "Neutral",
+          "units": 19,
+          "x": 211,
+          "y": -154
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 24,
+          "x": -231,
+          "y": -76
+        },
+        {
+          "owner": "Enemy",
+          "units": 22,
+          "x": 53,
+          "y": -249
+        },
+        {
+          "owner": "Player",
+          "units": 22,
+          "x": -115,
+          "y": -200
+        },
+        {
+          "owner": "Neutral",
+          "units": 20,
+          "x": 239,
+          "y": 18
+        },
+        {
+          "owner": "Neutral",
+          "units": 17,
+          "x": -53,
+          "y": 179
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 22,
+          "x": 128,
+          "y": 160
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Enemy",
+          "units": 25,
+          "x": 219,
+          "y": -83
+        },
+        {
+          "owner": "Neutral",
+          "units": 16,
+          "x": -178,
+          "y": -207
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 25,
+          "x": 240,
+          "y": 90
+        },
+        {
+          "owner": "Neutral",
+          "units": 19,
+          "x": 104,
+          "y": 189
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 23,
+          "x": -66,
+          "y": 203
+        },
+        {
+          "owner": "Neutral",
+          "units": 17,
+          "x": -194,
+          "y": 91
+        },
+        {
+          "owner": "Enemy",
+          "units": 26,
+          "x": -24,
+          "y": -283
         },
         {
           "owner": "Player",
           "units": 23,
-          "x": 1,
-          "y": 152
+          "x": 143,
+          "y": -233
+        },
+        {
+          "owner": "Neutral",
+          "units": 20,
+          "x": -269,
+          "y": -63
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "EnemyTwo",
+          "units": 26,
+          "x": 252,
+          "y": -43
+        },
+        {
+          "owner": "Enemy",
+          "units": 26,
+          "x": -24,
+          "y": 161
+        },
+        {
+          "owner": "Neutral",
+          "units": 19,
+          "x": 147,
+          "y": 134
+        },
+        {
+          "owner": "Player",
+          "units": 22,
+          "x": -213,
+          "y": -104
+        },
+        {
+          "owner": "Player",
+          "units": 18,
+          "x": 145,
+          "y": -181
+        },
+        {
+          "owner": "Enemy",
+          "units": 24,
+          "x": -55,
+          "y": -220
         },
         {
           "owner": "EnemyTwo",
-          "units": 40,
-          "x": -106,
-          "y": -196
+          "units": 26,
+          "x": -208,
+          "y": 72
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "EnemyTwo",
+          "units": 26,
+          "x": -244,
+          "y": -50
+        },
+        {
+          "owner": "Neutral",
+          "units": 16,
+          "x": -164,
+          "y": 99
+        },
+        {
+          "owner": "Enemy",
+          "units": 24,
+          "x": 15,
+          "y": -240
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 26,
+          "x": 261,
+          "y": -6
+        },
+        {
+          "owner": "Neutral",
+          "units": 19,
+          "x": -153,
+          "y": -195
+        },
+        {
+          "owner": "Neutral",
+          "units": 20,
+          "x": -19,
+          "y": 185
+        },
+        {
+          "owner": "Player",
+          "units": 24,
+          "x": 138,
+          "y": 111
+        },
+        {
+          "owner": "Enemy",
+          "units": 22,
+          "x": 166,
+          "y": -148
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Player",
+          "units": 24,
+          "x": -270,
+          "y": -1
+        },
+        {
+          "owner": "Neutral",
+          "units": 16,
+          "x": 232,
+          "y": -133
+        },
+        {
+          "owner": "Neutral",
+          "units": 20,
+          "x": 128,
+          "y": 161
+        },
+        {
+          "owner": "Enemy",
+          "units": 22,
+          "x": 105,
+          "y": -245
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 21,
+          "x": -145,
+          "y": 119
+        },
+        {
+          "owner": "Enemy",
+          "units": 26,
+          "x": -65,
+          "y": -206
+        },
+        {
+          "owner": "Neutral",
+          "units": 18,
+          "x": -22,
+          "y": 238
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 26,
+          "x": -229,
+          "y": -166
+        },
+        {
+          "owner": "Neutral",
+          "units": 20,
+          "x": 252,
+          "y": 37
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Enemy",
+          "units": 27,
+          "x": -87,
+          "y": 154
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 24,
+          "x": 159,
+          "y": -166
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 26,
+          "x": 246,
+          "y": 4
+        },
+        {
+          "owner": "Enemy",
+          "units": 21,
+          "x": -179,
+          "y": -136
+        },
+        {
+          "owner": "Player",
+          "units": 21,
+          "x": 102,
+          "y": 140
+        },
+        {
+          "owner": "Neutral",
+          "units": 21,
+          "x": -207,
+          "y": 35
+        },
+        {
+          "owner": "Player",
+          "units": 19,
+          "x": -25,
+          "y": -223
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Player",
+          "units": 23,
+          "x": -208,
+          "y": 111
+        },
+        {
+          "owner": "Enemy",
+          "units": 25,
+          "x": -219,
+          "y": -59
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 23,
+          "x": 121,
+          "y": 154
+        },
+        {
+          "owner": "Enemy",
+          "units": 26,
+          "x": 250,
+          "y": 8
+        },
+        {
+          "owner": "Neutral",
+          "units": 21,
+          "x": -109,
+          "y": -193
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 22,
+          "x": -53,
+          "y": 179
+        },
+        {
+          "owner": "Neutral",
+          "units": 20,
+          "x": 189,
+          "y": -155
+        },
+        {
+          "owner": "Neutral",
+          "units": 20,
+          "x": 49,
+          "y": -253
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 20,
+          "x": 186,
+          "y": -211
+        },
+        {
+          "owner": "Enemy",
+          "units": 27,
+          "x": -231,
+          "y": 95
+        },
+        {
+          "owner": "Neutral",
+          "units": 20,
+          "x": -242,
+          "y": -76
+        },
+        {
+          "owner": "Neutral",
+          "units": 21,
+          "x": 18,
+          "y": -257
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 27,
+          "x": 221,
+          "y": 106
+        },
+        {
+          "owner": "Neutral",
+          "units": 19,
+          "x": -149,
+          "y": -220
+        },
+        {
+          "owner": "Enemy",
+          "units": 27,
+          "x": -90,
+          "y": 188
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 21,
+          "x": 264,
+          "y": -60
+        },
+        {
+          "owner": "Player",
+          "units": 24,
+          "x": 82,
+          "y": 206
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 20,
+          "x": -126,
+          "y": 175
+        },
+        {
+          "owner": "Enemy",
+          "units": 27,
+          "x": -251,
+          "y": 33
+        },
+        {
+          "owner": "Enemy",
+          "units": 26,
+          "x": 12,
+          "y": -242
+        },
+        {
+          "owner": "Player",
+          "units": 24,
+          "x": 227,
+          "y": 12
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 26,
+          "x": 121,
+          "y": 145
+        },
+        {
+          "owner": "Player",
+          "units": 24,
+          "x": -176,
+          "y": -140
+        },
+        {
+          "owner": "EnemyThree",
+          "units": 26,
+          "x": 155,
+          "y": -146
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Enemy",
+          "units": 27,
+          "x": -215,
+          "y": -129
+        },
+        {
+          "owner": "Neutral",
+          "units": 21,
+          "x": -115,
+          "y": 177
+        },
+        {
+          "owner": "EnemyThree",
+          "units": 22,
+          "x": 68,
+          "y": 187
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 27,
+          "x": 134,
+          "y": -211
+        },
+        {
+          "owner": "Neutral",
+          "units": 19,
+          "x": 228,
+          "y": 80
+        },
+        {
+          "owner": "Enemy",
+          "units": 23,
+          "x": 258,
+          "y": -94
+        },
+        {
+          "owner": "Player",
+          "units": 24,
+          "x": -235,
+          "y": 51
+        },
+        {
+          "owner": "Neutral",
+          "units": 21,
+          "x": -39,
+          "y": -205
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 21,
+          "x": 246,
+          "y": -71
+        },
+        {
+          "owner": "Enemy",
+          "units": 28,
+          "x": -165,
+          "y": -201
+        },
+        {
+          "owner": "Neutral",
+          "units": 20,
+          "x": 90,
+          "y": 202
+        },
+        {
+          "owner": "EnemyThree",
+          "units": 28,
+          "x": -77,
+          "y": 169
+        },
+        {
+          "owner": "Neutral",
+          "units": 20,
+          "x": 227,
+          "y": 99
+        },
+        {
+          "owner": "Player",
+          "units": 24,
+          "x": -276,
+          "y": -72
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 27,
+          "x": 149,
+          "y": -212
+        },
+        {
+          "owner": "Enemy",
+          "units": 27,
+          "x": -231,
+          "y": 93
+        },
+        {
+          "owner": "Neutral",
+          "units": 16,
+          "x": -12,
+          "y": -277
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Player",
+          "units": 21,
+          "x": 237,
+          "y": 43
+        },
+        {
+          "owner": "Player",
+          "units": 20,
+          "x": -211,
+          "y": -15
+        },
+        {
+          "owner": "Enemy",
+          "units": 28,
+          "x": -174,
+          "y": -185
+        },
+        {
+          "owner": "EnemyThree",
+          "units": 27,
+          "x": 42,
+          "y": -212
+        },
+        {
+          "owner": "Neutral",
+          "units": 21,
+          "x": 202,
+          "y": -127
+        },
+        {
+          "owner": "Enemy",
+          "units": 25,
+          "x": 103,
+          "y": 189
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 27,
+          "x": -141,
+          "y": 144
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "EnemyTwo",
+          "units": 23,
+          "x": -84,
+          "y": -225
+        },
+        {
+          "owner": "Neutral",
+          "units": 17,
+          "x": 229,
+          "y": 79
+        },
+        {
+          "owner": "Enemy",
+          "units": 26,
+          "x": -240,
+          "y": 66
         },
         {
           "owner": "Neutral",
           "units": 22,
           "x": 101,
-          "y": -194
-        },
-        {
-          "owner": "Enemy",
-          "units": 38,
-          "x": -143,
-          "y": 81
+          "y": -215
         },
         {
           "owner": "Neutral",
-          "units": 26,
-          "x": 195,
-          "y": 95
-        },
-        {
-          "owner": "Neutral",
-          "units": 24,
-          "x": 199,
-          "y": -80
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 27,
-          "x": 226,
-          "y": -86
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 39,
-          "x": 212,
-          "y": 49
-        },
-        {
-          "owner": "Enemy",
-          "units": 39,
-          "x": -212,
-          "y": 47
-        },
-        {
-          "owner": "Enemy",
-          "units": 37,
-          "x": -118,
-          "y": 143
-        },
-        {
-          "owner": "Player",
-          "units": 23,
-          "x": 123,
-          "y": -194
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 35,
-          "x": -180,
-          "y": -118
-        },
-        {
-          "owner": "Neutral",
-          "units": 24,
-          "x": -37,
-          "y": -207
-        },
-        {
-          "owner": "Neutral",
-          "units": 24,
-          "x": 83,
-          "y": 183
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Enemy",
-          "units": 40,
-          "x": -23,
+          "units": 20,
+          "x": 73,
           "y": 173
         },
         {
-          "owner": "Neutral",
-          "units": 27,
-          "x": -150,
-          "y": 143
-        },
-        {
-          "owner": "Player",
-          "units": 19,
-          "x": -75,
-          "y": -202
-        },
-        {
-          "owner": "Neutral",
-          "units": 23,
-          "x": 134,
-          "y": 107
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 40,
-          "x": 59,
-          "y": -199
-        },
-        {
-          "owner": "Neutral",
-          "units": 23,
-          "x": -219,
-          "y": -102
-        },
-        {
-          "owner": "Neutral",
-          "units": 26,
-          "x": -218,
-          "y": 27
-        },
-        {
           "owner": "Enemy",
-          "units": 35,
-          "x": 191,
-          "y": -138
-        },
-        {
-          "owner": "Neutral",
-          "units": 26,
-          "x": 202,
-          "y": -8
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 24,
-          "x": -78,
-          "y": 157
-        },
-        {
-          "owner": "Player",
-          "units": 19,
-          "x": 237,
-          "y": 47
-        },
-        {
-          "owner": "Enemy",
-          "units": 36,
-          "x": -157,
-          "y": -174
-        },
-        {
-          "owner": "Enemy",
-          "units": 40,
-          "x": 31,
-          "y": -226
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 38,
-          "x": 159,
-          "y": -143
-        },
-        {
-          "owner": "Neutral",
-          "units": 23,
-          "x": -226,
-          "y": 20
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 38,
-          "x": 112,
-          "y": 143
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 23,
-          "x": 200,
-          "y": -157
-        },
-        {
-          "owner": "Enemy",
-          "units": 41,
-          "x": 165,
-          "y": 129
-        },
-        {
-          "owner": "Player",
-          "units": 19,
-          "x": 216,
-          "y": 5
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 41,
-          "x": 8,
-          "y": -213
-        },
-        {
-          "owner": "Neutral",
-          "units": 24,
-          "x": -205,
-          "y": -32
-        },
-        {
-          "owner": "Enemy",
-          "units": 39,
-          "x": -10,
-          "y": 151
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 37,
-          "x": -154,
-          "y": -202
-        },
-        {
-          "owner": "Neutral",
           "units": 25,
-          "x": -174,
+          "x": -101,
+          "y": 171
+        },
+        {
+          "owner": "EnemyThree",
+          "units": 25,
+          "x": 234,
+          "y": -95
+        },
+        {
+          "owner": "Player",
+          "units": 24,
+          "x": -207,
+          "y": -104
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 17,
+          "x": 194,
+          "y": -191
+        },
+        {
+          "owner": "Neutral",
+          "units": 21,
+          "x": -274,
+          "y": -103
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 26,
+          "x": 71,
+          "y": 245
+        },
+        {
+          "owner": "Enemy",
+          "units": 27,
+          "x": -72,
+          "y": 155
+        },
+        {
+          "owner": "Neutral",
+          "units": 21,
+          "x": -138,
+          "y": -205
+        },
+        {
+          "owner": "Enemy",
+          "units": 23,
+          "x": 266,
+          "y": -36
+        },
+        {
+          "owner": "Neutral",
+          "units": 22,
+          "x": 29,
+          "y": -243
+        },
+        {
+          "owner": "Player",
+          "units": 22,
+          "x": 165,
+          "y": 105
+        },
+        {
+          "owner": "EnemyThree",
+          "units": 25,
+          "x": -216,
+          "y": 56
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Player",
+          "units": 24,
+          "x": -126,
+          "y": 162
+        },
+        {
+          "owner": "Neutral",
+          "units": 22,
+          "x": 126,
+          "y": -214
+        },
+        {
+          "owner": "Enemy",
+          "units": 24,
+          "x": -188,
+          "y": -156
+        },
+        {
+          "owner": "Neutral",
+          "units": 21,
+          "x": 46,
+          "y": 185
+        },
+        {
+          "owner": "Enemy",
+          "units": 28,
+          "x": -217,
+          "y": 16
+        },
+        {
+          "owner": "EnemyThree",
+          "units": 27,
+          "x": 225,
+          "y": -70
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 23,
+          "x": -47,
+          "y": -248
+        },
+        {
+          "owner": "Neutral",
+          "units": 21,
+          "x": 201,
           "y": 98
         }
       ]
@@ -2447,780 +3649,122 @@
     {
       "points": [
         {
-          "owner": "EnemyTwo",
-          "units": 41,
-          "x": 209,
-          "y": -8
-        },
-        {
-          "owner": "Neutral",
-          "units": 27,
-          "x": 31,
-          "y": 186
-        },
-        {
-          "owner": "Neutral",
-          "units": 25,
-          "x": -97,
-          "y": 163
-        },
-        {
-          "owner": "Player",
-          "units": 19,
-          "x": -226,
-          "y": 32
-        },
-        {
-          "owner": "Neutral",
-          "units": 25,
-          "x": 74,
-          "y": -231
-        },
-        {
           "owner": "Enemy",
-          "units": 40,
-          "x": -192,
-          "y": -97
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 41,
-          "x": 192,
-          "y": -151
-        },
-        {
-          "owner": "Neutral",
-          "units": 25,
-          "x": 180,
-          "y": 123
-        },
-        {
-          "owner": "Enemy",
-          "units": 40,
-          "x": -126,
-          "y": -211
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 24,
-          "x": 192,
-          "y": 86
-        },
-        {
-          "owner": "Enemy",
-          "units": 40,
-          "x": -154,
-          "y": 90
-        },
-        {
-          "owner": "Neutral",
-          "units": 24,
-          "x": -200,
-          "y": -58
-        },
-        {
-          "owner": "Enemy",
-          "units": 43,
-          "x": 8,
-          "y": 197
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 43,
-          "x": 124,
-          "y": -198
-        },
-        {
-          "owner": "Neutral",
-          "units": 29,
-          "x": -93,
-          "y": -188
-        },
-        {
-          "owner": "Player",
-          "units": 24,
-          "x": 233,
-          "y": -80
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Player",
-          "units": 24,
-          "x": 29,
-          "y": 184
-        },
-        {
-          "owner": "Player",
-          "units": 19,
-          "x": 132,
-          "y": 91
-        },
-        {
-          "owner": "Enemy",
-          "units": 42,
-          "x": -222,
-          "y": -18
-        },
-        {
-          "owner": "Neutral",
-          "units": 26,
-          "x": -172,
-          "y": 107
-        },
-        {
-          "owner": "Enemy",
-          "units": 41,
-          "x": -156,
-          "y": -163
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 43,
-          "x": 247,
-          "y": -35
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 39,
-          "x": 21,
-          "y": -208
-        },
-        {
-          "owner": "Neutral",
-          "units": 27,
-          "x": 176,
-          "y": -153
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Enemy",
-          "units": 41,
-          "x": -225,
-          "y": -14
-        },
-        {
-          "owner": "Neutral",
-          "units": 28,
-          "x": -23,
-          "y": 189
-        },
-        {
-          "owner": "Enemy",
-          "units": 40,
-          "x": -171,
-          "y": 107
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 39,
-          "x": 120,
-          "y": -211
-        },
-        {
-          "owner": "Player",
-          "units": 24,
-          "x": -56,
-          "y": -216
-        },
-        {
-          "owner": "Neutral",
-          "units": 29,
-          "x": -187,
-          "y": -142
-        },
-        {
-          "owner": "Neutral",
-          "units": 25,
-          "x": 209,
-          "y": -111
-        },
-        {
-          "owner": "Player",
           "units": 23,
-          "x": 124,
-          "y": 154
+          "x": 18,
+          "y": 203
         },
         {
           "owner": "Neutral",
-          "units": 28,
-          "x": 230,
-          "y": 54
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 25,
-          "x": -55,
-          "y": 155
+          "units": 19,
+          "x": -250,
+          "y": -147
         },
         {
-          "owner": "Player",
-          "units": 22,
-          "x": 212,
-          "y": -64
+          "owner": "Neutral",
+          "units": 19,
+          "x": -217,
+          "y": 22
         },
         {
           "owner": "Enemy",
-          "units": 41,
-          "x": -81,
-          "y": -242
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 41,
-          "x": 94,
-          "y": -186
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 41,
-          "x": -179,
-          "y": 96
-        },
-        {
-          "owner": "Neutral",
-          "units": 27,
-          "x": -203,
-          "y": -75
-        },
-        {
-          "owner": "Enemy",
-          "units": 44,
-          "x": 138,
-          "y": 127
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Player",
-          "units": 24,
-          "x": -4,
-          "y": -218
-        },
-        {
-          "owner": "Neutral",
-          "units": 26,
-          "x": 158,
-          "y": 137
-        },
-        {
-          "owner": "Neutral",
-          "units": 25,
-          "x": -7,
-          "y": 189
-        },
-        {
-          "owner": "Player",
-          "units": 21,
-          "x": -196,
-          "y": -61
-        },
-        {
-          "owner": "Enemy",
-          "units": 45,
-          "x": 167,
-          "y": -160
-        },
-        {
-          "owner": "Enemy",
-          "units": 41,
-          "x": 219,
-          "y": -27
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 44,
-          "x": -164,
-          "y": 122
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 41,
-          "x": -131,
-          "y": -193
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
           "units": 29,
-          "x": 188,
-          "y": 80
+          "x": 65,
+          "y": -280
         },
         {
-          "owner": "Player",
-          "units": 25,
-          "x": -166,
-          "y": -173
-        },
-        {
-          "owner": "Player",
-          "units": 21,
-          "x": 125,
-          "y": -174
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 43,
-          "x": -71,
-          "y": 162
-        },
-        {
-          "owner": "Enemy",
-          "units": 44,
-          "x": -238,
-          "y": -61
-        },
-        {
-          "owner": "Neutral",
-          "units": 26,
-          "x": -28,
-          "y": -229
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 40,
-          "x": 88,
-          "y": 170
-        },
-        {
-          "owner": "Enemy",
-          "units": 45,
-          "x": -178,
-          "y": 62
-        },
-        {
-          "owner": "Enemy",
-          "units": 45,
-          "x": 201,
-          "y": -51
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Enemy",
-          "units": 41,
-          "x": 125,
-          "y": 142
-        },
-        {
-          "owner": "Player",
-          "units": 24,
-          "x": 150,
-          "y": -166
-        },
-        {
-          "owner": "Enemy",
-          "units": 43,
-          "x": 211,
-          "y": 40
-        },
-        {
-          "owner": "Enemy",
-          "units": 44,
-          "x": -116,
-          "y": 178
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 40,
-          "x": 2,
-          "y": -213
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 44,
-          "x": -193,
-          "y": -141
-        },
-        {
-          "owner": "Player",
-          "units": 22,
-          "x": -223,
-          "y": 34
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 29,
-          "x": -181,
-          "y": -164
-        },
-        {
-          "owner": "Player",
-          "units": 24,
-          "x": 7,
-          "y": 163
-        },
-        {
-          "owner": "Neutral",
-          "units": 31,
-          "x": 250,
-          "y": -25
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 44,
-          "x": -153,
-          "y": 102
-        },
-        {
-          "owner": "Enemy",
-          "units": 44,
-          "x": 178,
-          "y": 134
-        },
-        {
-          "owner": "Enemy",
-          "units": 46,
-          "x": 158,
-          "y": -183
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 43,
-          "x": -241,
-          "y": -43
-        },
-        {
-          "owner": "Neutral",
-          "units": 27,
-          "x": -11,
-          "y": -240
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Player",
-          "units": 20,
-          "x": -216,
-          "y": -28
-        },
-        {
-          "owner": "Enemy",
-          "units": 43,
-          "x": -28,
-          "y": -207
-        },
-        {
-          "owner": "Neutral",
-          "units": 30,
-          "x": -64,
-          "y": 165
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 43,
-          "x": 226,
-          "y": 34
-        },
-        {
-          "owner": "Neutral",
-          "units": 31,
-          "x": -175,
-          "y": -152
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 45,
-          "x": 212,
-          "y": -94
-        },
-        {
-          "owner": "Enemy",
-          "units": 42,
-          "x": 113,
-          "y": -184
-        },
-        {
-          "owner": "Player",
-          "units": 23,
-          "x": -188,
-          "y": 103
-        },
-        {
-          "owner": "Neutral",
-          "units": 27,
-          "x": 123,
-          "y": 153
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "EnemyTwo",
-          "units": 43,
-          "x": -231,
-          "y": 53
-        },
-        {
-          "owner": "Neutral",
-          "units": 31,
-          "x": 253,
-          "y": -11
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 46,
-          "x": -39,
-          "y": -242
-        },
-        {
-          "owner": "Player",
-          "units": 21,
-          "x": 149,
-          "y": 130
-        },
-        {
-          "owner": "Enemy",
-          "units": 45,
-          "x": -42,
-          "y": 173
-        },
-        {
-          "owner": "Neutral",
-          "units": 27,
-          "x": -204,
-          "y": -125
-        },
-        {
-          "owner": "Enemy",
-          "units": 48,
-          "x": 159,
-          "y": -203
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Enemy",
-          "units": 45,
-          "x": -192,
-          "y": -174
-        },
-        {
-          "owner": "Neutral",
-          "units": 30,
-          "x": -37,
-          "y": -216
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 44,
-          "x": 45,
-          "y": 166
-        },
-        {
-          "owner": "Enemy",
-          "units": 48,
-          "x": 242,
-          "y": -49
-        },
-        {
-          "owner": "Player",
-          "units": 20,
-          "x": 200,
-          "y": 81
-        },
-        {
-          "owner": "Neutral",
+          "owner": "EnemyThree",
           "units": 28,
-          "x": 128,
-          "y": -194
+          "x": 270,
+          "y": -3
+        },
+        {
+          "owner": "Neutral",
+          "units": 22,
+          "x": 162,
+          "y": -135
+        },
+        {
+          "owner": "Player",
+          "units": 24,
+          "x": 171,
+          "y": 133
         },
         {
           "owner": "EnemyTwo",
-          "units": 43,
-          "x": -235,
+          "units": 28,
+          "x": -149,
+          "y": 176
+        },
+        {
+          "owner": "Neutral",
+          "units": 19,
+          "x": -96,
+          "y": -219
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Player",
+          "units": 24,
+          "x": -242,
+          "y": -200
+        },
+        {
+          "owner": "Enemy",
+          "units": 26,
+          "x": -285,
+          "y": -34
+        },
+        {
+          "owner": "Enemy",
+          "units": 28,
+          "x": -82,
+          "y": -257
+        },
+        {
+          "owner": "Neutral",
+          "units": 19,
+          "x": 77,
+          "y": 222
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 29,
+          "x": -249,
+          "y": 133
+        },
+        {
+          "owner": "Neutral",
+          "units": 18,
+          "x": 267,
           "y": -23
         },
         {
-          "owner": "Player",
+          "owner": "EnemyThree",
           "units": 24,
-          "x": -129,
-          "y": 119
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Player",
-          "units": 22,
-          "x": -165,
-          "y": -178
+          "x": 88,
+          "y": -217
         },
         {
           "owner": "Neutral",
-          "units": 32,
-          "x": -238,
-          "y": -21
-        },
-        {
-          "owner": "Enemy",
-          "units": 46,
-          "x": 119,
-          "y": 157
-        },
-        {
-          "owner": "Player",
-          "units": 24,
-          "x": -23,
-          "y": 155
+          "units": 17,
+          "x": 256,
+          "y": -192
         },
         {
           "owner": "Neutral",
-          "units": 32,
-          "x": -203,
-          "y": 108
-        },
-        {
-          "owner": "Enemy",
-          "units": 47,
-          "x": 139,
-          "y": -187
-        },
-        {
-          "owner": "Enemy",
-          "units": 45,
-          "x": -28,
-          "y": -206
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 44,
-          "x": 223,
-          "y": -82
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 44,
-          "x": 200,
-          "y": 51
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Player",
-          "units": 23,
-          "x": -6,
-          "y": 180
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 46,
-          "x": 202,
-          "y": -45
-        },
-        {
-          "owner": "Enemy",
-          "units": 47,
-          "x": -71,
-          "y": -236
+          "units": 19,
+          "x": 225,
+          "y": 142
         },
         {
           "owner": "Neutral",
-          "units": 31,
-          "x": -199,
-          "y": -72
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 45,
-          "x": 169,
-          "y": 123
-        },
-        {
-          "owner": "Enemy",
-          "units": 49,
-          "x": 139,
-          "y": -225
-        },
-        {
-          "owner": "Neutral",
-          "units": 30,
-          "x": -190,
-          "y": 91
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "EnemyTwo",
-          "units": 44,
-          "x": -210,
-          "y": 95
-        },
-        {
-          "owner": "Neutral",
-          "units": 33,
-          "x": 181,
-          "y": -111
-        },
-        {
-          "owner": "Player",
-          "units": 22,
-          "x": -201,
-          "y": -72
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 50,
-          "x": -76,
-          "y": 192
-        },
-        {
-          "owner": "Neutral",
-          "units": 33,
-          "x": 52,
-          "y": -212
-        },
-        {
-          "owner": "Neutral",
-          "units": 33,
-          "x": -125,
-          "y": -207
-        },
-        {
-          "owner": "Enemy",
-          "units": 48,
-          "x": 109,
-          "y": 154
-        },
-        {
-          "owner": "Enemy",
-          "units": 50,
-          "x": 206,
-          "y": 35
+          "units": 17,
+          "x": -92,
+          "y": 201
         }
       ]
     },
@@ -3228,1587 +3772,173 @@
       "points": [
         {
           "owner": "Neutral",
-          "units": 32,
-          "x": 236,
-          "y": -29
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 50,
-          "x": -227,
-          "y": -98
-        },
-        {
-          "owner": "Neutral",
-          "units": 32,
-          "x": -121,
-          "y": 166
-        },
-        {
-          "owner": "Neutral",
-          "units": 29,
-          "x": 173,
-          "y": -149
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 51,
-          "x": -129,
-          "y": -203
-        },
-        {
-          "owner": "Neutral",
-          "units": 33,
-          "x": -197,
-          "y": 55
-        },
-        {
-          "owner": "Enemy",
-          "units": 50,
-          "x": 14,
-          "y": -209
-        },
-        {
-          "owner": "Enemy",
-          "units": 49,
-          "x": 189,
-          "y": 117
-        },
-        {
-          "owner": "Player",
-          "units": 25,
-          "x": 77,
-          "y": 191
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Enemy",
-          "units": 46,
-          "x": 215,
-          "y": 100
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 49,
-          "x": 96,
-          "y": -201
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 47,
-          "x": -128,
-          "y": -225
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 50,
-          "x": -236,
-          "y": -60
-        },
-        {
-          "owner": "Player",
           "units": 21,
-          "x": -170,
-          "y": 140
-        },
-        {
-          "owner": "Enemy",
-          "units": 49,
-          "x": 219,
-          "y": -79
-        },
-        {
-          "owner": "Player",
-          "units": 22,
-          "x": 10,
-          "y": 160
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Enemy",
-          "units": 47,
-          "x": -139,
-          "y": 110
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 46,
-          "x": -168,
-          "y": -171
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 47,
-          "x": 29,
-          "y": 199
-        },
-        {
-          "owner": "Enemy",
-          "units": 46,
-          "x": 162,
-          "y": -168
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 47,
-          "x": 16,
-          "y": -234
-        },
-        {
-          "owner": "Neutral",
-          "units": 29,
-          "x": 141,
-          "y": 137
-        },
-        {
-          "owner": "Neutral",
-          "units": 32,
-          "x": 211,
-          "y": -48
-        },
-        {
-          "owner": "Player",
-          "units": 22,
-          "x": -240,
-          "y": -4
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 31,
-          "x": 0,
-          "y": -239
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 52,
-          "x": -124,
-          "y": -190
-        },
-        {
-          "owner": "Enemy",
-          "units": 49,
-          "x": 47,
-          "y": 163
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 52,
-          "x": -213,
-          "y": 47
-        },
-        {
-          "owner": "Player",
-          "units": 21,
-          "x": 142,
-          "y": -157
-        },
-        {
-          "owner": "Neutral",
-          "units": 31,
-          "x": 247,
-          "y": -20
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 49,
-          "x": -102,
-          "y": 169
-        },
-        {
-          "owner": "Neutral",
-          "units": 29,
-          "x": -202,
-          "y": -86
-        },
-        {
-          "owner": "Enemy",
-          "units": 47,
-          "x": 188,
-          "y": 100
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Player",
-          "units": 21,
-          "x": 198,
-          "y": -57
-        },
-        {
-          "owner": "Player",
-          "units": 24,
-          "x": 13,
-          "y": 166
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 51,
-          "x": -171,
-          "y": 97
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 52,
-          "x": -87,
-          "y": -235
-        },
-        {
-          "owner": "Enemy",
-          "units": 51,
-          "x": -220,
-          "y": -94
-        },
-        {
-          "owner": "Enemy",
-          "units": 47,
-          "x": 122,
-          "y": -199
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 47,
-          "x": 199,
-          "y": 120
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 32,
-          "x": -220,
+          "x": 239,
           "y": -19
         },
         {
           "owner": "Enemy",
-          "units": 47,
-          "x": -161,
-          "y": -142
-        },
-        {
-          "owner": "Enemy",
-          "units": 53,
-          "x": 14,
-          "y": 182
-        },
-        {
-          "owner": "Player",
-          "units": 23,
-          "x": -47,
-          "y": -227
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 52,
-          "x": 232,
-          "y": -35
-        },
-        {
-          "owner": "Neutral",
-          "units": 34,
-          "x": 170,
-          "y": 90
-        },
-        {
-          "owner": "Player",
-          "units": 23,
-          "x": 128,
-          "y": -163
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 53,
-          "x": -167,
-          "y": 110
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Player",
-          "units": 23,
-          "x": 225,
-          "y": -134
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 52,
-          "x": 75,
-          "y": -237
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 49,
-          "x": 3,
-          "y": 200
-        },
-        {
-          "owner": "Neutral",
-          "units": 33,
-          "x": 148,
-          "y": 166
-        },
-        {
-          "owner": "Neutral",
-          "units": 33,
-          "x": -159,
-          "y": 123
-        },
-        {
-          "owner": "Enemy",
-          "units": 51,
-          "x": -84,
-          "y": -239
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 50,
-          "x": -235,
-          "y": 13
-        },
-        {
-          "owner": "Enemy",
-          "units": 49,
-          "x": 224,
-          "y": 18
-        },
-        {
-          "owner": "Neutral",
-          "units": 35,
-          "x": -181,
-          "y": -128
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "EnemyThree",
-          "units": 50,
-          "x": -228,
-          "y": -116
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 53,
-          "x": 59,
-          "y": 162
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 48,
-          "x": -224,
-          "y": 17
-        },
-        {
-          "owner": "Enemy",
-          "units": 53,
-          "x": -118,
-          "y": 168
-        },
-        {
-          "owner": "Enemy",
-          "units": 53,
-          "x": -63,
-          "y": -206
-        },
-        {
-          "owner": "Player",
-          "units": 26,
-          "x": 218,
-          "y": 57
-        },
-        {
-          "owner": "Neutral",
-          "units": 36,
-          "x": 132,
-          "y": -234
-        },
-        {
-          "owner": "Player",
-          "units": 21,
-          "x": 239,
-          "y": -91
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Player",
-          "units": 22,
-          "x": -37,
-          "y": 168
-        },
-        {
-          "owner": "Neutral",
-          "units": 35,
-          "x": -238,
-          "y": -32
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 50,
-          "x": 127,
-          "y": -197
-        },
-        {
-          "owner": "Player",
-          "units": 22,
-          "x": -158,
-          "y": -180
-        },
-        {
-          "owner": "Enemy",
-          "units": 55,
-          "x": -48,
-          "y": -247
-        },
-        {
-          "owner": "Neutral",
-          "units": 34,
-          "x": -202,
-          "y": 94
-        },
-        {
-          "owner": "Neutral",
-          "units": 35,
-          "x": 196,
-          "y": -83
-        },
-        {
-          "owner": "Enemy",
-          "units": 51,
-          "x": 228,
-          "y": 48
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 49,
-          "x": 97,
-          "y": 153
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 32,
-          "x": 215,
-          "y": 22
-        },
-        {
-          "owner": "Neutral",
-          "units": 36,
-          "x": -141,
-          "y": -190
-        },
-        {
-          "owner": "Player",
-          "units": 26,
-          "x": -133,
-          "y": 165
-        },
-        {
-          "owner": "Player",
           "units": 25,
-          "x": -218,
-          "y": -83
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 49,
-          "x": 233,
-          "y": -110
+          "x": -192,
+          "y": 134
         },
         {
           "owner": "Neutral",
-          "units": 34,
-          "x": 10,
-          "y": 178
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 53,
-          "x": 123,
-          "y": -204
-        },
-        {
-          "owner": "Neutral",
-          "units": 35,
-          "x": 136,
-          "y": 128
-        },
-        {
-          "owner": "Enemy",
-          "units": 52,
-          "x": -5,
-          "y": -242
-        },
-        {
-          "owner": "Enemy",
-          "units": 53,
-          "x": -193,
-          "y": 48
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "EnemyTwo",
-          "units": 54,
-          "x": 168,
-          "y": 135
-        },
-        {
-          "owner": "Neutral",
-          "units": 37,
-          "x": 248,
-          "y": -15
-        },
-        {
-          "owner": "Neutral",
-          "units": 35,
-          "x": -222,
-          "y": -28
-        },
-        {
-          "owner": "Neutral",
-          "units": 36,
-          "x": 157,
+          "units": 22,
+          "x": 159,
           "y": -172
         },
         {
+          "owner": "Neutral",
+          "units": 23,
+          "x": -7,
+          "y": -221
+        },
+        {
+          "owner": "Enemy",
+          "units": 23,
+          "x": 176,
+          "y": 140
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 29,
+          "x": -260,
+          "y": -30
+        },
+        {
           "owner": "EnemyThree",
-          "units": 50,
-          "x": -199,
-          "y": 105
+          "units": 26,
+          "x": 14,
+          "y": 200
         },
         {
           "owner": "Player",
           "units": 24,
-          "x": -161,
-          "y": -194
-        },
-        {
-          "owner": "Enemy",
-          "units": 55,
-          "x": 22,
-          "y": -258
-        },
-        {
-          "owner": "Enemy",
-          "units": 54,
-          "x": -30,
-          "y": 178
+          "x": -174,
+          "y": -179
         }
       ]
     },
     {
       "points": [
         {
-          "owner": "Enemy",
-          "units": 52,
-          "x": -187,
-          "y": 94
+          "owner": "Neutral",
+          "units": 23,
+          "x": -249,
+          "y": -106
         },
         {
-          "owner": "Neutral",
-          "units": 32,
-          "x": 224,
-          "y": -117
-        },
-        {
-          "owner": "Neutral",
-          "units": 33,
-          "x": 127,
-          "y": 162
+          "owner": "EnemyThree",
+          "units": 29,
+          "x": 55,
+          "y": 159
         },
         {
           "owner": "EnemyTwo",
-          "units": 56,
-          "x": -59,
-          "y": 161
-        },
-        {
-          "owner": "Player",
-          "units": 27,
-          "x": -185,
-          "y": -191
-        },
-        {
-          "owner": "Enemy",
-          "units": 55,
-          "x": 214,
-          "y": 35
-        },
-        {
-          "owner": "Neutral",
-          "units": 33,
-          "x": -30,
-          "y": -240
-        },
-        {
-          "owner": "Neutral",
-          "units": 34,
-          "x": 140,
-          "y": -215
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 52,
-          "x": -223,
-          "y": -42
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Player",
-          "units": 23,
-          "x": 264,
-          "y": -70
-        },
-        {
-          "owner": "Neutral",
-          "units": 35,
-          "x": 179,
-          "y": -173
-        },
-        {
-          "owner": "Neutral",
-          "units": 34,
-          "x": 25,
-          "y": -254
-        },
-        {
-          "owner": "Player",
-          "units": 22,
-          "x": 99,
-          "y": 180
-        },
-        {
-          "owner": "Neutral",
-          "units": 37,
-          "x": 197,
-          "y": 47
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 51,
-          "x": -31,
-          "y": 194
-        },
-        {
-          "owner": "Neutral",
-          "units": 34,
-          "x": -119,
+          "units": 29,
+          "x": 45,
           "y": -226
         },
         {
           "owner": "Enemy",
-          "units": 51,
-          "x": -229,
-          "y": -123
-        },
-        {
-          "owner": "Enemy",
-          "units": 52,
-          "x": -156,
-          "y": 146
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 54,
-          "x": -259,
-          "y": 7
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 33,
-          "x": -219,
-          "y": -80
-        },
-        {
-          "owner": "Enemy",
-          "units": 52,
-          "x": 237,
-          "y": 12
-        },
-        {
-          "owner": "Enemy",
-          "units": 54,
-          "x": 16,
-          "y": -235
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 56,
-          "x": -161,
-          "y": -218
-        },
-        {
-          "owner": "Neutral",
-          "units": 32,
-          "x": -192,
-          "y": 79
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 57,
-          "x": 154,
-          "y": 132
-        },
-        {
-          "owner": "Neutral",
-          "units": 32,
-          "x": 205,
-          "y": -154
-        },
-        {
-          "owner": "Player",
-          "units": 22,
-          "x": -25,
-          "y": 193
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "EnemyTwo",
-          "units": 55,
-          "x": 70,
-          "y": 167
-        },
-        {
-          "owner": "Enemy",
-          "units": 57,
-          "x": 185,
-          "y": 68
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 55,
-          "x": -212,
-          "y": -76
-        },
-        {
-          "owner": "Neutral",
-          "units": 37,
-          "x": -86,
-          "y": 198
-        },
-        {
-          "owner": "Enemy",
-          "units": 56,
-          "x": -183,
-          "y": 85
-        },
-        {
-          "owner": "Player",
-          "units": 27,
-          "x": -4,
-          "y": -239
-        },
-        {
-          "owner": "Neutral",
-          "units": 33,
-          "x": 124,
-          "y": -195
-        },
-        {
-          "owner": "Neutral",
-          "units": 37,
-          "x": -156,
-          "y": -205
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 58,
-          "x": 234,
-          "y": -81
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 34,
-          "x": -1,
-          "y": 199
-        },
-        {
-          "owner": "Player",
-          "units": 27,
-          "x": 116,
-          "y": 141
-        },
-        {
-          "owner": "Neutral",
-          "units": 35,
-          "x": -139,
-          "y": 155
-        },
-        {
-          "owner": "Enemy",
-          "units": 52,
-          "x": -235,
-          "y": -122
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 55,
-          "x": -240,
-          "y": 33
-        },
-        {
-          "owner": "Neutral",
-          "units": 36,
-          "x": 207,
-          "y": -92
-        },
-        {
-          "owner": "Neutral",
-          "units": 36,
-          "x": 10,
-          "y": -236
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 53,
-          "x": 163,
-          "y": -218
-        },
-        {
-          "owner": "Enemy",
-          "units": 53,
-          "x": -126,
-          "y": -198
-        },
-        {
-          "owner": "Neutral",
-          "units": 36,
-          "x": 218,
-          "y": 54
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "EnemyTwo",
-          "units": 53,
-          "x": 241,
-          "y": 78
-        },
-        {
-          "owner": "Player",
-          "units": 22,
-          "x": -112,
-          "y": 171
-        },
-        {
-          "owner": "Player",
-          "units": 27,
-          "x": 91,
-          "y": -234
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 59,
-          "x": 75,
-          "y": 152
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 55,
-          "x": -219,
-          "y": 59
-        },
-        {
-          "owner": "Enemy",
-          "units": 59,
-          "x": -70,
-          "y": -216
-        },
-        {
-          "owner": "Enemy",
-          "units": 59,
-          "x": -221,
-          "y": -115
-        },
-        {
-          "owner": "Neutral",
-          "units": 35,
-          "x": 250,
-          "y": -89
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 35,
-          "x": -76,
-          "y": 145
-        },
-        {
-          "owner": "Enemy",
-          "units": 57,
-          "x": 71,
-          "y": 195
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 57,
-          "x": -202,
-          "y": -61
-        },
-        {
-          "owner": "Enemy",
-          "units": 54,
-          "x": 177,
-          "y": -190
-        },
-        {
-          "owner": "Neutral",
-          "units": 36,
-          "x": -147,
-          "y": -216
-        },
-        {
-          "owner": "Player",
-          "units": 26,
-          "x": 220,
-          "y": -44
-        },
-        {
-          "owner": "Neutral",
-          "units": 39,
-          "x": 214,
-          "y": 89
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 53,
-          "x": -240,
-          "y": 65
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 53,
-          "x": 14,
-          "y": -218
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "EnemyTwo",
-          "units": 59,
-          "x": 17,
-          "y": 202
-        },
-        {
-          "owner": "Player",
-          "units": 25,
-          "x": -157,
-          "y": -184
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 60,
-          "x": -218,
-          "y": 51
-        },
-        {
-          "owner": "Neutral",
-          "units": 37,
-          "x": 116,
-          "y": -223
-        },
-        {
-          "owner": "Enemy",
-          "units": 60,
-          "x": 148,
-          "y": 123
-        },
-        {
-          "owner": "Enemy",
-          "units": 54,
-          "x": -236,
-          "y": -76
-        },
-        {
-          "owner": "Player",
-          "units": 27,
-          "x": -126,
-          "y": 147
-        },
-        {
-          "owner": "Neutral",
-          "units": 35,
-          "x": 228,
-          "y": -129
-        },
-        {
-          "owner": "Neutral",
-          "units": 35,
-          "x": -37,
-          "y": -265
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 58,
-          "x": 240,
-          "y": 25
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Player",
           "units": 23,
-          "x": -254,
-          "y": -95
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 54,
-          "x": 188,
-          "y": -142
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 57,
-          "x": 247,
-          "y": 13
+          "x": -128,
+          "y": -227
         },
         {
           "owner": "Neutral",
-          "units": 39,
-          "x": -49,
-          "y": 202
+          "units": 20,
+          "x": 223,
+          "y": 130
         },
         {
           "owner": "Enemy",
-          "units": 55,
-          "x": 76,
-          "y": -216
+          "units": 24,
+          "x": 268,
+          "y": -35
         },
         {
-          "owner": "Neutral",
-          "units": 34,
-          "x": -121,
+          "owner": "Player",
+          "units": 21,
+          "x": 214,
           "y": -196
         },
         {
-          "owner": "Enemy",
-          "units": 55,
-          "x": -232,
-          "y": 100
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 60,
-          "x": 108,
-          "y": 143
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "EnemyTwo",
-          "units": 56,
-          "x": -220,
-          "y": 55
-        },
-        {
-          "owner": "Enemy",
-          "units": 60,
-          "x": -133,
-          "y": -224
-        },
-        {
-          "owner": "Enemy",
-          "units": 57,
-          "x": 242,
-          "y": -67
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 58,
-          "x": 156,
-          "y": -178
-        },
-        {
-          "owner": "Player",
-          "units": 27,
-          "x": 43,
-          "y": 162
-        },
-        {
           "owner": "Neutral",
-          "units": 35,
-          "x": 0,
-          "y": -233
-        },
-        {
-          "owner": "Neutral",
-          "units": 37,
-          "x": 208,
-          "y": 91
-        },
-        {
-          "owner": "Player",
-          "units": 23,
-          "x": -234,
-          "y": -96
-        },
-        {
-          "owner": "Neutral",
-          "units": 37,
-          "x": -117,
-          "y": 149
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 36,
-          "x": 239,
-          "y": -61
-        },
-        {
-          "owner": "Enemy",
-          "units": 59,
-          "x": -96,
-          "y": -231
-        },
-        {
-          "owner": "Neutral",
-          "units": 40,
-          "x": 167,
-          "y": -173
-        },
-        {
-          "owner": "Player",
-          "units": 28,
-          "x": -216,
-          "y": 124
-        },
-        {
-          "owner": "Enemy",
-          "units": 57,
-          "x": 101,
-          "y": 162
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 58,
-          "x": -208,
-          "y": -157
-        },
-        {
-          "owner": "Neutral",
-          "units": 40,
-          "x": -61,
-          "y": 192
-        },
-        {
-          "owner": "Neutral",
-          "units": 37,
-          "x": -224,
-          "y": -9
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 57,
-          "x": 44,
-          "y": -222
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 61,
-          "x": 219,
-          "y": 97
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Enemy",
-          "units": 56,
-          "x": 183,
-          "y": -183
-        },
-        {
-          "owner": "Neutral",
-          "units": 40,
-          "x": 7,
-          "y": -245
-        },
-        {
-          "owner": "Enemy",
-          "units": 61,
-          "x": 222,
-          "y": -25
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 60,
-          "x": 174,
-          "y": 110
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 56,
-          "x": 5,
-          "y": 169
-        },
-        {
-          "owner": "Player",
-          "units": 28,
-          "x": -237,
-          "y": -63
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 56,
-          "x": -205,
-          "y": 122
-        },
-        {
-          "owner": "Player",
-          "units": 26,
-          "x": -152,
-          "y": -184
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Neutral",
-          "units": 41,
-          "x": -83,
-          "y": 162
-        },
-        {
-          "owner": "Player",
-          "units": 23,
-          "x": 246,
-          "y": -71
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 58,
-          "x": -187,
-          "y": -178
-        },
-        {
-          "owner": "Player",
-          "units": 27,
-          "x": 106,
-          "y": 178
-        },
-        {
-          "owner": "Neutral",
-          "units": 40,
-          "x": 114,
-          "y": -223
-        },
-        {
-          "owner": "Enemy",
-          "units": 59,
-          "x": 214,
-          "y": 59
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 63,
-          "x": -230,
-          "y": -32
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 57,
-          "x": -42,
-          "y": -256
-        },
-        {
-          "owner": "Enemy",
-          "units": 58,
-          "x": -199,
-          "y": 95
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Player",
-          "units": 24,
-          "x": 273,
-          "y": 15
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 58,
-          "x": -30,
-          "y": -248
-        },
-        {
-          "owner": "Enemy",
-          "units": 63,
-          "x": 95,
-          "y": -214
-        },
-        {
-          "owner": "Neutral",
-          "units": 38,
-          "x": 180,
-          "y": 111
-        },
-        {
-          "owner": "Neutral",
-          "units": 38,
-          "x": -237,
-          "y": 72
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 60,
-          "x": 42,
-          "y": 173
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 58,
-          "x": -115,
-          "y": 184
-        },
-        {
-          "owner": "Neutral",
-          "units": 41,
-          "x": -231,
-          "y": -74
-        },
-        {
-          "owner": "Enemy",
-          "units": 63,
-          "x": 201,
-          "y": -132
-        },
-        {
-          "owner": "Neutral",
-          "units": 41,
-          "x": -185,
-          "y": -201
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "Player",
-          "units": 27,
-          "x": 155,
-          "y": -208
-        },
-        {
-          "owner": "Neutral",
-          "units": 41,
+          "units": 21,
           "x": -229,
-          "y": -165
-        },
-        {
-          "owner": "Enemy",
-          "units": 62,
-          "x": 39,
-          "y": 159
-        },
-        {
-          "owner": "Enemy",
-          "units": 63,
-          "x": -35,
-          "y": -218
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 60,
-          "x": 243,
-          "y": -92
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 61,
-          "x": 191,
-          "y": 69
-        },
-        {
-          "owner": "Neutral",
-          "units": 40,
-          "x": -253,
-          "y": -5
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 58,
-          "x": -152,
-          "y": 165
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "EnemyTwo",
-          "units": 64,
-          "x": 169,
-          "y": 97
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 64,
-          "x": 49,
-          "y": 168
-        },
-        {
-          "owner": "Player",
-          "units": 23,
-          "x": 179,
-          "y": -149
-        },
-        {
-          "owner": "Neutral",
-          "units": 38,
-          "x": -236,
-          "y": -104
-        },
-        {
-          "owner": "Enemy",
-          "units": 60,
-          "x": -260,
-          "y": 27
-        },
-        {
-          "owner": "Player",
-          "units": 26,
-          "x": 265,
-          "y": -40
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 61,
-          "x": -84,
-          "y": -239
-        },
-        {
-          "owner": "Neutral",
-          "units": 40,
-          "x": 64,
-          "y": -251
-        },
-        {
-          "owner": "Enemy",
-          "units": 64,
-          "x": -137,
-          "y": 172
-        }
-      ]
-    },
-    {
-      "points": [
-        {
-          "owner": "EnemyTwo",
-          "units": 61,
-          "x": -37,
-          "y": -254
-        },
-        {
-          "owner": "Enemy",
-          "units": 60,
-          "x": 246,
-          "y": 16
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 62,
-          "x": -231,
-          "y": -66
-        },
-        {
-          "owner": "Player",
-          "units": 24,
-          "x": -127,
-          "y": 154
-        },
-        {
-          "owner": "Neutral",
-          "units": 39,
-          "x": 35,
-          "y": 172
-        },
-        {
-          "owner": "Enemy",
-          "units": 60,
-          "x": -226,
           "y": 64
         },
         {
           "owner": "Neutral",
-          "units": 42,
-          "x": 117,
-          "y": -240
-        },
+          "units": 21,
+          "x": -114,
+          "y": 192
+        }
+      ]
+    },
+    {
+      "points": [
         {
-          "owner": "EnemyThree",
-          "units": 64,
-          "x": -190,
-          "y": -193
-        },
-        {
-          "owner": "Player",
-          "units": 27,
-          "x": 151,
-          "y": 105
+          "owner": "Neutral",
+          "units": 19,
+          "x": 269,
+          "y": -90
         },
         {
           "owner": "Neutral",
-          "units": 42,
-          "x": 208,
-          "y": -141
+          "units": 22,
+          "x": -187,
+          "y": 208
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 24,
+          "x": 139,
+          "y": 206
+        },
+        {
+          "owner": "Enemy",
+          "units": 29,
+          "x": -222,
+          "y": 40
+        },
+        {
+          "owner": "Player",
+          "units": 24,
+          "x": 255,
+          "y": 81
+        },
+        {
+          "owner": "Neutral",
+          "units": 19,
+          "x": 14,
+          "y": -278
+        },
+        {
+          "owner": "Enemy",
+          "units": 23,
+          "x": -133,
+          "y": -194
+        },
+        {
+          "owner": "Neutral",
+          "units": 19,
+          "x": -285,
+          "y": -119
+        },
+        {
+          "owner": "Neutral",
+          "units": 18,
+          "x": 180,
+          "y": -238
+        },
+        {
+          "owner": "EnemyThree",
+          "units": 26,
+          "x": -25,
+          "y": 150
         }
       ]
     },
@@ -4816,51 +3946,921 @@
       "points": [
         {
           "owner": "Enemy",
-          "units": 62,
-          "x": -12,
-          "y": 187
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 62,
-          "x": -169,
-          "y": -201
+          "units": 25,
+          "x": 193,
+          "y": -143
         },
         {
           "owner": "Enemy",
-          "units": 63,
-          "x": -214,
-          "y": 97
-        },
-        {
-          "owner": "Player",
-          "units": 26,
-          "x": -244,
-          "y": -67
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 65,
-          "x": 11,
-          "y": -236
-        },
-        {
-          "owner": "Player",
           "units": 27,
-          "x": 166,
-          "y": 145
+          "x": 41,
+          "y": -237
+        },
+        {
+          "owner": "Neutral",
+          "units": 23,
+          "x": -29,
+          "y": 164
         },
         {
           "owner": "EnemyTwo",
-          "units": 59,
-          "x": 176,
-          "y": -176
+          "units": 26,
+          "x": 159,
+          "y": 148
+        },
+        {
+          "owner": "Player",
+          "units": 25,
+          "x": 266,
+          "y": 15
+        },
+        {
+          "owner": "Neutral",
+          "units": 21,
+          "x": -238,
+          "y": -64
         },
         {
           "owner": "EnemyThree",
-          "units": 62,
-          "x": 232,
+          "units": 29,
+          "x": -127,
+          "y": -194
+        },
+        {
+          "owner": "Neutral",
+          "units": 23,
+          "x": -183,
+          "y": 96
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "EnemyTwo",
+          "units": 30,
+          "x": -160,
+          "y": 76
+        },
+        {
+          "owner": "Neutral",
+          "units": 23,
+          "x": -33,
+          "y": -282
+        },
+        {
+          "owner": "Neutral",
+          "units": 22,
+          "x": 134,
+          "y": -240
+        },
+        {
+          "owner": "Neutral",
+          "units": 22,
+          "x": -65,
+          "y": 223
+        },
+        {
+          "owner": "Player",
+          "units": 24,
+          "x": -280,
+          "y": -45
+        },
+        {
+          "owner": "Enemy",
+          "units": 25,
+          "x": 224,
+          "y": 67
+        },
+        {
+          "owner": "EnemyThree",
+          "units": 27,
+          "x": -157,
+          "y": -163
+        },
+        {
+          "owner": "Neutral",
+          "units": 22,
+          "x": 101,
+          "y": 191
+        },
+        {
+          "owner": "Enemy",
+          "units": 30,
+          "x": 238,
+          "y": -101
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Enemy",
+          "units": 29,
+          "x": -72,
+          "y": 207
+        },
+        {
+          "owner": "Enemy",
+          "units": 30,
+          "x": 263,
+          "y": 140
+        },
+        {
+          "owner": "Player",
+          "units": 24,
+          "x": -73,
+          "y": -223
+        },
+        {
+          "owner": "Neutral",
+          "units": 18,
+          "x": 222,
+          "y": -199
+        },
+        {
+          "owner": "Neutral",
+          "units": 19,
+          "x": 260,
+          "y": -33
+        },
+        {
+          "owner": "Neutral",
+          "units": 20,
+          "x": -241,
+          "y": -202
+        },
+        {
+          "owner": "EnemyThree",
+          "units": 27,
+          "x": 84,
+          "y": -297
+        },
+        {
+          "owner": "Neutral",
+          "units": 18,
+          "x": -285,
+          "y": -39
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 28,
+          "x": 97,
+          "y": 188
+        },
+        {
+          "owner": "Neutral",
+          "units": 18,
+          "x": -216,
+          "y": 117
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 23,
+          "x": 121,
+          "y": 133
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 28,
+          "x": 197,
+          "y": -172
+        },
+        {
+          "owner": "Enemy",
+          "units": 25,
+          "x": -143,
+          "y": -218
+        },
+        {
+          "owner": "Enemy",
+          "units": 25,
+          "x": -63,
+          "y": 202
+        },
+        {
+          "owner": "Player",
+          "units": 24,
+          "x": -234,
+          "y": -74
+        },
+        {
+          "owner": "Neutral",
+          "units": 23,
+          "x": 240,
+          "y": 12
+        },
+        {
+          "owner": "Neutral",
+          "units": 22,
+          "x": 31,
+          "y": -217
+        },
+        {
+          "owner": "EnemyThree",
+          "units": 24,
+          "x": -206,
+          "y": 104
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Enemy",
+          "units": 30,
+          "x": 52,
+          "y": -259
+        },
+        {
+          "owner": "Neutral",
+          "units": 19,
+          "x": -104,
+          "y": -186
+        },
+        {
+          "owner": "Neutral",
+          "units": 24,
+          "x": 186,
+          "y": -153
+        },
+        {
+          "owner": "Neutral",
+          "units": 24,
+          "x": 285,
+          "y": -13
+        },
+        {
+          "owner": "Player",
+          "units": 25,
+          "x": 37,
+          "y": 215
+        },
+        {
+          "owner": "Enemy",
+          "units": 29,
+          "x": -265,
+          "y": -132
+        },
+        {
+          "owner": "Neutral",
+          "units": 21,
+          "x": -200,
+          "y": 29
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 30,
+          "x": 177,
+          "y": 122
+        },
+        {
+          "owner": "EnemyThree",
+          "units": 26,
+          "x": -134,
+          "y": 184
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Enemy",
+          "units": 27,
+          "x": 192,
+          "y": 176
+        },
+        {
+          "owner": "EnemyThree",
+          "units": 28,
+          "x": -178,
+          "y": -42
+        },
+        {
+          "owner": "Neutral",
+          "units": 22,
+          "x": 122,
+          "y": -227
+        },
+        {
+          "owner": "Neutral",
+          "units": 21,
+          "x": 27,
+          "y": 216
+        },
+        {
+          "owner": "Player",
+          "units": 22,
+          "x": -203,
+          "y": -214
+        },
+        {
+          "owner": "Neutral",
+          "units": 23,
+          "x": -285,
+          "y": 89
+        },
+        {
+          "owner": "Neutral",
+          "units": 22,
+          "x": -122,
+          "y": 135
+        },
+        {
+          "owner": "Player",
+          "units": 20,
+          "x": 278,
+          "y": -150
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 30,
+          "x": -40,
+          "y": -275
+        },
+        {
+          "owner": "Enemy",
+          "units": 30,
+          "x": 246,
+          "y": 15
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Enemy",
+          "units": 25,
+          "x": -213,
+          "y": 70
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 30,
+          "x": -219,
+          "y": -99
+        },
+        {
+          "owner": "Player",
+          "units": 25,
+          "x": 52,
+          "y": -251
+        },
+        {
+          "owner": "Neutral",
+          "units": 22,
+          "x": 250,
+          "y": 36
+        },
+        {
+          "owner": "Neutral",
+          "units": 23,
+          "x": -80,
+          "y": 178
+        },
+        {
+          "owner": "Neutral",
+          "units": 24,
+          "x": 127,
+          "y": 153
+        },
+        {
+          "owner": "Enemy",
+          "units": 25,
+          "x": -119,
+          "y": -242
+        },
+        {
+          "owner": "EnemyThree",
+          "units": 25,
+          "x": 220,
+          "y": -135
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 19,
+          "x": 248,
+          "y": -17
+        },
+        {
+          "owner": "EnemyThree",
+          "units": 31,
+          "x": 214,
+          "y": -183
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 27,
+          "x": 59,
+          "y": -263
+        },
+        {
+          "owner": "Player",
+          "units": 24,
+          "x": -253,
+          "y": -151
+        },
+        {
+          "owner": "Neutral",
+          "units": 24,
+          "x": 17,
+          "y": 200
+        },
+        {
+          "owner": "Enemy",
+          "units": 29,
+          "x": -239,
+          "y": 19
+        },
+        {
+          "owner": "Enemy",
+          "units": 29,
+          "x": -112,
+          "y": -247
+        },
+        {
+          "owner": "Neutral",
+          "units": 22,
+          "x": -152,
+          "y": 166
+        },
+        {
+          "owner": "Neutral",
+          "units": 21,
+          "x": 174,
+          "y": 140
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "EnemyThree",
+          "units": 31,
+          "x": -21,
+          "y": 193
+        },
+        {
+          "owner": "Neutral",
+          "units": 19,
+          "x": 147,
+          "y": 170
+        },
+        {
+          "owner": "Neutral",
+          "units": 19,
+          "x": -156,
+          "y": -268
+        },
+        {
+          "owner": "Enemy",
+          "units": 31,
+          "x": 285,
+          "y": 69
+        },
+        {
+          "owner": "Player",
+          "units": 21,
+          "x": -190,
+          "y": 190
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 30,
+          "x": -273,
+          "y": 38
+        },
+        {
+          "owner": "Enemy",
+          "units": 28,
+          "x": 183,
+          "y": -253
+        },
+        {
+          "owner": "Neutral",
+          "units": 21,
+          "x": 12,
+          "y": -269
+        },
+        {
+          "owner": "Neutral",
+          "units": 24,
+          "x": -263,
+          "y": -130
+        },
+        {
+          "owner": "Player",
+          "units": 23,
+          "x": 213,
+          "y": -86
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Player",
+          "units": 24,
+          "x": 216,
+          "y": -93
+        },
+        {
+          "owner": "Enemy",
+          "units": 28,
+          "x": 201,
+          "y": 75
+        },
+        {
+          "owner": "EnemyThree",
+          "units": 25,
+          "x": -219,
+          "y": 28
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 28,
+          "x": -88,
+          "y": -249
+        },
+        {
+          "owner": "Neutral",
+          "units": 24,
+          "x": -110,
+          "y": 164
+        },
+        {
+          "owner": "Neutral",
+          "units": 24,
+          "x": 114,
+          "y": -233
+        },
+        {
+          "owner": "Enemy",
+          "units": 26,
+          "x": -231,
+          "y": -141
+        },
+        {
+          "owner": "Neutral",
+          "units": 22,
+          "x": 60,
+          "y": 178
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "EnemyThree",
+          "units": 27,
+          "x": -236,
+          "y": 57
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 31,
+          "x": 51,
+          "y": -247
+        },
+        {
+          "owner": "Player",
+          "units": 24,
+          "x": 285,
+          "y": -29
+        },
+        {
+          "owner": "Neutral",
+          "units": 23,
+          "x": 37,
+          "y": 198
+        },
+        {
+          "owner": "Neutral",
+          "units": 24,
+          "x": -131,
+          "y": 196
+        },
+        {
+          "owner": "Enemy",
+          "units": 28,
+          "x": 185,
+          "y": 107
+        },
+        {
+          "owner": "Neutral",
+          "units": 24,
+          "x": -122,
+          "y": -238
+        },
+        {
+          "owner": "Enemy",
+          "units": 31,
+          "x": 207,
+          "y": -181
+        },
+        {
+          "owner": "Neutral",
+          "units": 23,
+          "x": -238,
+          "y": -111
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 20,
+          "x": 253,
+          "y": 36
+        },
+        {
+          "owner": "Player",
+          "units": 23,
+          "x": -127,
+          "y": 138
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 31,
+          "x": -150,
+          "y": -213
+        },
+        {
+          "owner": "Neutral",
+          "units": 22,
+          "x": 141,
+          "y": -226
+        },
+        {
+          "owner": "Enemy",
+          "units": 30,
+          "x": -285,
+          "y": 77
+        },
+        {
+          "owner": "Player",
+          "units": 21,
+          "x": -9,
+          "y": -305
+        },
+        {
+          "owner": "Neutral",
+          "units": 25,
+          "x": -277,
+          "y": -94
+        },
+        {
+          "owner": "EnemyThree",
+          "units": 32,
+          "x": 5,
+          "y": 245
+        },
+        {
+          "owner": "Enemy",
+          "units": 32,
+          "x": 166,
+          "y": 183
+        },
+        {
+          "owner": "Neutral",
+          "units": 25,
+          "x": 281,
+          "y": -131
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 24,
+          "x": -266,
+          "y": -23
+        },
+        {
+          "owner": "Neutral",
+          "units": 25,
+          "x": 11,
+          "y": 208
+        },
+        {
+          "owner": "Enemy",
+          "units": 28,
+          "x": 33,
+          "y": -239
+        },
+        {
+          "owner": "Player",
+          "units": 23,
+          "x": 270,
           "y": -10
+        },
+        {
+          "owner": "EnemyThree",
+          "units": 26,
+          "x": 155,
+          "y": 121
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 27,
+          "x": -164,
+          "y": 117
+        },
+        {
+          "owner": "Neutral",
+          "units": 25,
+          "x": -163,
+          "y": -204
+        },
+        {
+          "owner": "Enemy",
+          "units": 26,
+          "x": 196,
+          "y": -167
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 24,
+          "x": 126,
+          "y": 182
+        },
+        {
+          "owner": "EnemyThree",
+          "units": 29,
+          "x": 139,
+          "y": -243
+        },
+        {
+          "owner": "Neutral",
+          "units": 20,
+          "x": 215,
+          "y": -89
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 28,
+          "x": -272,
+          "y": -41
+        },
+        {
+          "owner": "Enemy",
+          "units": 29,
+          "x": -32,
+          "y": -280
+        },
+        {
+          "owner": "Neutral",
+          "units": 23,
+          "x": 260,
+          "y": 74
+        },
+        {
+          "owner": "Player",
+          "units": 25,
+          "x": -165,
+          "y": -177
+        },
+        {
+          "owner": "Neutral",
+          "units": 23,
+          "x": -70,
+          "y": 202
+        },
+        {
+          "owner": "Enemy",
+          "units": 32,
+          "x": -219,
+          "y": 124
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "EnemyTwo",
+          "units": 32,
+          "x": 117,
+          "y": -280
+        },
+        {
+          "owner": "Neutral",
+          "units": 24,
+          "x": -285,
+          "y": -61
+        },
+        {
+          "owner": "Neutral",
+          "units": 20,
+          "x": -272,
+          "y": 109
+        },
+        {
+          "owner": "Enemy",
+          "units": 30,
+          "x": -112,
+          "y": 173
+        },
+        {
+          "owner": "Enemy",
+          "units": 32,
+          "x": 285,
+          "y": -3
+        },
+        {
+          "owner": "Neutral",
+          "units": 25,
+          "x": -219,
+          "y": -218
+        },
+        {
+          "owner": "EnemyThree",
+          "units": 27,
+          "x": 188,
+          "y": 140
+        },
+        {
+          "owner": "Player",
+          "units": 23,
+          "x": 46,
+          "y": 231
+        },
+        {
+          "owner": "Neutral",
+          "units": 20,
+          "x": -51,
+          "y": -248
+        },
+        {
+          "owner": "Player",
+          "units": 24,
+          "x": 245,
+          "y": -168
+        }
+      ]
+    },
+    {
+      "points": [
+        {
+          "owner": "Neutral",
+          "units": 25,
+          "x": 207,
+          "y": -149
+        },
+        {
+          "owner": "Player",
+          "units": 22,
+          "x": 244,
+          "y": 19
+        },
+        {
+          "owner": "Enemy",
+          "units": 32,
+          "x": -220,
+          "y": -90
+        },
+        {
+          "owner": "Player",
+          "units": 20,
+          "x": -51,
+          "y": 160
+        },
+        {
+          "owner": "EnemyTwo",
+          "units": 32,
+          "x": -111,
+          "y": -229
+        },
+        {
+          "owner": "EnemyThree",
+          "units": 31,
+          "x": 117,
+          "y": 159
+        },
+        {
+          "owner": "Enemy",
+          "units": 32,
+          "x": -207,
+          "y": 82
+        },
+        {
+          "owner": "Neutral",
+          "units": 21,
+          "x": 59,
+          "y": -242
         }
       ]
     }

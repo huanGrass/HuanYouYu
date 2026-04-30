@@ -21,28 +21,8 @@
       "value": "{0}"
     },
     {
-      "key": "water_sort.action.level_select",
-      "value": "选关"
-    },
-    {
-      "key": "water_sort.action.next_level",
-      "value": "下一关"
-    },
-    {
-      "key": "water_sort.level_select.title",
-      "value": "选择关卡"
-    },
-    {
-      "key": "water_sort.level_select.level",
-      "value": "第 {0} 关"
-    },
-    {
       "key": "water_sort.level_select.locked_level",
       "value": "第 {0} 关\n未解锁"
-    },
-    {
-      "key": "water_sort.level_select.close",
-      "value": "关闭"
     },
     {
       "key": "water_sort.difficulty.easy",
@@ -63,10 +43,6 @@
     {
       "key": "water_sort.settlement.exit",
       "value": "本局已退出：已完成 {0} 组颜色，获得 {1} 金币和 {2} 个宝箱。"
-    },
-    {
-      "key": "water_sort.settlement.title",
-      "value": "本局结算"
     },
     {
       "key": "water_sort.settlement.steps",
@@ -101,16 +77,8 @@
       "value": "金币"
     },
     {
-      "key": "water_sort.settlement.next",
-      "value": "下一关"
-    },
-    {
       "key": "game.water_sort.help",
       "value": "先点击一个有水的位置，再点击目标位置即可倒水。只有目标位置为空，或目标顶部颜色与倒出的颜色相同，才能倒入。把每种颜色整理成一组即可完成。"
-    },
-    {
-      "key": "game.water_sort.credits",
-      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
     }
   ]
 }

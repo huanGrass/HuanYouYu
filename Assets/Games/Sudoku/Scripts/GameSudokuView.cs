@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,12 +15,14 @@ namespace HuanYouYu.MiniGameHall
         private static readonly Color ModeTabActiveTextColor = new Color32(69, 84, 61, 255);
         private static readonly Color ModeTabInactiveTextColor = new Color32(112, 107, 89, 255);
         private static readonly Color ActionButtonTextColor = new Color32(66, 80, 63, 255);
+        private static readonly Color HintTextColor = new Color32(38, 143, 116, 255);
         private static readonly Color PrimaryActionButtonColor = new Color32(239, 205, 123, 255);
         private static readonly Color SecondaryActionButtonColor = new Color32(244, 236, 222, 255);
         private static readonly Color ActionPanelColor = new Color32(249, 243, 230, 245);
         private const float TopLayoutInset = 224f;
         private const float BottomLayoutInset = 324f;
         private const float BottomPreferredHeight = 284f;
+        private const float HintRevealDuration = 0.42f;
 
         private RectTransform topRoot;
         private RectTransform bottomRoot;
@@ -45,6 +48,9 @@ namespace HuanYouYu.MiniGameHall
         private int selectedCellIndex = -1;
         private bool gameCompleted;
         private bool isNotesModeEnabled;
+        private bool isHintRevealPlaying;
+        private Coroutine hintRevealCoroutine;
+        private RectTransform hintRevealDigit;
 
         public GameSudokuView(
             MonoBehaviour hostBehaviour,
@@ -78,8 +84,6 @@ namespace HuanYouYu.MiniGameHall
 
         protected override void BuildOrBindSections()
         {
-            Shell.SetPauseButtonVisible(true);
-
             BuildTopSection();
             var actionBar = BuildBottomSection();
 
@@ -109,7 +113,7 @@ namespace HuanYouYu.MiniGameHall
 
             EnsureModeButtonLabel(fillModeButton.transform, "sudoku.input.fill", "Fill");
             EnsureModeButtonLabel(notesButton.transform, "sudoku.action.notes", "Notes");
-            EnsureActionButtonLabel(restartButton.transform, "sudoku.action.restart", "Restart", 22f);
+            EnsureActionButtonLabel(restartButton.transform, "sudoku.action.restart", "新开一局", 22f);
             EnsureActionButtonLabel(resetRoundButton.transform, "sudoku.action.reset_round", "Reset", 20f);
             EnsureActionButtonLabel(hintButton.transform, "common.action.hint", "Hint", 20f);
             EnsureActionButtonLabel(clearButton.transform, "sudoku.action.clear", "Clear", 20f);
@@ -142,6 +146,7 @@ namespace HuanYouYu.MiniGameHall
         protected override void OnBeforeDispose()
         {
             Shell.ClosePopup();
+            StopHintRevealAnimation();
 
             if (fillModeButton != null)
             {
@@ -377,7 +382,13 @@ namespace HuanYouYu.MiniGameHall
         {
             Shell.ClosePopup();
             MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 0.92f);
-            ShowSettlementAndComplete(BuildExitSettlement());
+            var settlement = BuildExitSettlement();
+            ShowBackHallRewardSettlementPanel(
+                settlement,
+                "SudokuSettlementPanel",
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("sudoku.settlement.time"), BuildElapsedTimeText()),
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("sudoku.settlement.difficulty"), GetDifficultyLabel(selectedDifficulty)),
+                delegate { CompleteGame?.Invoke(settlement); });
         }
 
         private void OnFillModeClicked()
@@ -393,13 +404,18 @@ namespace HuanYouYu.MiniGameHall
 
         private void OnRestartClicked()
         {
+            if (isHintRevealPlaying)
+            {
+                return;
+            }
+
             MiniGameSfxPlayer.Play(MiniGameSfxType.Shuffle, 0.92f);
             ResetGame();
         }
 
         private void OnResetRoundClicked()
         {
-            if (currentPuzzle == null)
+            if (isHintRevealPlaying || currentPuzzle == null)
             {
                 return;
             }
@@ -410,7 +426,29 @@ namespace HuanYouYu.MiniGameHall
 
         private void OnHintClicked()
         {
+            if (gameCompleted || isHintRevealPlaying || boardState == null)
+            {
+                return;
+            }
+
+            int hintCellIndex;
+            int hintValue;
+            if (!boardState.TryFindHint(out hintCellIndex, out hintValue))
+            {
+                return;
+            }
+
             MiniGameSfxPlayer.Play(MiniGameSfxType.UiTap, 0.88f);
+            selectedCellIndex = hintCellIndex;
+            RefreshAll();
+
+            if (HostBehaviour == null)
+            {
+                ApplyHintReveal(hintCellIndex);
+                return;
+            }
+
+            hintRevealCoroutine = HostBehaviour.StartCoroutine(PlayHintRevealRoutine(hintCellIndex, hintValue));
         }
 
         private void OnNotesClicked()
@@ -426,7 +464,7 @@ namespace HuanYouYu.MiniGameHall
 
         private void OnAutoCandidatesClicked()
         {
-            if (gameCompleted || boardState == null)
+            if (gameCompleted || isHintRevealPlaying || boardState == null)
             {
                 return;
             }
@@ -453,7 +491,7 @@ namespace HuanYouYu.MiniGameHall
 
         private void SelectDifficulty(SudokuDifficulty difficulty)
         {
-            if (selectedDifficulty == difficulty)
+            if (isHintRevealPlaying || selectedDifficulty == difficulty)
             {
                 return;
             }
@@ -465,7 +503,7 @@ namespace HuanYouYu.MiniGameHall
 
         private void OnCellSelected(int cellIndex)
         {
-            if (boardState == null || cellIndex < 0 || cellIndex >= SudokuBoardState.CellCount)
+            if (isHintRevealPlaying || boardState == null || cellIndex < 0 || cellIndex >= SudokuBoardState.CellCount)
             {
                 return;
             }
@@ -476,7 +514,7 @@ namespace HuanYouYu.MiniGameHall
 
         private void OnDigitInput(int digit)
         {
-            if (gameCompleted || boardState == null || digit < 1 || digit > 9 || !boardState.CanEdit(selectedCellIndex))
+            if (gameCompleted || isHintRevealPlaying || boardState == null || digit < 1 || digit > 9 || !boardState.CanEdit(selectedCellIndex))
             {
                 return;
             }
@@ -496,13 +534,18 @@ namespace HuanYouYu.MiniGameHall
 
         private void OnClearClicked()
         {
+            if (isHintRevealPlaying)
+            {
+                return;
+            }
+
             MiniGameSfxPlayer.Play(MiniGameSfxType.UiTap, 0.88f);
             OnClearInput();
         }
 
         private void OnClearInput()
         {
-            if (gameCompleted || boardState == null || !boardState.CanEdit(selectedCellIndex))
+            if (gameCompleted || isHintRevealPlaying || boardState == null || !boardState.CanEdit(selectedCellIndex))
             {
                 return;
             }
@@ -531,7 +574,137 @@ namespace HuanYouYu.MiniGameHall
             RefreshAll();
             MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 0.96f);
 
-            ShowSettlementAndComplete(BuildSolvedSettlement());
+            var settlement = BuildSolvedSettlement();
+            ShowRewardSettlementPanel(
+                settlement,
+                new MiniGameRewardSettlementPanelParams
+                {
+                    RootName = "SudokuSettlementPanel",
+                    Style = MiniGameRewardSettlementPanelStyle.Success,
+                    PrimaryAction = MiniGameRewardSettlementPrimaryAction.Retry,
+                    Title = UiTextCatalog.Get("sudoku.settlement.win_title"),
+                    PrimaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("sudoku.settlement.time"), BuildElapsedTimeText()),
+                    SecondaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("sudoku.settlement.difficulty"), GetDifficultyLabel(selectedDifficulty)),
+                    RewardLabel = UiTextCatalog.Get("settlement.reward_label"),
+                    CoinCount = settlement.CoinCount,
+                    ChestCount = settlement.ChestCount
+                },
+                ResetGame,
+                delegate { CompleteGame?.Invoke(settlement); },
+                true);
+        }
+
+        private IEnumerator PlayHintRevealRoutine(int cellIndex, int value)
+        {
+            isHintRevealPlaying = true;
+            RefreshModeButtons();
+
+            var targetPosition = Vector2.zero;
+            if (runtimeView == null || !runtimeView.TryGetCellCenterInRoot(cellIndex, out targetPosition))
+            {
+                ApplyHintReveal(cellIndex);
+                isHintRevealPlaying = false;
+                hintRevealCoroutine = null;
+                RefreshModeButtons();
+                yield break;
+            }
+
+            hintRevealDigit = CreateHintRevealDigit(value);
+            var canvasGroup = hintRevealDigit.GetComponent<CanvasGroup>();
+            var startPosition = Vector2.zero;
+            var elapsed = 0f;
+            while (elapsed < HintRevealDuration)
+            {
+                elapsed += Time.deltaTime;
+                var progress = Mathf.Clamp01(elapsed / HintRevealDuration);
+                var eased = 1f - Mathf.Pow(1f - progress, 3f);
+                hintRevealDigit.anchoredPosition = Vector2.Lerp(startPosition, targetPosition, eased);
+                hintRevealDigit.localScale = Vector3.one * Mathf.Lerp(1.35f, 0.46f, eased);
+                if (canvasGroup != null)
+                {
+                    canvasGroup.alpha = Mathf.Lerp(1f, 0.72f, progress);
+                }
+
+                yield return null;
+            }
+
+            ApplyHintReveal(cellIndex);
+            DestroyHintRevealDigit();
+            isHintRevealPlaying = false;
+            hintRevealCoroutine = null;
+            RefreshModeButtons();
+        }
+
+        private void ApplyHintReveal(int cellIndex)
+        {
+            if (boardState == null || !boardState.ApplyHint(cellIndex))
+            {
+                return;
+            }
+
+            selectedCellIndex = cellIndex;
+            RefreshAll();
+            TryCompleteGame();
+        }
+
+        private RectTransform CreateHintRevealDigit(int value)
+        {
+            DestroyHintRevealDigit();
+
+            var parent = runtimeView == null ? Shell.ContentHost : runtimeView.Root;
+            var digitObject = new GameObject(
+                "SudokuHintFlyDigit",
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(CanvasGroup),
+                typeof(TextMeshProUGUI));
+            var rect = digitObject.GetComponent<RectTransform>();
+            rect.SetParent(parent, false);
+            rect.anchorMin = new Vector2(0.5f, 0.5f);
+            rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.sizeDelta = new Vector2(150f, 150f);
+            rect.anchoredPosition = Vector2.zero;
+            rect.localScale = Vector3.one * 1.35f;
+
+            var label = digitObject.GetComponent<TextMeshProUGUI>();
+            label.raycastTarget = false;
+            label.text = value.ToString();
+            label.fontSize = 92f;
+            label.fontStyle = FontStyles.Bold;
+            label.enableWordWrapping = false;
+            label.alignment = TextAlignmentOptions.Center;
+            label.color = HintTextColor;
+            if (titleLabel != null)
+            {
+                label.font = titleLabel.font;
+                label.fontSharedMaterial = titleLabel.fontSharedMaterial;
+            }
+
+            return rect;
+        }
+
+        private void StopHintRevealAnimation()
+        {
+            if (hintRevealCoroutine != null && HostBehaviour != null)
+            {
+                HostBehaviour.StopCoroutine(hintRevealCoroutine);
+                hintRevealCoroutine = null;
+            }
+
+            isHintRevealPlaying = false;
+            DestroyHintRevealDigit();
+        }
+
+        private void DestroyHintRevealDigit()
+        {
+            if (hintRevealDigit == null)
+            {
+                return;
+            }
+
+            UnityEngine.Object.Destroy(hintRevealDigit.gameObject);
+            hintRevealDigit = null;
         }
 
         private Button CreateActionButton(string name, RectTransform parent, Color backgroundColor, float radius)
@@ -620,6 +793,11 @@ namespace HuanYouYu.MiniGameHall
             RefreshActionButtonVisual(clearButton, false);
             RefreshActionButtonVisual(resetRoundButton, false);
             RefreshActionButtonVisual(restartButton, true);
+            if (hintButton != null)
+            {
+                hintButton.interactable = !isHintRevealPlaying;
+            }
+
             RefreshDifficultyButton(easyDifficultyButton, SudokuDifficulty.Easy);
             RefreshDifficultyButton(normalDifficultyButton, SudokuDifficulty.Normal);
             RefreshDifficultyButton(hardDifficultyButton, SudokuDifficulty.Hard);
@@ -736,7 +914,7 @@ namespace HuanYouYu.MiniGameHall
             var count = 0;
             for (var i = 0; i < SudokuBoardState.CellCount; i++)
             {
-                if (boardState.IsGiven(i))
+                if (boardState.IsGiven(i) || boardState.IsHintRevealed(i))
                 {
                     continue;
                 }
@@ -798,6 +976,7 @@ namespace HuanYouYu.MiniGameHall
         private void StartPuzzle(SudokuPuzzle puzzle)
         {
             Shell.ClosePopup();
+            StopHintRevealAnimation();
             currentPuzzle = puzzle;
             boardState = puzzle == null ? null : new SudokuBoardState(puzzle);
             elapsedSeconds = 0f;

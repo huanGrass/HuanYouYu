@@ -2,60 +2,55 @@
   "entries": [
     {
       "key": "game.needlehit.name",
-      "value": "\u89c1\u7f1d\u63d2\u9488"
+      "value": "见缝插针"
     },
     {
       "key": "game.needlehit.description",
-      "value": "\u70b9\u51fb\u53d1\u5c04\u9488\u4f53\u63d2\u5165\u65cb\u8f6c\u5706\u76d8\uff0c\u649e\u9488\u5373\u5931\u8d25\u7ed3\u7b97\u3002"
+      "value": "点击发射针体插入旋转圆盘，撞针即失败结算。"
     },
     {
       "key": "needlehit.hud.score",
-      "value": "\u5206\u6570"
+      "value": "分数"
     },
     {
       "key": "needlehit.hud.level_score",
-      "value": "\u63d2\u9488 {0}/{1}"
-    },
-    {
-      "key": "needlehit.action.restart",
-      "value": "\u91cd\u65b0\u5f00\u59cb"
-    },
-    {
-      "key": "needlehit.action.level_select",
-      "value": "\u9009\u5173"
-    },
-    {
-      "key": "needlehit.action.next_level",
-      "value": "\u4e0b\u4e00\u5173"
+      "value": "插针 {0}/{1}"
     },
     {
       "key": "needlehit.settlement.fail",
-      "value": "\u649e\u9488\u5931\u8d25"
+      "value": "撞针失败"
     },
     {
       "key": "needlehit.settlement.summary",
-      "value": "\u672c\u5c40\u5f97\u5206 {0}\uff0c\u83b7\u5f97 {1} \u91d1\u5e01\u3002"
+      "value": "本局得分 {0}，获得 {1} 金币。"
     },
     {
       "key": "needlehit.settlement.exit",
-      "value": "\u672c\u5c40\u5df2\u9000\u51fa"
+      "value": "本局已退出"
     },
     {
       "key": "needlehit.settlement.win",
-      "value": "\u6210\u529f\u5b8c\u6210 {0} \u6b21\u63d2\u9488\uff0c\u83b7\u5f97 {1} \u91d1\u5e01\u548c {2} \u4e2a\u5b9d\u7bb1\u3002"
+      "value": "成功完成 {0} 次插针，获得 {1} 金币和 {2} 个宝箱。"
     },
-    { "key": "needlehit.settlement.title", "value": "\u63d2\u9488\u5b8c\u6210" },
-    { "key": "needlehit.settlement.level", "value": "\u5173\u5361" },
-    { "key": "needlehit.settlement.target", "value": "\u76ee\u6807" },
-    { "key": "needlehit.settlement.reward", "value": "\u5956\u52b1" },
+    {
+      "key": "needlehit.settlement.title",
+      "value": "插针完成"
+    },
+    {
+      "key": "needlehit.settlement.target",
+      "value": "目标"
+    },
+    {
+      "key": "needlehit.settlement.failure_title",
+      "value": "挑战失败"
+    },
+    {
+      "key": "needlehit.settlement.score",
+      "value": "得分"
+    },
     {
       "key": "game.needlehit.help",
       "value": "在圆盘旋转时点击发射针体，把所有待发射的针稳稳插入圆盘。针与针不能相撞，既要判断旋转节奏，也要预留后续落点空间。"
-    },
-    {
-      "key": "game.needlehit.credits",
-      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
     }
   ]
 }
-

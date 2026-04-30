@@ -208,10 +208,10 @@ namespace Tests
             exitButton.onClick.Invoke();
             yield return null;
 
-            var settlementPopup = gameRoot.transform.Find("PopupHost/MiniGamePopup");
+            var settlementPopup = gameRoot.transform.Find("PopupHost/MemoryFlipSettlementPanel");
             Assert.IsNotNull(settlementPopup, "Pause exit should show settlement popup.");
 
-            var confirmButton = settlementPopup.Find("Dialog/Buttons/ConfirmButton")?.GetComponent<Button>();
+            var confirmButton = settlementPopup.Find("Dialog/NextButton")?.GetComponent<Button>();
             Assert.IsNotNull(confirmButton, "Settlement confirm button should exist.");
             confirmButton.onClick.Invoke();
             yield return null;

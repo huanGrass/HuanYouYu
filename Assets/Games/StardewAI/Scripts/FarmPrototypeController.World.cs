@@ -380,7 +380,10 @@ namespace FarmPrototype
             }
 
             bool isMoving = movementDelta.sqrMagnitude > 0.0001f;
-            _playerRenderer.sprite = FarmPixelArtFactory.GetSprite(GetCurrentPlayerSprite(isMoving));
+            bool useSideWalkSkeleton = isMoving && _facing.x != 0;
+            _playerRenderer.sprite = FarmPixelArtFactory.GetSprite(useSideWalkSkeleton
+                ? FarmSpriteArt.PlayerSideBody
+                : GetCurrentPlayerSprite(isMoving));
 
             if (_facing.x != 0)
             {
@@ -398,14 +401,26 @@ namespace FarmPrototype
             float bodyTilt = GetToolActionBodyTilt(actionProgress);
             float bodyStretch = actionProgress > 0f ? 1f + (Mathf.Sin(actionProgress * Mathf.PI) * 0.04f) : 1f;
 
+            float sideWalkPhase = useSideWalkSkeleton
+                ? Mathf.Sin(Time.time * PlayerWalkAnimationRate * Mathf.PI)
+                : 0f;
+            float visualBodyTilt = bodyTilt + (useSideWalkSkeleton
+                ? sideWalkPhase * PlayerSideWalkBodyTilt * (_facing.x < 0f ? -1f : 1f)
+                : 0f);
+
             _playerRenderer.transform.position = _playerPosition + new Vector2(0f, bobOffset);
-            _playerRenderer.transform.rotation = Quaternion.Euler(0f, 0f, bodyTilt);
+            _playerRenderer.transform.rotation = Quaternion.Euler(0f, 0f, visualBodyTilt);
             _playerRenderer.transform.localScale = new Vector3(bodyStretch, 1f + ((bodyStretch - 1f) * 0.3f), 1f);
             _playerShadow.transform.position = _playerPosition + new Vector2(0f, -0.34f);
 
             int sortBase = GetActorSortBase(_playerPosition.y);
             _playerShadow.sortingOrder = sortBase - 1;
             _playerRenderer.sortingOrder = sortBase;
+            UpdatePlayerSideWalkSkeleton(useSideWalkSkeleton, sideWalkPhase, bobOffset, visualBodyTilt, bodyStretch, sortBase);
+            if (useSideWalkSkeleton)
+            {
+                _playerShadow.sortingOrder = sortBase - 3;
+            }
 
             if (isMoving)
             {
@@ -417,6 +432,70 @@ namespace FarmPrototype
                 float idleScale = 0.98f + (Mathf.Sin(Time.time * 2.1f) * 0.02f);
                 _playerShadow.transform.localScale = new Vector3(idleScale, idleScale, 1f);
             }
+        }
+
+        private void UpdatePlayerSideWalkSkeleton(
+            bool isActive,
+            float phase,
+            float bobOffset,
+            float bodyTilt,
+            float bodyStretch,
+            int sortBase)
+        {
+            if (_playerSideFrontLegRoot == null ||
+                _playerSideBackLegRoot == null ||
+                _playerSideFrontLegRenderer == null ||
+                _playerSideBackLegRenderer == null)
+            {
+                return;
+            }
+
+            _playerSideFrontLegRenderer.enabled = isActive;
+            _playerSideBackLegRenderer.enabled = isActive;
+            if (!isActive)
+            {
+                _playerSideFrontLegRoot.rotation = Quaternion.identity;
+                _playerSideBackLegRoot.rotation = Quaternion.identity;
+                return;
+            }
+
+            float facingSign = _facing.x < 0f ? -1f : 1f;
+            UpdateSideWalkLegRenderer(
+                _playerSideFrontLegRenderer,
+                phase,
+                facingSign,
+                bobOffset,
+                bodyTilt,
+                bodyStretch,
+                sortBase + 1);
+            UpdateSideWalkLegRenderer(
+                _playerSideBackLegRenderer,
+                -phase,
+                facingSign,
+                bobOffset,
+                bodyTilt,
+                bodyStretch,
+                sortBase - 2);
+        }
+
+        private void UpdateSideWalkLegRenderer(
+            SpriteRenderer renderer,
+            float phase,
+            float facingSign,
+            float bobOffset,
+            float bodyTilt,
+            float bodyStretch,
+            int sortingOrder)
+        {
+            Transform legRoot = renderer.transform.parent;
+            renderer.flipX = facingSign < 0f;
+            renderer.transform.localPosition = new Vector3(0f, -PlayerSideWalkHipOffsetY, 0f);
+            renderer.transform.localRotation = Quaternion.identity;
+            renderer.transform.localScale = Vector3.one;
+            legRoot.position = _playerPosition + new Vector2(0f, bobOffset + PlayerSideWalkHipOffsetY);
+            legRoot.rotation = Quaternion.Euler(0f, 0f, bodyTilt + (phase * PlayerSideWalkLegTilt * facingSign));
+            legRoot.localScale = new Vector3(bodyStretch, 1f, 1f);
+            renderer.sortingOrder = sortingOrder;
         }
 
         private void UpdateToolActionAnimation()
@@ -501,7 +580,6 @@ namespace FarmPrototype
             if (_facing.x != 0)
             {
                 return GetAnimatedDirectionalSprite(
-                    FarmSpriteArt.PlayerSide,
                     FarmSpriteArt.PlayerSideStepA,
                     FarmSpriteArt.PlayerSideStepB,
                     frame);
@@ -510,34 +588,23 @@ namespace FarmPrototype
             if (_facing.y >= 0)
             {
                 return GetAnimatedDirectionalSprite(
-                    FarmSpriteArt.PlayerUp,
                     FarmSpriteArt.PlayerUpStepA,
                     FarmSpriteArt.PlayerUpStepB,
                     frame);
             }
 
             return GetAnimatedDirectionalSprite(
-                FarmSpriteArt.PlayerDown,
                 FarmSpriteArt.PlayerDownStepA,
                 FarmSpriteArt.PlayerDownStepB,
                 frame);
         }
 
         private static FarmSpriteArt GetAnimatedDirectionalSprite(
-            FarmSpriteArt idle,
             FarmSpriteArt stepA,
             FarmSpriteArt stepB,
             int frame)
         {
-            switch (frame)
-            {
-                case 1:
-                    return stepA;
-                case 3:
-                    return stepB;
-                default:
-                    return idle;
-            }
+            return frame % 2 == 0 ? stepA : stepB;
         }
 
         private void TriggerToolActionAnimation(ToolType tool)

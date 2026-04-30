@@ -21,4 +21,9 @@ namespace HuanYouYu.MiniGameHall
         public int CoinCount;
         public string Summary;
     }
+
+    internal interface IMiniGameRewardSink
+    {
+        void GrantSettlementReward(string gameId, MiniGameSettlement settlement);
+    }
 }

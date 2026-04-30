@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using TMPro;
 using UnityEngine;
 
 namespace HuanYouYu.MiniGameHall
@@ -11,6 +12,7 @@ namespace HuanYouYu.MiniGameHall
         private readonly Action exitToHall;
         private string pauseHelpText;
         private MiniGameShell shell;
+        private MiniGameWinSettlementView rewardSettlementView;
         private bool isDisposed;
 
         protected MiniGameBase(
@@ -65,6 +67,91 @@ namespace HuanYouYu.MiniGameHall
             get { return exitToHall; }
         }
 
+        protected void GrantSettlementReward(MiniGameSettlement settlement)
+        {
+            var rewardSink = hostBehaviour as IMiniGameRewardSink;
+            if (rewardSink != null)
+            {
+                rewardSink.GrantSettlementReward(GameId, settlement);
+            }
+        }
+
+        protected void ShowRewardSettlementPanel(
+            MiniGameSettlement settlement,
+            MiniGameRewardSettlementPanelParams panelParams,
+            Action onPrimaryAction,
+            Action onBackHall,
+            bool grantRewardBeforePrimaryAction)
+        {
+            if (settlement == null || panelParams == null || shell == null)
+            {
+                return;
+            }
+
+            CloseRewardSettlementPanel();
+            shell.ClosePopup();
+            panelParams.AutoTick = true;
+            rewardSettlementView = MiniGameWinSettlementView.Create(
+                shell.PopupHost,
+                MiniGameFontProvider.DefaultFont,
+                panelParams,
+                delegate
+                {
+                    if (grantRewardBeforePrimaryAction)
+                    {
+                        GrantSettlementReward(settlement);
+                    }
+
+                    CloseRewardSettlementPanel();
+                    onPrimaryAction?.Invoke();
+                },
+                delegate
+                {
+                    CloseRewardSettlementPanel();
+                    onBackHall?.Invoke();
+                });
+        }
+
+        protected void ShowBackHallRewardSettlementPanel(
+            MiniGameSettlement settlement,
+            string rootName,
+            MiniGameSettlementInfoRow primaryInfo,
+            MiniGameSettlementInfoRow secondaryInfo,
+            Action onBackHall)
+        {
+            if (settlement == null)
+            {
+                return;
+            }
+
+            ShowRewardSettlementPanel(
+                settlement,
+                new MiniGameRewardSettlementPanelParams
+                {
+                    RootName = rootName,
+                    Style = MiniGameRewardSettlementPanelStyle.Neutral,
+                    PrimaryAction = MiniGameRewardSettlementPrimaryAction.BackHall,
+                    Title = UiTextCatalog.Get("popup.settlement.title"),
+                    PrimaryInfo = primaryInfo,
+                    SecondaryInfo = secondaryInfo,
+                    RewardLabel = UiTextCatalog.Get("settlement.reward_label"),
+                    CoinCount = settlement.CoinCount,
+                    ChestCount = settlement.ChestCount
+                },
+                null,
+                onBackHall,
+                true);
+        }
+
+        protected void CloseRewardSettlementPanel()
+        {
+            if (rewardSettlementView != null)
+            {
+                rewardSettlementView.Dispose();
+                rewardSettlementView = null;
+            }
+        }
+
         /// <summary>
         /// 弹出结算框并在确认后回到大厅，供“退出即结算”的场景复用。
         /// </summary>
@@ -107,6 +194,7 @@ namespace HuanYouYu.MiniGameHall
 
             isDisposed = true;
             OnBeforeDispose();
+            CloseRewardSettlementPanel();
 
             if (shell != null)
             {

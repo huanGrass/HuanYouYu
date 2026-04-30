@@ -5,10 +5,6 @@
       "value": "发球"
     },
     {
-      "key": "breakout.action.restart",
-      "value": "重新开始"
-    },
-    {
       "key": "breakout.hud.initial",
       "value": "拖动挡板接球，点击发球开始。"
     },
@@ -55,6 +51,26 @@
     {
       "key": "breakout.settlement.win",
       "value": "打砖块通关：得分 {0}，剩余生命 {1}，击碎砖块 {2}，获得 {3} 金币和 {4} 个宝箱。"
+    },
+    {
+      "key": "breakout.settlement.win_title",
+      "value": "砖块清空"
+    },
+    {
+      "key": "breakout.settlement.failure_title",
+      "value": "挑战失败"
+    },
+    {
+      "key": "breakout.settlement.score",
+      "value": "得分"
+    },
+    {
+      "key": "breakout.settlement.lives",
+      "value": "生命"
+    },
+    {
+      "key": "breakout.settlement.bricks",
+      "value": "砖块"
     },
     {
       "key": "game.breakout.description",
@@ -147,10 +163,6 @@
     {
       "key": "game.breakout.help",
       "value": "拖动挡板反弹小球，击碎场上全部砖块即可过关。注意别让小球从底部掉出，合理调整反弹角度可以更快清场。"
-    },
-    {
-      "key": "game.breakout.credits",
-      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
     }
   ]
 }

@@ -13,10 +13,6 @@
       "value": "分数"
     },
     {
-      "key": "stardewai.action.restart",
-      "value": "重新开始"
-    },
-    {
       "key": "stardewai.action.next_day",
       "value": "过天"
     },

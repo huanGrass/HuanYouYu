@@ -84,24 +84,18 @@ namespace Tests
             ResolveCurrentShot(gameView);
             yield return null;
 
-            var popup = root.Find("PopupHost/MiniGamePopup");
+            var popup = root.Find("PopupHost/NeedleHitFailureSettlementPanel");
             Assert.IsNotNull(popup, "Settlement popup should exist after failure.");
-            var closeButton = popup.Find("Dialog/CloseButton")?.GetComponent<Button>();
-            Assert.IsNotNull(closeButton, "Settlement popup close button should exist.");
-            Assert.IsFalse(closeButton.gameObject.activeSelf, "Failure settlement popup should hide the close button.");
-
-            var blocker = popup.Find("Blocker")?.GetComponent<Button>();
-            Assert.IsNotNull(blocker, "Settlement popup blocker should exist.");
-            blocker.onClick.Invoke();
-            yield return null;
-            Assert.IsNotNull(root.Find("PopupHost/MiniGamePopup"), "Backdrop tap should not close failure settlement popup.");
+            Assert.IsNotNull(popup.Find("Dialog/NextButton")?.GetComponent<Button>(), "Retry button should exist.");
+            Assert.IsNotNull(popup.Find("Dialog/BackHallButton")?.GetComponent<Button>(), "Back hall button should exist.");
+            Assert.IsNotNull(popup.Find("InputBlocker"), "Settlement input blocker should exist.");
 
             Click(root, "BottomHost/NeedleHitBottom/ActionBar/RestartButton");
             yield return null;
 
             Assert.AreEqual("\u63d2\u9488 0/3", ReadText(scoreLabel));
             Assert.AreEqual(3, GetStuckNeedleCount(gameView));
-            Assert.IsNull(root.Find("PopupHost/MiniGamePopup"), "Restart should close settlement popup.");
+            Assert.IsNull(root.Find("PopupHost/NeedleHitFailureSettlementPanel"), "Restart should close settlement popup.");
             AssertNoUnexpectedLogs();
         }
 
@@ -171,11 +165,11 @@ namespace Tests
             ResolveCurrentShot(gameView);
             yield return null;
 
-            var popup = root.Find("PopupHost/MiniGamePopup");
+            var popup = root.Find("PopupHost/NeedleHitFailureSettlementPanel");
             Assert.IsNotNull(popup, "Settlement popup should exist after failure.");
-            var confirmButton = popup.Find("Dialog/Buttons/ConfirmButton")?.GetComponent<Button>();
-            Assert.IsNotNull(confirmButton, "Settlement confirm button should exist.");
-            confirmButton.onClick.Invoke();
+            var backHallButton = popup.Find("Dialog/BackHallButton")?.GetComponent<Button>();
+            Assert.IsNotNull(backHallButton, "Settlement back hall button should exist.");
+            backHallButton.onClick.Invoke();
             yield return null;
 
             var progress = controller.GetProgress(GameNeedleHitView.GameIdConstant);

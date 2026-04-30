@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -469,7 +469,7 @@ namespace HuanYouYu.MiniGameHall
 
         protected override (string helpKey, string creditsKey)? GetPauseHelpKeys()
         {
-            return ("game.snake.help", "game.snake.credits");
+            return ("game.snake.help", null);
         }
 
         private void StepSnake()
@@ -543,7 +543,6 @@ namespace HuanYouYu.MiniGameHall
 
             isFinished = true;
             isPaused = true;
-            shell.SetPauseButtonVisible(false);
             MiniGameSfxPlayer.Play(MiniGameSfxType.MatchFail, 0.76f, 1f);
             StopFoodPulse();
             settlementRoutine = HostBehaviour.StartCoroutine(PlayCollisionSettlementRoutine(reasonKey, collisionCell));
@@ -575,13 +574,24 @@ namespace HuanYouYu.MiniGameHall
                 Summary = UiTextCatalog.Format(reasonKey, finalScore, snakeSegments.Count, foodCount, coinCount, coinCount / 120)
             };
 
-            shell.ShowSettlementPopup(
-                settlement.Summary,
-                delegate
+            var isWin = string.Equals(reasonKey, "snake.settlement.win", StringComparison.Ordinal);
+            ShowRewardSettlementPanel(
+                settlement,
+                new MiniGameRewardSettlementPanelParams
                 {
-                    shell.ClosePopup();
-                    completeGame(settlement);
-                });
+                    RootName = "SnakeSettlementPanel",
+                    Style = isWin ? MiniGameRewardSettlementPanelStyle.Success : MiniGameRewardSettlementPanelStyle.Failure,
+                    PrimaryAction = MiniGameRewardSettlementPrimaryAction.Retry,
+                    Title = UiTextCatalog.Get(isWin ? "snake.settlement.win_title" : "snake.settlement.failure_title"),
+                    PrimaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("snake.settlement.score"), finalScore.ToString()),
+                    SecondaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("snake.settlement.length"), snakeSegments.Count.ToString()),
+                    RewardLabel = UiTextCatalog.Get("settlement.reward_label"),
+                    CoinCount = settlement.CoinCount,
+                    ChestCount = settlement.ChestCount
+                },
+                ResetGame,
+                delegate { completeGame(settlement); },
+                true);
         }
 
         private void ShowExitSettlement()
@@ -598,13 +608,12 @@ namespace HuanYouYu.MiniGameHall
                 Summary = summary
             };
 
-            shell.ShowSettlementPopup(
-                settlement.Summary,
-                delegate
-                {
-                    shell.ClosePopup();
-                    completeGame(settlement);
-                });
+            ShowBackHallRewardSettlementPanel(
+                settlement,
+                "SnakeSettlementPanel",
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("snake.settlement.score"), finalScore.ToString()),
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("snake.settlement.length"), snakeSegments.Count.ToString()),
+                delegate { completeGame(settlement); });
         }
 
         private bool SpawnFood()
@@ -792,7 +801,6 @@ namespace HuanYouYu.MiniGameHall
 
             isFinished = true;
             isPaused = true;
-            shell.SetPauseButtonVisible(false);
             shell.ClosePopup();
             MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 1f);
             ShowExitSettlement();
@@ -875,7 +883,7 @@ namespace HuanYouYu.MiniGameHall
         {
             var textObject = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
             var text = textObject.GetComponent<TextMeshProUGUI>();
-            text.font = TMP_Settings.defaultFontAsset;
+            text.font = MiniGameFontProvider.DefaultFont;
             text.text = content;
             text.fontSize = fontSize;
             text.fontStyle = fontStyle;

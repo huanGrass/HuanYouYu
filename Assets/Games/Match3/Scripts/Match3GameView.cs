@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -212,6 +212,8 @@ namespace HuanYouYu.MiniGameHall
 
         protected override void ResetGame()
         {
+            shell.ClosePopup();
+            CloseRewardSettlementPanel();
             score = 0;
             clearedTileCount = 0;
             isFinished = false;
@@ -235,7 +237,7 @@ namespace HuanYouYu.MiniGameHall
 
         protected override (string helpKey, string creditsKey)? GetPauseHelpKeys()
         {
-            return ("game.match3.help", "game.match3.credits");
+            return ("game.match3.help", null);
         }
 
         private MatchTileView[] BuildTilesFromTemplate(RectTransform template)
@@ -931,7 +933,6 @@ namespace HuanYouYu.MiniGameHall
 
             isFinished = true;
             isPaused = true;
-            shell.SetPauseButtonVisible(false);
             MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 0.76f, 1f);
             var finalScore = score;
             var coinCount = clearedTileCount;
@@ -943,13 +944,12 @@ namespace HuanYouYu.MiniGameHall
                 ChestCount = chestCount,
                 Summary = UiTextCatalog.Format("match3.settlement.summary", finalScore, coinCount, chestCount)
             };
-            shell.ShowSettlementPopup(
-                settlement.Summary,
-                delegate
-                {
-                    shell.ClosePopup();
-                    completeGame(settlement);
-                });
+            ShowBackHallRewardSettlementPanel(
+                settlement,
+                "Match3SettlementPanel",
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("match3.settlement.score"), finalScore.ToString()),
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("match3.settlement.cleared"), clearedTileCount.ToString()),
+                delegate { completeGame(settlement); });
         }
 
         private void RefreshAllTiles()

@@ -11,19 +11,21 @@ namespace HuanYouYu.MiniGameHall
         private static readonly Color TitleColor = new Color(0.29f, 0.39f, 0.22f, 1f);
         private static readonly Color ScoreColor = new Color(0.82f, 0.58f, 0.25f, 1f);
         private static readonly Color ExtraColor = new Color(0.2f, 0.26f, 0.17f, 0.92f);
-        private const string FontResourcePath = "Fonts & Materials/NotoSansCJKsc-Subset SDF";
 
         internal sealed class TopBarRefs
         {
-            public TopBarRefs(RectTransform root, TextMeshProUGUI titleText, TextMeshProUGUI scoreText, TextMeshProUGUI extraText)
+            public TopBarRefs(RectTransform root, RectTransform headerRoot, TextMeshProUGUI titleText, TextMeshProUGUI scoreText, TextMeshProUGUI extraText)
             {
                 Root = root;
+                HeaderRoot = headerRoot;
                 TitleText = titleText;
                 ScoreText = scoreText;
                 ExtraText = extraText;
             }
 
             public RectTransform Root { get; }
+
+            public RectTransform HeaderRoot { get; }
 
             public TextMeshProUGUI TitleText { get; }
 
@@ -166,7 +168,7 @@ namespace HuanYouYu.MiniGameHall
             headerLayout.childForceExpandWidth = true;
             headerLayout.childForceExpandHeight = false;
 
-            var fontAsset = Resources.Load<TMP_FontAsset>(FontResourcePath);
+            var fontAsset = MiniGameFontProvider.DefaultFont;
 
             var title = CreateTextObject("Title", headerRect, fontAsset);
             ConfigureText(title, config.TitleStyle);
@@ -181,7 +183,7 @@ namespace HuanYouYu.MiniGameHall
                 ConfigureText(extra, config.ExtraStyle);
             }
 
-            return new TopBarRefs(root, title, score, extra);
+            return new TopBarRefs(root, headerRect, title, score, extra);
         }
 
         private static void ConfigureText(TextMeshProUGUI text, TextStyle style)

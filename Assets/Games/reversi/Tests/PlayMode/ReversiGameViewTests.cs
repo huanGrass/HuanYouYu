@@ -62,7 +62,7 @@ namespace Tests
             yield return null;
 
             Assert.IsTrue(GetGameOver());
-            Assert.IsNotNull(GameObject.Find("MiniGamePopup"), "Settlement popup should appear when both sides cannot move.");
+            Assert.IsNotNull(GameObject.Find("ReversiSettlementPanel"), "Settlement popup should appear when both sides cannot move.");
 
             ClickButton("RestartButton");
             yield return null;

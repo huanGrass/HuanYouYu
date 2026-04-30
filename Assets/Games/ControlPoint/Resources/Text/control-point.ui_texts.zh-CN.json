@@ -13,10 +13,6 @@
       "value": "从己方据点拖到其他据点即可建立连线。少于 20 兵为 1 级，可连 1 条线；20 到 39 兵为 2 级，可连 2 条线；40 兵及以上为 3 级，可连 3 条线。等级越高涨兵越快，连线满时需要先手动切断已有线才能再连。连线会在源据点保留 1 兵的前提下持续向目标输送。攻击中立或敌方据点会削减其兵量，降到 0 后转为己方据点。控制全部据点即可通关并解锁下一关。"
     },
     {
-      "key": "game.control_point.credits",
-      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
-    },
-    {
       "key": "control_point.hud.score",
       "value": "我方 {0}/{1}  敌方 {2}/{1}"
     },
@@ -49,20 +45,12 @@
       "value": "重开"
     },
     {
-      "key": "control_point.action.next_level",
-      "value": "下一关"
-    },
-    {
       "key": "control_point.settlement.title",
       "value": "占点完成"
     },
     {
       "key": "control_point.settlement.owned",
       "value": "控制"
-    },
-    {
-      "key": "control_point.settlement.reward",
-      "value": "奖励"
     },
     {
       "key": "control_point.settlement.win",

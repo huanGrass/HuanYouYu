@@ -49,16 +49,28 @@
       "value": "五子棋失败：己方棋子 {0}，获得 {1} 金币。"
     },
     {
-      "key": "gomoku.action.restart",
-      "value": "重新开始"
+      "key": "gomoku.settlement.win_title",
+      "value": "五子连线"
+    },
+    {
+      "key": "gomoku.settlement.failure_title",
+      "value": "挑战失败"
+    },
+    {
+      "key": "gomoku.settlement.draw_title",
+      "value": "平局"
+    },
+    {
+      "key": "gomoku.settlement.stones",
+      "value": "棋子"
+    },
+    {
+      "key": "gomoku.settlement.result",
+      "value": "结果"
     },
     {
       "key": "game.gomoku.help",
       "value": "你与 AI 轮流在棋盘上落子，先在横向、纵向或斜向连成五子的一方获胜。落子时既要主动组织连线，也要及时封堵对手。"
-    },
-    {
-      "key": "game.gomoku.credits",
-      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
     }
   ]
 }

@@ -63,6 +63,32 @@ namespace Tests
             yield return null;
         }
 
+        [UnityTest]
+        public IEnumerator ChangingPuzzleDoesNotCountAsSolvedReward()
+        {
+            var root = CreateGameRoot();
+            var host = root.GetComponent<TestHostBehaviour>();
+            var canvas = root.transform.Find("MiniGameCanvas");
+            var game = new NonogramGameView(host, canvas, _ => { }, () => { });
+            yield return null;
+
+            var advanceMethod = typeof(NonogramGameView).GetMethod("AdvancePuzzle", InstancePrivate);
+            var buildMethod = typeof(NonogramGameView).GetMethod("BuildSessionSettlementForExit", InstancePrivate);
+            Assert.IsNotNull(advanceMethod, "AdvancePuzzle method should exist.");
+            Assert.IsNotNull(buildMethod, "BuildSessionSettlementForExit method should exist.");
+
+            advanceMethod.Invoke(game, null);
+            var settlement = buildMethod.Invoke(game, null) as MiniGameSettlement;
+
+            Assert.IsNotNull(settlement, "Session exit settlement should be created.");
+            Assert.AreEqual(20, settlement.CoinCount);
+            Assert.AreEqual(0, settlement.ChestCount);
+
+            game.Dispose();
+            Object.Destroy(root);
+            yield return null;
+        }
+
         private static GameObject CreateGameRoot()
         {
             var root = new GameObject("NonogramTestRoot");

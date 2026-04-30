@@ -75,6 +75,9 @@ namespace HuanYouYu.Tests
             Assert.AreEqual("爱心", UiTextCatalog.Get("nonogram.puzzle.heart"));
             Assert.AreEqual("大笑脸", UiTextCatalog.Get("nonogram.puzzle.smile_big"));
             Assert.AreEqual("爱心 · 15x15", UiTextCatalog.Format("nonogram.progress", "爱心", 15, 15));
+            Assert.AreEqual("取消", UiTextCatalog.Get("common.action.cancel"));
+            Assert.AreEqual("确认重置", UiTextCatalog.Get("nonogram.confirm.reset.title"));
+            Assert.AreEqual("确认换题", UiTextCatalog.Get("nonogram.confirm.next.title"));
         }
 
         [Test]

@@ -49,6 +49,14 @@
 - 见缝插针（NeedleHit）
 - AI星露谷（StardewAI）
 - 占点攻防（ControlPoint）
+- 数学电灯（LightsOut）
+- 点灯谜题（Akari）
+- 数字华容道（SlidingPuzzle）
+- 跳一跳（JumpJump）
+- 过河问题（RiverCrossing）
+- 汉诺塔（TowerOfHanoi）
+- 倒水量杯（WaterPouring）
+- 打地鼠（WhacAMole）
 
 ## 参与贡献
 

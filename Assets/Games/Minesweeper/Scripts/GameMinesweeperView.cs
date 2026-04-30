@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -66,8 +66,6 @@ namespace HuanYouYu.MiniGameHall
 
         protected override void BuildOrBindSections()
         {
-            Shell.SetPauseButtonVisible(true);
-
             var topBarRefs = MiniGameShellTopBarBuilder.CreateTopBar(
                 Shell.TopHost,
                 MiniGameShellTopBarBuilder.CreateDefaultConfig("MinesweeperTop"));
@@ -116,7 +114,7 @@ namespace HuanYouYu.MiniGameHall
 
         protected override (string helpKey, string creditsKey)? GetPauseHelpKeys()
         {
-            return ("game.minesweeper.help", "game.minesweeper.credits");
+            return ("game.minesweeper.help", null);
         }
 
         protected override void OnPauseRequested()
@@ -468,15 +466,41 @@ namespace HuanYouYu.MiniGameHall
 
         private void ShowSettlement(MiniGameSettlement settlement)
         {
-            Shell.ShowSettlementPopup(settlement.Summary, ExitSessionToHall);
+            ShowRoundSettlementPanel(settlement, MiniGameRewardSettlementPanelStyle.Success);
         }
 
         private void ShowFailurePopup(MiniGameSettlement settlement)
         {
-            Shell.ShowRetryOrExitPopup(
-                settlement.Summary,
-                ResetGame,
-                ExitSessionToHall);
+            ShowRoundSettlementPanel(settlement, MiniGameRewardSettlementPanelStyle.Failure);
+        }
+
+        private void ShowRoundSettlementPanel(MiniGameSettlement settlement, MiniGameRewardSettlementPanelStyle style)
+        {
+            ShowRewardSettlementPanel(
+                settlement,
+                new MiniGameRewardSettlementPanelParams
+                {
+                    RootName = "MinesweeperSettlementPanel",
+                    Style = style,
+                    PrimaryAction = MiniGameRewardSettlementPrimaryAction.Retry,
+                    Title = UiTextCatalog.Get(style == MiniGameRewardSettlementPanelStyle.Success ? "minesweeper.settlement.win_title" : "minesweeper.settlement.failure_title"),
+                    PrimaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("minesweeper.settlement.safe_cells"), score.ToString()),
+                    SecondaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("minesweeper.settlement.flags"), flaggedCellCount.ToString()),
+                    RewardLabel = UiTextCatalog.Get("settlement.reward_label"),
+                    CoinCount = settlement.CoinCount,
+                    ChestCount = settlement.ChestCount
+                },
+                delegate
+                {
+                    AccumulateSessionSettlement(settlement);
+                    ResetGame();
+                },
+                delegate
+                {
+                    AccumulateSessionSettlement(settlement);
+                    ExitSessionToHall();
+                },
+                false);
         }
 
         private void ExitSessionToHall()
@@ -513,7 +537,13 @@ namespace HuanYouYu.MiniGameHall
             Shell.ClosePopup();
             isGameOver = true;
             MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 0.92f);
-            CompleteGame?.Invoke(BuildSessionSettlementForExit());
+            var settlement = BuildSessionSettlementForExit();
+            ShowBackHallRewardSettlementPanel(
+                settlement,
+                "MinesweeperSettlementPanel",
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("minesweeper.settlement.safe_cells"), pendingSessionScore.ToString()),
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("minesweeper.settlement.flags"), flaggedCellCount.ToString()),
+                delegate { CompleteGame?.Invoke(settlement); });
         }
 
         private void AccumulateSessionSettlement(MiniGameSettlement settlement)

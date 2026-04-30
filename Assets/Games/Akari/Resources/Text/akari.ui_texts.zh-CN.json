@@ -1,0 +1,68 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.akari.name",
+      "value": "点灯谜题"
+    },
+    {
+      "key": "game.akari.description",
+      "value": "在白格中放置灯泡，照亮全部白格，并满足数字黑格周围的灯泡数量。"
+    },
+    {
+      "key": "akari.hud.status",
+      "value": "{0} · {1}x{1} · 得分 {2}"
+    },
+    {
+      "key": "akari.settings.difficulty",
+      "value": "难度"
+    },
+    {
+      "key": "akari.settings.grid_size",
+      "value": "棋盘"
+    },
+    {
+      "key": "akari.settings.random",
+      "value": "随机"
+    },
+    {
+      "key": "akari.difficulty.easy",
+      "value": "简单"
+    },
+    {
+      "key": "akari.difficulty.normal",
+      "value": "普通"
+    },
+    {
+      "key": "akari.difficulty.hard",
+      "value": "困难"
+    },
+    {
+      "key": "akari.hud.bulbs",
+      "value": "灯泡 {0}/{1} · 操作 {2}"
+    },
+    {
+      "key": "akari.status.playing",
+      "value": "点击白格放置或移除灯泡。红色数字表示未满足，绿色数字表示已满足。"
+    },
+    {
+      "key": "akari.status.solved",
+      "value": "本题完成，获得 {0} 分。"
+    },
+    {
+      "key": "akari.settlement.score",
+      "value": "累计得分"
+    },
+    {
+      "key": "akari.settlement.completed",
+      "value": "完成题数"
+    },
+    {
+      "key": "akari.settlement.summary",
+      "value": "已完成 {0} 道点灯谜题，累计得分 {1}。"
+    },
+    {
+      "key": "game.akari.help",
+      "value": "灯泡只能放在白格中。灯光会沿上下左右照亮同一行或同一列，遇到黑格停止。所有白格都必须被照亮，且任意两个灯泡不能在无遮挡的同一行或同一列互相照到。带数字的黑格表示其上下左右相邻格中必须正好有对应数量的灯泡。"
+    }
+  ]
+}

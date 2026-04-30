@@ -54,7 +54,7 @@ namespace HuanYouYu.MiniGameHall
                     UiTextCatalog.Get("breakout.level.classic")));
             levelText.rectTransform.sizeDelta = new Vector2(220f, 24f);
 
-            actionButton = CreateActionButton(bottomRoot, UiTextCatalog.Get("breakout.action.restart"));
+            actionButton = CreateActionButton(bottomRoot, UiTextCatalog.Get("common.action.restart"));
             actionLabel = actionButton.GetComponentInChildren<TextMeshProUGUI>();
             actionLabel.color = new Color32(20, 28, 36, 255);
 

@@ -45,7 +45,6 @@ namespace HuanYouYu.MiniGameHall
 
         protected override void BuildOrBindSections()
         {
-            Shell.SetPauseButtonVisible(true);
             var topBarRefs = MiniGameShellTopBarBuilder.CreateTopBar(
                 Shell.TopHost,
                 MiniGameShellTopBarBuilder.CreateDefaultConfig("GomokuTop"));
@@ -125,7 +124,7 @@ namespace HuanYouYu.MiniGameHall
 
         protected override (string helpKey, string creditsKey)? GetPauseHelpKeys()
         {
-            return ("game.gomoku.help", "game.gomoku.credits");
+            return ("game.gomoku.help", null);
         }
 
         private void BuildBoardUi()
@@ -306,7 +305,53 @@ namespace HuanYouYu.MiniGameHall
             RefreshHud();
             PlayEndRoundSfx();
             MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 0.92f, 1f);
-            ShowSettlementAndComplete(BuildSettlement());
+            var settlement = BuildSettlement();
+            ShowRewardSettlementPanel(
+                settlement,
+                new MiniGameRewardSettlementPanelParams
+                {
+                    RootName = "GomokuSettlementPanel",
+                    Style = ResolveSettlementStyle(),
+                    PrimaryAction = MiniGameRewardSettlementPrimaryAction.Retry,
+                    Title = UiTextCatalog.Get(ResolveSettlementTitleKey()),
+                    PrimaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("gomoku.settlement.stones"), CountStone(playerStone).ToString()),
+                    SecondaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("gomoku.settlement.result"), UiTextCatalog.Get(GetRoundStatusKey())),
+                    RewardLabel = UiTextCatalog.Get("settlement.reward_label"),
+                    CoinCount = settlement.CoinCount,
+                    ChestCount = settlement.ChestCount
+                },
+                ResetGame,
+                delegate { CompleteGame?.Invoke(settlement); },
+                true);
+        }
+
+        private MiniGameRewardSettlementPanelStyle ResolveSettlementStyle()
+        {
+            if ((roundState == GomokuRoundState.BlackWin && playerStone == GomokuStone.Black) ||
+                (roundState == GomokuRoundState.WhiteWin && playerStone == GomokuStone.White))
+            {
+                return MiniGameRewardSettlementPanelStyle.Success;
+            }
+
+            if (roundState == GomokuRoundState.Draw)
+            {
+                return MiniGameRewardSettlementPanelStyle.Neutral;
+            }
+
+            return MiniGameRewardSettlementPanelStyle.Failure;
+        }
+
+        private string ResolveSettlementTitleKey()
+        {
+            switch (ResolveSettlementStyle())
+            {
+                case MiniGameRewardSettlementPanelStyle.Success:
+                    return "gomoku.settlement.win_title";
+                case MiniGameRewardSettlementPanelStyle.Neutral:
+                    return "gomoku.settlement.draw_title";
+                default:
+                    return "gomoku.settlement.failure_title";
+            }
         }
 
         private void PlayEndRoundSfx()
@@ -395,7 +440,13 @@ namespace HuanYouYu.MiniGameHall
 
             RefreshHud();
             MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 0.92f, 1f);
-            ShowSettlementAndComplete(BuildExitSettlement());
+            var settlement = BuildExitSettlement();
+            ShowBackHallRewardSettlementPanel(
+                settlement,
+                "GomokuSettlementPanel",
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("gomoku.settlement.stones"), CountStone(playerStone).ToString()),
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("gomoku.settlement.result"), UiTextCatalog.Get(GetRoundStatusKey())),
+                delegate { CompleteGame?.Invoke(settlement); });
         }
 
         private MiniGameSettlement BuildSettlement()

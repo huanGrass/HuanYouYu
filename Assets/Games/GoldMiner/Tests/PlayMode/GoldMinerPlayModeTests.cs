@@ -131,7 +131,7 @@ namespace Tests
             yield return TickFrames(game, 2);
 
             Assert.IsTrue(probe.IsSettled, "Clearing all targets should enter settled state.");
-            Assert.IsNotNull(GameObject.Find("MiniGamePopup"), "Settlement popup should be shown.");
+            Assert.IsNotNull(GameObject.Find("GoldMinerSettlementPanel"), "Settlement popup should be shown.");
             Assert.Greater(probe.Score, 0, "Settlement should preserve earned score.");
             Assert.Greater(probe.CoinCount, 0, "Settlement should preserve earned coins.");
             Assert.GreaterOrEqual(probe.ChestCount, 1, "Settlement should preserve earned chests.");

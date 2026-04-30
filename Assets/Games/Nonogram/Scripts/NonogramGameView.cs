@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -30,6 +30,9 @@ namespace HuanYouYu.MiniGameHall
         private const float ButtonWidth = 176f * UiScale;
         private const float ButtonHeight = 76f * UiScale;
         private const float ButtonFontSize = 32f * UiScale;
+        private const float SecondaryButtonWidth = 118f * UiScale;
+        private const float SecondaryButtonHeight = 52f * UiScale;
+        private const float SecondaryButtonFontSize = 22f * UiScale;
         private const float TitleFontSize = 46f * UiScale;
         private const float ProgressFontSize = 24f * UiScale;
         private const float TipsFontSize = 26f * UiScale;
@@ -122,8 +125,6 @@ namespace HuanYouYu.MiniGameHall
 
         protected override void BuildOrBindSections()
         {
-            Shell.SetPauseButtonVisible(true);
-
             var topConfig = MiniGameShellTopBarBuilder.CreateDefaultConfig("NonogramTop");
             topConfig.TitleStyle.FontSize = TitleFontSize;
             topConfig.TitleStyle.Color = new Color(0.25f, 0.36f, 0.22f);
@@ -133,6 +134,7 @@ namespace HuanYouYu.MiniGameHall
             bottomRoot = CreateBottomRoot();
             contentRoot = CreateContentRoot();
             CreateBottomContentRoot(bottomRoot);
+            CreateBottomSecondaryActions(bottomRoot);
 
             titleText = FindRequiredText(topRoot, "Header/Title");
             progressText = FindRequiredText(topRoot, "Header/Score");
@@ -149,7 +151,7 @@ namespace HuanYouYu.MiniGameHall
 
         protected override (string helpKey, string creditsKey)? GetPauseHelpKeys()
         {
-            return ("game.nonogram.help", "game.nonogram.credits");
+            return ("game.nonogram.help", null);
         }
 
         protected override void OnPauseRequested()
@@ -206,8 +208,30 @@ namespace HuanYouYu.MiniGameHall
         {
             StopSolveAnimation();
             Shell.ClosePopup();
-            AccumulateSolvedSettlement();
             LoadPuzzle(SelectRandomPuzzleIndex(puzzleIndex));
+        }
+
+        private void RequestAdvancePuzzle()
+        {
+            if (isSolveAnimationPlaying)
+            {
+                return;
+            }
+
+            EndDragStroke();
+            if (!HasBoardProgress())
+            {
+                AdvancePuzzle();
+                return;
+            }
+
+            Shell.ShowConfirmPopup(
+                UiTextCatalog.Get("nonogram.confirm.next.title"),
+                UiTextCatalog.Get("nonogram.confirm.next.message"),
+                UiTextCatalog.Get("nonogram.confirm.next.confirm"),
+                UiTextCatalog.Get("common.action.cancel"),
+                ResumeFromPause,
+                AdvancePuzzle);
         }
 
         private void RestartPuzzle()
@@ -217,6 +241,50 @@ namespace HuanYouYu.MiniGameHall
             EndDragStroke();
             boardState.Clear();
             RefreshBoard();
+        }
+
+        private void RequestRestartPuzzle()
+        {
+            if (isSolveAnimationPlaying)
+            {
+                return;
+            }
+
+            EndDragStroke();
+            if (!HasBoardProgress())
+            {
+                RestartPuzzle();
+                return;
+            }
+
+            Shell.ShowConfirmPopup(
+                UiTextCatalog.Get("nonogram.confirm.reset.title"),
+                UiTextCatalog.Get("nonogram.confirm.reset.message"),
+                UiTextCatalog.Get("nonogram.confirm.reset.confirm"),
+                UiTextCatalog.Get("common.action.cancel"),
+                ResumeFromPause,
+                RestartPuzzle);
+        }
+
+        private bool HasBoardProgress()
+        {
+            if (boardState == null || activePuzzle == null)
+            {
+                return false;
+            }
+
+            for (var row = 0; row < activePuzzle.Height; row++)
+            {
+                for (var column = 0; column < activePuzzle.Width; column++)
+                {
+                    if (boardState.GetMark(row, column) != NonogramCellMark.Unknown)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         private void SetInputMode(NonogramInputMode mode)
@@ -753,10 +821,7 @@ namespace HuanYouYu.MiniGameHall
 
             if (HostBehaviour == null || activePuzzle == null || boardState == null)
             {
-                Shell.ShowSettlementPopup(
-                    UiTextCatalog.Format("nonogram.solved", ResolvePuzzleTitle(activePuzzle == null ? string.Empty : activePuzzle.Title)),
-                    AdvancePuzzle,
-                    UiTextCatalog.Get("nonogram.action.next_level"));
+                ShowSolvedSettlementPanel();
                 return;
             }
 
@@ -809,10 +874,36 @@ namespace HuanYouYu.MiniGameHall
             isSolveAnimationPlaying = false;
 
             RefreshBoard();
-            Shell.ShowSettlementPopup(
-                UiTextCatalog.Format("nonogram.solved", ResolvePuzzleTitle(activePuzzle.Title)),
-                AdvancePuzzle,
-                UiTextCatalog.Get("nonogram.action.next_level"));
+            ShowSolvedSettlementPanel();
+        }
+
+        private void ShowSolvedSettlementPanel()
+        {
+            var settlement = BuildSolvedSettlement();
+            ShowRewardSettlementPanel(
+                settlement,
+                new MiniGameRewardSettlementPanelParams
+                {
+                    RootName = "NonogramSettlementPanel",
+                    Style = MiniGameRewardSettlementPanelStyle.Success,
+                    PrimaryAction = MiniGameRewardSettlementPrimaryAction.Retry,
+                    Title = UiTextCatalog.Get("nonogram.settlement.win_title"),
+                    PrimaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("nonogram.settlement.pattern"), ResolvePuzzleTitle(activePuzzle == null ? string.Empty : activePuzzle.Title)),
+                    SecondaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("nonogram.settlement.size"), activePuzzle == null ? string.Empty : activePuzzle.Width + "x" + activePuzzle.Height),
+                    RewardLabel = UiTextCatalog.Get("settlement.reward_label"),
+                    CoinCount = settlement.CoinCount,
+                    ChestCount = settlement.ChestCount
+                },
+                StartRandomPuzzleAfterSolved,
+                delegate { CompleteGame?.Invoke(settlement); },
+                true);
+        }
+
+        private void StartRandomPuzzleAfterSolved()
+        {
+            StopSolveAnimation();
+            EndDragStroke();
+            LoadPuzzle(SelectRandomPuzzleIndex(puzzleIndex));
         }
 
         private void StopSolveAnimation()
@@ -846,8 +937,8 @@ namespace HuanYouYu.MiniGameHall
             root.anchorMin = new Vector2(0.5f, 0.5f);
             root.anchorMax = new Vector2(0.5f, 0.5f);
             root.pivot = new Vector2(0.5f, 0.5f);
-            root.sizeDelta = new Vector2(442f, 198f);
-            root.anchoredPosition = new Vector2(0f, 58f);
+            root.sizeDelta = new Vector2(442f, 104f);
+            root.anchoredPosition = new Vector2(0f, 104f);
 
             var layout = root.gameObject.AddComponent<VerticalLayoutGroup>();
             layout.padding = new RectOffset(
@@ -869,17 +960,35 @@ namespace HuanYouYu.MiniGameHall
             fillModeButton = CreateActionButton(firstRow, UiTextCatalog.Get("nonogram.button.fill"));
             crossModeButton = CreateActionButton(firstRow, UiTextCatalog.Get("nonogram.button.cross"));
 
-            var secondRow = CreateHorizontalGroup("ActionButtonsRow", root, 10f * UiScale, CreateOffset(0f, 0f, 0f, 0f));
-            secondRow.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.MiddleCenter;
-            AddLayoutSize(secondRow, 0f, 68f * UiScale, 1f, -1f);
-
-            var resetButton = CreateActionButton(secondRow, UiTextCatalog.Get("nonogram.button.reset"));
-            var nextButton = CreateActionButton(secondRow, UiTextCatalog.Get("nonogram.button.next"));
-
             fillModeButton.onClick.AddListener(delegate { SetInputMode(NonogramInputMode.Fill); });
             crossModeButton.onClick.AddListener(delegate { SetInputMode(NonogramInputMode.Cross); });
-            resetButton.onClick.AddListener(RestartPuzzle);
-            nextButton.onClick.AddListener(AdvancePuzzle);
+
+            return root;
+        }
+
+        private RectTransform CreateBottomSecondaryActions(Transform parent)
+        {
+            var rootObject = new GameObject("NonogramSecondaryActions", typeof(RectTransform), typeof(HorizontalLayoutGroup));
+            var root = rootObject.GetComponent<RectTransform>();
+            root.SetParent(parent, false);
+            root.anchorMin = new Vector2(0f, 0f);
+            root.anchorMax = new Vector2(0f, 0f);
+            root.pivot = new Vector2(0f, 0f);
+            root.sizeDelta = new Vector2((SecondaryButtonWidth * 2f) + (10f * UiScale), SecondaryButtonHeight);
+            root.anchoredPosition = new Vector2(24f * UiScale, 16f * UiScale);
+
+            var layout = rootObject.GetComponent<HorizontalLayoutGroup>();
+            layout.spacing = 10f * UiScale;
+            layout.childForceExpandWidth = false;
+            layout.childForceExpandHeight = false;
+            layout.childControlWidth = false;
+            layout.childControlHeight = false;
+            layout.childAlignment = TextAnchor.MiddleLeft;
+
+            var resetButton = CreateSecondaryActionButton(root, UiTextCatalog.Get("nonogram.button.reset"));
+            var nextButton = CreateSecondaryActionButton(root, UiTextCatalog.Get("nonogram.button.next"));
+            resetButton.onClick.AddListener(RequestRestartPuzzle);
+            nextButton.onClick.AddListener(RequestAdvancePuzzle);
 
             return root;
         }
@@ -989,7 +1098,7 @@ namespace HuanYouYu.MiniGameHall
             rect.SetParent(parent, false);
 
             var text = textObject.GetComponent<TextMeshProUGUI>();
-            text.font = TMP_Settings.defaultFontAsset;
+            text.font = MiniGameFontProvider.DefaultFont;
             text.fontSize = fontSize;
             text.fontStyle = fontStyle;
             text.alignment = alignment;
@@ -1060,6 +1169,41 @@ namespace HuanYouYu.MiniGameHall
             Stretch(text.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
             text.text = label;
             text.color = new Color(0.25f, 0.36f, 0.22f);
+
+            return button;
+        }
+
+        private static Button CreateSecondaryActionButton(Transform parent, string label)
+        {
+            var buttonObject = new GameObject(
+                label + "Button",
+                typeof(RectTransform),
+                typeof(Image),
+                typeof(Button),
+                typeof(LayoutElement));
+            var rect = buttonObject.GetComponent<RectTransform>();
+            rect.SetParent(parent, false);
+            rect.sizeDelta = new Vector2(SecondaryButtonWidth, SecondaryButtonHeight);
+
+            var image = buttonObject.GetComponent<Image>();
+            image.color = new Color(0.83f, 0.86f, 0.78f, 1f);
+
+            var layout = buttonObject.GetComponent<LayoutElement>();
+            layout.preferredWidth = SecondaryButtonWidth;
+            layout.preferredHeight = SecondaryButtonHeight;
+
+            var button = buttonObject.GetComponent<Button>();
+            var colors = button.colors;
+            colors.normalColor = image.color;
+            colors.highlightedColor = new Color(0.90f, 0.92f, 0.84f, 1f);
+            colors.pressedColor = new Color(0.70f, 0.76f, 0.66f, 1f);
+            colors.selectedColor = colors.highlightedColor;
+            button.colors = colors;
+
+            var text = CreateText("Label", rect, SecondaryButtonFontSize, FontStyles.Bold, TextAlignmentOptions.Center, false);
+            Stretch(text.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            text.text = label;
+            text.color = new Color(0.30f, 0.36f, 0.29f);
 
             return button;
         }
@@ -1404,7 +1548,13 @@ namespace HuanYouYu.MiniGameHall
             StopSolveAnimation();
             EndDragStroke();
             MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 0.92f);
-            ShowSettlementAndComplete(BuildSessionSettlementForExit());
+            var settlement = BuildSessionSettlementForExit();
+            ShowBackHallRewardSettlementPanel(
+                settlement,
+                "NonogramSettlementPanel",
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("nonogram.settlement.pattern"), ResolvePuzzleTitle(activePuzzle == null ? string.Empty : activePuzzle.Title)),
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("nonogram.settlement.size"), activePuzzle == null ? string.Empty : activePuzzle.Width + "x" + activePuzzle.Height),
+                delegate { CompleteGame?.Invoke(settlement); });
         }
 
         private MiniGameSettlement BuildExitSettlement()

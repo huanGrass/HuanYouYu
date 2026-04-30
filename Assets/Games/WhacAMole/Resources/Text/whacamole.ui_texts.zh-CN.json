@@ -1,0 +1,68 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.whacamole.name",
+      "value": "打地鼠"
+    },
+    {
+      "key": "game.whacamole.description",
+      "value": "限时敲中随机冒出的地鼠，考验反应速度。"
+    },
+    {
+      "key": "whacamole.hud.score",
+      "value": "分数 {0}"
+    },
+    {
+      "key": "whacamole.hud.timer",
+      "value": "时间 {0}"
+    },
+    {
+      "key": "whacamole.action.restart",
+      "value": "重新开始"
+    },
+    {
+      "key": "whacamole.status.ready",
+      "value": "准备开始"
+    },
+    {
+      "key": "whacamole.status.find",
+      "value": "快敲它！"
+    },
+    {
+      "key": "whacamole.status.hit",
+      "value": "命中！"
+    },
+    {
+      "key": "whacamole.status.miss",
+      "value": "敲空了"
+    },
+    {
+      "key": "whacamole.status.escape",
+      "value": "它钻回去了"
+    },
+    {
+      "key": "whacamole.settlement.summary",
+      "value": "本局得分：{0}\n命中：{1}\n失误：{2}"
+    },
+    {
+      "key": "whacamole.settlement.win_title",
+      "value": "挑战完成"
+    },
+    {
+      "key": "whacamole.settlement.score",
+      "value": "得分"
+    },
+    {
+      "key": "whacamole.settlement.hit_miss",
+      "value": "命中/失误"
+    },
+    {
+      "key": "game.whacamole.help",
+      "value": "地鼠会随机从洞里冒出，点击冒出的地鼠得分。点击空洞会扣少量分数，倒计时结束后自动结算。"
+    },
+    {
+      "key": "game.whacamole.credits",
+      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
+    }
+  ]
+}

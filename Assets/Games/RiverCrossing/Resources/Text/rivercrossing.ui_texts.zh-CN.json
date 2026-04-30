@@ -1,0 +1,156 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.rivercrossing.name",
+      "value": "过河问题"
+    },
+    {
+      "key": "game.rivercrossing.description",
+      "value": "经典过河谜题：用小船把狐狸、鸡和玉米安全送到对岸。"
+    },
+    {
+      "key": "game.rivercrossing.help",
+      "value": "每次点击同岸物品可装船，点击船上物品可卸下。点击小船或过河按钮让船到对岸。船一次最多带一件物品，任一岸没有你看守时，不能让狐狸和鸡单独在一起，也不能让鸡和玉米单独在一起。"
+    },
+    {
+      "key": "rivercrossing.hud.steps",
+      "value": "步数 {0} / 最优 {1}"
+    },
+    {
+      "key": "rivercrossing.bank.left",
+      "value": "左岸"
+    },
+    {
+      "key": "rivercrossing.bank.right",
+      "value": "右岸"
+    },
+    {
+      "key": "rivercrossing.river.title",
+      "value": "河面"
+    },
+    {
+      "key": "rivercrossing.boat.empty",
+      "value": "小船在{0}\n船上空着"
+    },
+    {
+      "key": "rivercrossing.boat.loaded",
+      "value": "小船在{0}\n船上：{1}"
+    },
+    {
+      "key": "rivercrossing.action.cross",
+      "value": "过河"
+    },
+    {
+      "key": "rivercrossing.action.restart",
+      "value": "重新开始"
+    },
+    {
+      "key": "rivercrossing.item.none",
+      "value": "空船"
+    },
+    {
+      "key": "rivercrossing.item.fox",
+      "value": "狐狸"
+    },
+    {
+      "key": "rivercrossing.item.chicken",
+      "value": "鸡"
+    },
+    {
+      "key": "rivercrossing.item.corn",
+      "value": "玉米"
+    },
+    {
+      "key": "rivercrossing.status.ready",
+      "value": "先把鸡带到右岸，别让危险组合独处。"
+    },
+    {
+      "key": "rivercrossing.status.loaded",
+      "value": "{0}上船了。"
+    },
+    {
+      "key": "rivercrossing.status.unloaded",
+      "value": "{0}下船了。"
+    },
+    {
+      "key": "rivercrossing.status.crossed",
+      "value": "小船到了{0}。"
+    },
+    {
+      "key": "rivercrossing.status.boat_full",
+      "value": "小船一次只能带一件物品。"
+    },
+    {
+      "key": "rivercrossing.status.item_wrong_side",
+      "value": "这件物品不在小船这一岸。"
+    },
+    {
+      "key": "rivercrossing.status.unsafe_fox_chicken",
+      "value": "不能让狐狸和鸡在没有你看守的岸上独处。"
+    },
+    {
+      "key": "rivercrossing.status.unsafe_chicken_corn",
+      "value": "不能让鸡和玉米在没有你看守的岸上独处。"
+    },
+    {
+      "key": "rivercrossing.status.hint",
+      "value": "提示：鸡要来回接应，先送鸡，再送狐狸或玉米。"
+    },
+    {
+      "key": "rivercrossing.status.complete",
+      "value": "全部安全过河。"
+    },
+    {
+      "key": "rivercrossing.settlement.win_title",
+      "value": "过河成功"
+    },
+    {
+      "key": "rivercrossing.settlement.failure_title",
+      "value": "过河失败"
+    },
+    {
+      "key": "rivercrossing.settlement.steps",
+      "value": "过河步数"
+    },
+    {
+      "key": "rivercrossing.settlement.best_steps",
+      "value": "最优步数"
+    },
+    {
+      "key": "rivercrossing.settlement.score",
+      "value": "本局分数"
+    },
+    {
+      "key": "rivercrossing.settlement.failure_reason",
+      "value": "失败原因"
+    },
+    {
+      "key": "rivercrossing.settlement.failure_fox_chicken",
+      "value": "狐狸吃掉了鸡"
+    },
+    {
+      "key": "rivercrossing.settlement.failure_chicken_corn",
+      "value": "鸡吃掉了玉米"
+    },
+    {
+      "key": "rivercrossing.settlement.failure_unknown",
+      "value": "物品没有安全过河"
+    },
+    {
+      "key": "rivercrossing.settlement.exit_label",
+      "value": "结算方式"
+    },
+    {
+      "key": "rivercrossing.settlement.exit_value",
+      "value": "返回大厅"
+    },
+    {
+      "key": "rivercrossing.settlement.summary",
+      "value": "本局用 {0} 步完成，获得 {1} 分。"
+    },
+    {
+      "key": "rivercrossing.settlement.failure_summary",
+      "value": "本局在 {0} 步时失败：{1}"
+    }
+  ]
+}

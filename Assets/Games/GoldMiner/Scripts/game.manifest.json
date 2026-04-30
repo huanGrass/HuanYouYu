@@ -1,8 +1,7 @@
-{
+﻿{
   "gameId": "goldminer",
   "nameKey": "game.goldminer.name",
   "descriptionKey": "game.goldminer.description",
   "isPlayable": true,
-  "statusLabelKey": "status.playable",
-  "sortOrder": 10
+  "statusLabelKey": "status.playable"
 }

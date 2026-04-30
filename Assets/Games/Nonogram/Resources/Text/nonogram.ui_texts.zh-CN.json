@@ -41,8 +41,28 @@
       "value": "换题"
     },
     {
-      "key": "nonogram.action.next_level",
-      "value": "下一关"
+      "key": "nonogram.confirm.reset.title",
+      "value": "确认重置"
+    },
+    {
+      "key": "nonogram.confirm.reset.message",
+      "value": "当前题目已有进度，重置后会清空所有涂黑和打叉。"
+    },
+    {
+      "key": "nonogram.confirm.reset.confirm",
+      "value": "确认重置"
+    },
+    {
+      "key": "nonogram.confirm.next.title",
+      "value": "确认换题"
+    },
+    {
+      "key": "nonogram.confirm.next.message",
+      "value": "当前题目已有进度，换题后会放弃当前填写。"
+    },
+    {
+      "key": "nonogram.confirm.next.confirm",
+      "value": "确认换题"
     },
     {
       "key": "nonogram.progress",
@@ -55,6 +75,18 @@
     {
       "key": "nonogram.settlement.exit",
       "value": "本局已退出，获得 20 金币。"
+    },
+    {
+      "key": "nonogram.settlement.win_title",
+      "value": "图案完成"
+    },
+    {
+      "key": "nonogram.settlement.pattern",
+      "value": "图案"
+    },
+    {
+      "key": "nonogram.settlement.size",
+      "value": "尺寸"
     },
     {
       "key": "nonogram.puzzle.apple",
@@ -159,10 +191,6 @@
     {
       "key": "game.nonogram.help",
       "value": "根据每一行和每一列给出的数字提示推理图案。连续数字代表连续涂黑的格子，不同数字组之间至少要空一格，所有非图案格也需要打叉确认。"
-    },
-    {
-      "key": "game.nonogram.credits",
-      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
     }
   ]
 }

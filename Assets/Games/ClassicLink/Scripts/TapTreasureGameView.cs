@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -70,8 +70,6 @@ namespace HuanYouYu.MiniGameHall
         private readonly int[,] board = new int[Rows + 2, Columns + 2];
         private MiniGameLevelProgressController levelProgress;
         private MiniGameLevelSelectView levelSelectView;
-        private MiniGameWinSettlementView winSettlementView;
-        private MiniGameSettlement activeWinSettlement;
         private int currentLevelIndex;
 
         private int score;
@@ -190,11 +188,6 @@ namespace HuanYouYu.MiniGameHall
         /// </summary>
         public override void Tick(float deltaTime)
         {
-            if (winSettlementView != null)
-            {
-                winSettlementView.Tick(deltaTime);
-            }
-
             if (isFinished)
             {
                 return;
@@ -223,12 +216,11 @@ namespace HuanYouYu.MiniGameHall
             EnsureLevelProgress();
             currentLevelIndex = levelProgress.CurrentLevelIndex;
             CloseLevelSelectView();
-            CloseWinSettlementView();
+            CloseRewardSettlementPanel();
             score = 0;
             isBusy = false;
             isFinished = false;
             isPaused = false;
-            shell.SetPauseButtonVisible(true);
             selectedTile = null;
             ClearHint();
             ClearPath();
@@ -240,7 +232,7 @@ namespace HuanYouYu.MiniGameHall
 
         protected override (string helpKey, string creditsKey)? GetPauseHelpKeys()
         {
-            return ("game.classic_link.help", "game.classic_link.credits");
+            return ("game.classic_link.help", null);
         }
 
         private void BuildBoard()
@@ -514,14 +506,12 @@ namespace HuanYouYu.MiniGameHall
                 return;
             }
 
-            shell.SetPauseButtonVisible(false);
-            shell.ShowSettlementPopup(
-                settlement.Summary,
-                delegate
-                {
-                    shell.ClosePopup();
-                    completeGame(settlement);
-                });
+            ShowBackHallRewardSettlementPanel(
+                settlement,
+                "ClassicLinkSettlementPanel",
+                MiniGameSettlementInfoRow.CreateLevel(currentLevelIndex + 1),
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("classic_link.settlement.score"), score.ToString()),
+                delegate { completeGame(settlement); });
         }
 
         private void OnLevelSelectClicked()
@@ -529,7 +519,7 @@ namespace HuanYouYu.MiniGameHall
             EnsureLevelProgress();
             StopActiveMatchResolution();
             shell.ClosePopup();
-            CloseWinSettlementView();
+            CloseRewardSettlementPanel();
             CloseLevelSelectView();
             levelSelectView = MiniGameLevelSelectView.Create(
                 shell.PopupHost,
@@ -555,16 +545,16 @@ namespace HuanYouYu.MiniGameHall
             ResetGame();
         }
 
-        private void LoadNextLevel()
+        private void LoadNextLevel(MiniGameSettlement settlement)
         {
             EnsureLevelProgress();
             if (!levelProgress.GoNext())
             {
-                CompleteWinSettlement();
+                completeGame(settlement);
                 return;
             }
 
-            CloseWinSettlementView();
+            GrantSettlementReward(settlement);
             ResetGame();
         }
 
@@ -576,37 +566,22 @@ namespace HuanYouYu.MiniGameHall
             }
 
             var level = LevelDefinitions[currentLevelIndex];
-            shell.ClosePopup();
-            CloseWinSettlementView();
-            activeWinSettlement = settlement;
-            winSettlementView = MiniGameWinSettlementView.Create(
-                shell.PopupHost,
-                titleText == null ? null : titleText.font,
+            ShowRewardSettlementPanel(
+                settlement,
                 new MiniGameRewardSettlementPanelParams
                 {
                     RootName = "ClassicLinkSettlementPanel",
                     Title = UiTextCatalog.Get("classic_link.settlement.title"),
                     PrimaryInfo = MiniGameSettlementInfoRow.CreateLevel(currentLevelIndex + 1),
                     SecondaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("classic_link.settlement.score"), score.ToString()),
-                    RewardLabel = UiTextCatalog.Get("classic_link.settlement.reward"),
-                    NextButtonText = UiTextCatalog.Get("classic_link.action.next_level"),
+                    RewardLabel = UiTextCatalog.Get("settlement.reward_label"),
+                    PrimaryAction = MiniGameRewardSettlementPrimaryAction.NextLevel,
                     CoinCount = settlement.CoinCount,
                     ChestCount = settlement.ChestCount
                 },
-                LoadNextLevel,
-                CompleteWinSettlement);
-        }
-
-        private void CompleteWinSettlement()
-        {
-            if (activeWinSettlement == null)
-            {
-                return;
-            }
-
-            var settlement = activeWinSettlement;
-            CloseWinSettlementView();
-            completeGame(settlement);
+                delegate { LoadNextLevel(settlement); },
+                delegate { completeGame(settlement); },
+                false);
         }
 
         private void CloseLevelSelectView()
@@ -616,17 +591,6 @@ namespace HuanYouYu.MiniGameHall
                 levelSelectView.Dispose();
                 levelSelectView = null;
             }
-        }
-
-        private void CloseWinSettlementView()
-        {
-            if (winSettlementView != null)
-            {
-                winSettlementView.Dispose();
-                winSettlementView = null;
-            }
-
-            activeWinSettlement = null;
         }
 
         private void StopActiveMatchResolution()
@@ -985,7 +949,7 @@ namespace HuanYouYu.MiniGameHall
         protected override void OnBeforeDispose()
         {
             CloseLevelSelectView();
-            CloseWinSettlementView();
+            CloseRewardSettlementPanel();
             ClearPath();
             ClearAllTransientEffects();
             StopTileRoutines();

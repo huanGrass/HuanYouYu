@@ -124,7 +124,7 @@ namespace HuanYouYu.MiniGameHall.Tests
             Assert.AreEqual(2, firstSettlement.CoinCount);
             Assert.AreEqual(0, firstSettlement.ChestCount);
 
-            ClickPath("PopupHost/MiniGamePopup/Dialog/Buttons/ConfirmButton");
+            ClickPath("PopupHost/MinesweeperSettlementPanel/Dialog/NextButton");
 
             ConfigureBoardForTests(new[]
             {
@@ -136,10 +136,10 @@ namespace HuanYouYu.MiniGameHall.Tests
             ClickCell(1, 1);
 
             var finalSettlement = InvokeSettlementBuilder();
-            Assert.AreEqual(2, finalSettlement.Score);
-            Assert.AreEqual(4, finalSettlement.CoinCount);
+            Assert.AreEqual(3, finalSettlement.Score);
+            Assert.AreEqual(6, finalSettlement.CoinCount);
             Assert.AreEqual(0, finalSettlement.ChestCount);
-            StringAssert.Contains("4", finalSettlement.Summary);
+            StringAssert.Contains("6", finalSettlement.Summary);
         }
 
         [Test]

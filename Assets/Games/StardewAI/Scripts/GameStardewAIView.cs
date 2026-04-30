@@ -44,7 +44,6 @@ namespace HuanYouYu.MiniGameHall
 
         protected override void BuildOrBindSections()
         {
-            Shell.SetPauseButtonVisible(true);
             Shell.SetBackgroundVisible(false);
         }
 
@@ -69,7 +68,7 @@ namespace HuanYouYu.MiniGameHall
             overlayRoot.offsetMin = Vector2.zero;
             overlayRoot.offsetMax = Vector2.zero;
 
-            hudView = FarmHudView.Create(Shell.TopHost, Shell.BottomHost, overlayRoot, TMP_Settings.defaultFontAsset);
+            hudView = FarmHudView.Create(Shell.TopHost, Shell.BottomHost, overlayRoot, MiniGameFontProvider.DefaultFont);
             hudView.ApplyLayout(Screen.safeArea, new Vector2Int(Screen.width, Screen.height));
 
             farmRoot = new GameObject("FarmPrototype");

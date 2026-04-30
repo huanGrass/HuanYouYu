@@ -235,7 +235,10 @@ namespace FarmPrototype
         private const float AutoMoveArrivalDistance = 0.05f;
         private const float PlayerWalkAnimationRate = 8f;
         private const float PlayerIdleBobAmplitude = 0.02f;
-        private const float PlayerWalkBobAmplitude = 0.06f;
+        private const float PlayerWalkBobAmplitude = 0f;
+        private const float PlayerSideWalkHipOffsetY = 0.38f;
+        private const float PlayerSideWalkLegTilt = 14f;
+        private const float PlayerSideWalkBodyTilt = 1.6f;
         private const float ToolActionDuration = 0.22f;
         private const float ToolHitEffectDuration = 0.26f;
         private const int ActorSortingBase = 120;
@@ -320,6 +323,10 @@ namespace FarmPrototype
         private Transform _actorsRoot = null!;
         private SpriteRenderer _playerShadow = null!;
         private SpriteRenderer _playerRenderer = null!;
+        private Transform _playerSideFrontLegRoot = null!;
+        private Transform _playerSideBackLegRoot = null!;
+        private SpriteRenderer _playerSideFrontLegRenderer = null!;
+        private SpriteRenderer _playerSideBackLegRenderer = null!;
         private SpriteRenderer _playerToolRenderer = null!;
         private SpriteRenderer _npcShadow = null!;
         private SpriteRenderer _npcRenderer = null!;
@@ -498,7 +505,7 @@ namespace FarmPrototype
         private void Awake()
         {
             name = "FarmPrototypeController";
-            _fontAsset = TMP_Settings.defaultFontAsset;
+            _fontAsset = MiniGameFontProvider.DefaultFont;
             TryInitialize();
         }
 
@@ -833,11 +840,50 @@ namespace FarmPrototype
             }
 
             PaintRect(_terrainTilemap, _fieldOriginCell.x - 1, _fieldOriginCell.y - 1, FieldWidth + 2, FieldHeight + 2, FarmPixelArtFactory.GetTile(FarmTileArt.FieldBase));
+            PaintFarmPaths();
+            PaintFieldFlowers();
+
+            PaintPond(new Vector2Int(13, 2), 4, 2);
+            PaintPondFlowers(new Vector2Int(13, 2));
+        }
+
+        private void PaintFarmPaths()
+        {
             PaintRect(_terrainTilemap, -13, -6, 18, 1, FarmPixelArtFactory.GetTile(FarmTileArt.Path));
             PaintRect(_terrainTilemap, -12, -6, 2, 10, FarmPixelArtFactory.GetTile(FarmTileArt.Path));
             PaintRect(_terrainTilemap, 3, -6, 8, 2, FarmPixelArtFactory.GetTile(FarmTileArt.Path));
+            PaintRect(_terrainTilemap, -9, -5, 4, 1, FarmPixelArtFactory.GetTile(FarmTileArt.Path));
+            PaintRect(_terrainTilemap, -3, -5, 8, 1, FarmPixelArtFactory.GetTile(FarmTileArt.Path));
 
-            PaintPond(new Vector2Int(13, 2), 4, 2);
+            PaintPathEdge(-13, -7, 18, true);
+            PaintPathEdge(-13, -5, 18, false);
+            PaintPathEdge(3, -7, 8, true);
+            PaintPathEdge(3, -4, 8, false);
+            PaintVerticalPathEdge(-13, -5, 9, true);
+            PaintVerticalPathEdge(-10, -5, 9, false);
+
+            _detailTilemap.SetTile(new Vector3Int(-13, -6, 0), FarmPixelArtFactory.GetTile(FarmTileArt.FlowerYellow));
+            _detailTilemap.SetTile(new Vector3Int(-4, -5, 0), FarmPixelArtFactory.GetTile(FarmTileArt.FlowerOrange));
+            _detailTilemap.SetTile(new Vector3Int(6, -4, 0), FarmPixelArtFactory.GetTile(FarmTileArt.FlowerYellow));
+            _detailTilemap.SetTile(new Vector3Int(10, -6, 0), FarmPixelArtFactory.GetTile(FarmTileArt.FlowerOrange));
+        }
+
+        private void PaintFieldFlowers()
+        {
+            PaintFlowerPatch(new Vector2Int(-8, 8), true);
+            PaintFlowerPatch(new Vector2Int(-3, 8), false);
+            PaintFlowerPatch(new Vector2Int(2, 8), true);
+            PaintFlowerPatch(new Vector2Int(6, 8), false);
+            PaintFlowerPatch(new Vector2Int(-10, 1), true);
+            PaintFlowerPatch(new Vector2Int(8, 0), false);
+        }
+
+        private void PaintPondFlowers(Vector2Int center)
+        {
+            _detailTilemap.SetTile(new Vector3Int(center.x - 4, center.y + 2, 0), FarmPixelArtFactory.GetTile(FarmTileArt.FlowerYellow));
+            _detailTilemap.SetTile(new Vector3Int(center.x - 3, center.y - 3, 0), FarmPixelArtFactory.GetTile(FarmTileArt.FlowerOrange));
+            _detailTilemap.SetTile(new Vector3Int(center.x + 3, center.y + 3, 0), FarmPixelArtFactory.GetTile(FarmTileArt.FlowerYellow));
+            _detailTilemap.SetTile(new Vector3Int(center.x + 5, center.y - 1, 0), FarmPixelArtFactory.GetTile(FarmTileArt.FlowerOrange));
         }
 
         private void PaintFieldBoundary()
@@ -897,8 +943,49 @@ namespace FarmPrototype
             }
         }
 
+        private void PaintPathEdge(int xMin, int y, int width, bool startWithGrassA)
+        {
+            for (int x = xMin; x < xMin + width; x++)
+            {
+                if (Mathf.Abs((x * 13) + (y * 7)) % 5 == 0)
+                {
+                    _terrainTilemap.SetTile(new Vector3Int(x, y, 0), FarmPixelArtFactory.GetTile(FarmTileArt.Path));
+                    continue;
+                }
+
+                bool useGrassA = (((x + y) & 1) == 0) == startWithGrassA;
+                _terrainTilemap.SetTile(new Vector3Int(x, y, 0), FarmPixelArtFactory.GetTile(useGrassA ? FarmTileArt.GrassA : FarmTileArt.GrassB));
+            }
+        }
+
+        private void PaintVerticalPathEdge(int x, int yMin, int height, bool startWithGrassA)
+        {
+            for (int y = yMin; y < yMin + height; y++)
+            {
+                if (Mathf.Abs((x * 11) + (y * 19)) % 5 == 0)
+                {
+                    _terrainTilemap.SetTile(new Vector3Int(x, y, 0), FarmPixelArtFactory.GetTile(FarmTileArt.Path));
+                    continue;
+                }
+
+                bool useGrassA = (((x + y) & 1) == 0) == startWithGrassA;
+                _terrainTilemap.SetTile(new Vector3Int(x, y, 0), FarmPixelArtFactory.GetTile(useGrassA ? FarmTileArt.GrassA : FarmTileArt.GrassB));
+            }
+        }
+
         private void BuildScenery()
         {
+            CreateSceneryProp("Cabin", new Vector2(-13.2f, 6.1f), FarmSpriteArt.Cabin, 1.18f);
+            CreateSceneryProp("TreeTall_NorthWest", new Vector2(-15.1f, 8.9f), FarmSpriteArt.TreeTall, 1.12f);
+            CreateSceneryProp("TreeRound_NorthWest", new Vector2(-12.7f, 9.2f), FarmSpriteArt.TreeRound, 1.04f);
+            CreateSceneryProp("TreeTall_NorthEast", new Vector2(12.9f, 9.4f), FarmSpriteArt.TreeTall, 1.08f);
+            CreateSceneryProp("TreeRound_NorthEast", new Vector2(15.0f, 7.9f), FarmSpriteArt.TreeRound, 1f);
+            CreateSceneryProp("TreeRound_SouthEast", new Vector2(14.1f, -7.2f), FarmSpriteArt.TreeRound, 0.96f);
+            CreateSceneryProp("TreeTall_SouthWest", new Vector2(-15.0f, -7.5f), FarmSpriteArt.TreeTall, 1.03f);
+            CreateSceneryProp("Bush_FieldLeft", new Vector2(-10.4f, 5.2f), FarmSpriteArt.Bush, 0.92f);
+            CreateSceneryProp("Bush_FieldRight", new Vector2(8.4f, 6.2f), FarmSpriteArt.Bush, 0.86f);
+            CreateSceneryProp("Bush_Pond", new Vector2(8.9f, 1.7f), FarmSpriteArt.Bush, 0.82f);
+            CreateSceneryProp("Bush_PathCorner", new Vector2(-13.7f, -4.0f), FarmSpriteArt.Bush, 0.8f);
             CreateWorldSprite("SeedChest", _sceneryRoot, _seedChestPosition, FarmPixelArtFactory.GetSprite(FarmSpriteArt.SeedChest), 10);
             CreateWorldSprite("ShippingBin", _sceneryRoot, _shippingBinPosition, FarmPixelArtFactory.GetSprite(FarmSpriteArt.ShippingBin), 10);
         }
@@ -933,6 +1020,26 @@ namespace FarmPrototype
                 _playerPosition,
                 FarmPixelArtFactory.GetSprite(FarmSpriteArt.PlayerUp),
                 30);
+
+            _playerSideBackLegRoot = CreateGroup("PlayerSideBackLegBone", _actorsRoot);
+            _playerSideBackLegRenderer = CreateWorldSprite(
+                "PlayerSideBackLeg",
+                _playerSideBackLegRoot,
+                Vector2.zero,
+                FarmPixelArtFactory.GetSprite(FarmSpriteArt.PlayerSideBackLeg),
+                29);
+            _playerSideBackLegRenderer.transform.localPosition = new Vector3(0f, -PlayerSideWalkHipOffsetY, 0f);
+            _playerSideBackLegRenderer.enabled = false;
+
+            _playerSideFrontLegRoot = CreateGroup("PlayerSideFrontLegBone", _actorsRoot);
+            _playerSideFrontLegRenderer = CreateWorldSprite(
+                "PlayerSideFrontLeg",
+                _playerSideFrontLegRoot,
+                Vector2.zero,
+                FarmPixelArtFactory.GetSprite(FarmSpriteArt.PlayerSideLeg),
+                31);
+            _playerSideFrontLegRenderer.transform.localPosition = new Vector3(0f, -PlayerSideWalkHipOffsetY, 0f);
+            _playerSideFrontLegRenderer.enabled = false;
 
             _playerToolRenderer = CreateWorldSprite(
                 "PlayerTool",
@@ -1062,6 +1169,17 @@ namespace FarmPrototype
             AddFenceCollisionBlocks(fenceLeft, fenceRight, fenceBottom, fenceTop);
 
             AddBlockedRect(-8.85f, -3.25f, 1.35f, 0.72f);
+            AddBlockedRect(-13.95f, 5.3f, 1.5f, 1.1f);
+            AddBlockedRect(-15.6f, 8.1f, 1.0f, 1.0f);
+            AddBlockedRect(-13.25f, 8.45f, 1.1f, 0.95f);
+            AddBlockedRect(12.4f, 8.6f, 1.0f, 1.0f);
+            AddBlockedRect(14.45f, 7.15f, 1.1f, 0.95f);
+            AddBlockedRect(13.55f, -7.95f, 1.1f, 0.95f);
+            AddBlockedRect(-15.5f, -8.3f, 1.0f, 1.0f);
+            AddBlockedRect(-10.85f, 4.9f, 0.9f, 0.62f);
+            AddBlockedRect(7.95f, 5.9f, 0.9f, 0.62f);
+            AddBlockedRect(8.5f, 1.4f, 0.8f, 0.58f);
+            AddBlockedRect(-14.1f, -4.3f, 0.8f, 0.58f);
 
             AddWaterCollisionBlocks();
 
@@ -1076,6 +1194,18 @@ namespace FarmPrototype
                     }
                 }
             }
+        }
+
+        private SpriteRenderer CreateSceneryProp(string objectName, Vector2 position, FarmSpriteArt spriteArt, float scale)
+        {
+            SpriteRenderer renderer = CreateWorldSprite(
+                objectName,
+                _sceneryRoot,
+                position,
+                FarmPixelArtFactory.GetSprite(spriteArt),
+                GetActorSortBase(position.y));
+            renderer.transform.localScale = Vector3.one * scale;
+            return renderer;
         }
 
 

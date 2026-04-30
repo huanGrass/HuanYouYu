@@ -79,18 +79,12 @@ namespace Tests
             InvokePrivate(runtime, "EndRound");
             yield return null;
 
-            var popup = GameObject.Find("MiniGamePopup");
+            var popup = GameObject.Find("GomokuSettlementPanel");
             Assert.IsNotNull(popup, "Winning the round should show a settlement popup.");
 
-            var message = popup.transform.Find("Dialog/MessagePanel/Message")?.GetComponent("TextMeshProUGUI");
-            Assert.IsNotNull(message, "Settlement message label was not found.");
-            var text = message.GetType().GetProperty("text", BindingFlags.Instance | BindingFlags.Public)?.GetValue(message) as string;
-            Assert.IsNotNull(text, "Settlement message text property was not found.");
-            StringAssert.Contains("获得 60 金币和 1 个宝箱", text);
-
-            var confirmButton = popup.transform.Find("Dialog/Buttons/ConfirmButton")?.GetComponent<Button>();
-            Assert.IsNotNull(confirmButton, "Settlement confirm button was not found.");
-            confirmButton.onClick.Invoke();
+            var backHallButton = popup.transform.Find("Dialog/BackHallButton")?.GetComponent<Button>();
+            Assert.IsNotNull(backHallButton, "Settlement back hall button was not found.");
+            backHallButton.onClick.Invoke();
             yield return null;
 
             var progress = controller.GetProgress(GameGomokuView.GameIdConstant);
@@ -112,16 +106,14 @@ namespace Tests
             InvokePrivate(runtime, "ConfirmExitToHall");
             yield return null;
 
-            var popup = GameObject.Find("MiniGamePopup");
+            var popup = GameObject.Find("GomokuSettlementPanel");
             Assert.IsNotNull(popup, "Exiting should show a settlement popup.");
 
-            var message = popup.transform.Find("Dialog/MessagePanel/Message")?.GetComponent("TextMeshProUGUI");
-            Assert.IsNotNull(message, "Settlement message label was not found.");
-            var text = message.GetType().GetProperty("text", BindingFlags.Instance | BindingFlags.Public)?.GetValue(message) as string;
-            Assert.IsNotNull(text, "Settlement message text property was not found.");
-            StringAssert.Contains("获得 10 金币", text);
+            var duplicateBackHallButton = popup.transform.Find("Dialog/BackHallButton")?.gameObject;
+            Assert.IsNotNull(duplicateBackHallButton, "Settlement secondary back hall button should exist.");
+            Assert.IsFalse(duplicateBackHallButton.activeSelf, "Exit settlement should not show a duplicate back hall button.");
 
-            var confirmButton = popup.transform.Find("Dialog/Buttons/ConfirmButton")?.GetComponent<Button>();
+            var confirmButton = popup.transform.Find("Dialog/NextButton")?.GetComponent<Button>();
             Assert.IsNotNull(confirmButton, "Settlement confirm button was not found.");
             confirmButton.onClick.Invoke();
             yield return null;

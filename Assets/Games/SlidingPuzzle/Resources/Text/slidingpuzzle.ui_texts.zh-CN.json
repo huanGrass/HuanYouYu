@@ -1,0 +1,44 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.slidingpuzzle.name",
+      "value": "数字华容道"
+    },
+    {
+      "key": "game.slidingpuzzle.description",
+      "value": "滑动数字块，把 1 到 15 按顺序排好。"
+    },
+    {
+      "key": "slidingpuzzle.hud.status",
+      "value": "步数 {0}  分数 {1}"
+    },
+    {
+      "key": "slidingpuzzle.action.restart",
+      "value": "重新开始"
+    },
+    {
+      "key": "slidingpuzzle.settlement.moves",
+      "value": "本局步数"
+    },
+    {
+      "key": "slidingpuzzle.settlement.score",
+      "value": "本局分数"
+    },
+    {
+      "key": "slidingpuzzle.settlement.exit_label",
+      "value": "结算方式"
+    },
+    {
+      "key": "slidingpuzzle.settlement.exit_value",
+      "value": "返回大厅"
+    },
+    {
+      "key": "slidingpuzzle.settlement.summary",
+      "value": "本局移动 {0} 步，获得 {1} 分。"
+    },
+    {
+      "key": "game.slidingpuzzle.help",
+      "value": "点击与空格相邻的数字块即可移动。目标是把数字按从左到右、从上到下的顺序排成 1 到 15，并让空格回到右下角。步数越少，通关分数越高。"
+    }
+  ]
+}

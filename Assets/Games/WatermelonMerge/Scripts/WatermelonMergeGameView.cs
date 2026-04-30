@@ -11,7 +11,6 @@ namespace HuanYouYu.MiniGameHall
     {
         public const string GameIdConstant = "watermelon-merge";
 
-        private const string FontResourcePath = "Fonts & Materials/NotoSansCJKsc-Subset SDF";
         private const float Gravity = 1380f;
         private const float PositionSolverIterations = 3f;
         private const float WallBounce = 0.18f;
@@ -146,8 +145,7 @@ namespace HuanYouYu.MiniGameHall
 
         protected override void BuildOrBindSections()
         {
-            Shell.SetPauseButtonVisible(true);
-            fontAsset = Resources.Load<TMP_FontAsset>(FontResourcePath);
+            fontAsset = MiniGameFontProvider.DefaultFont;
 
             var topBarRefs = MiniGameShellTopBarBuilder.CreateTopBar(
                 Shell.TopHost,
@@ -213,7 +211,7 @@ namespace HuanYouYu.MiniGameHall
 
         protected override (string helpKey, string creditsKey)? GetPauseHelpKeys()
         {
-            return ("game.watermelon_merge.help", "game.watermelon_merge.credits");
+            return ("game.watermelon_merge.help", null);
         }
 
         private void BuildContentSection()
@@ -554,7 +552,36 @@ namespace HuanYouYu.MiniGameHall
                     chestCount)
             };
 
-            Shell.ShowSettlementPopup(pendingSettlement.Summary, CompleteSettlement);
+            if (isExit)
+            {
+                ShowBackHallRewardSettlementPanel(
+                    pendingSettlement,
+                    "WatermelonMergeSettlementPanel",
+                    new MiniGameSettlementInfoRow(UiTextCatalog.Get("watermelon_merge.settlement.score"), score.ToString()),
+                    new MiniGameSettlementInfoRow(UiTextCatalog.Get("watermelon_merge.settlement.fruits"), fruits.Count.ToString()),
+                    CompleteSettlement);
+            }
+            else
+            {
+                ShowRewardSettlementPanel(
+                    pendingSettlement,
+                    new MiniGameRewardSettlementPanelParams
+                    {
+                        RootName = "WatermelonMergeSettlementPanel",
+                        Style = MiniGameRewardSettlementPanelStyle.Failure,
+                        PrimaryAction = MiniGameRewardSettlementPrimaryAction.Retry,
+                        Title = UiTextCatalog.Get("watermelon_merge.settlement.failure_title"),
+                        PrimaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("watermelon_merge.settlement.score"), score.ToString()),
+                        SecondaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("watermelon_merge.settlement.fruits"), fruits.Count.ToString()),
+                        RewardLabel = UiTextCatalog.Get("settlement.reward_label"),
+                        CoinCount = pendingSettlement.CoinCount,
+                        ChestCount = pendingSettlement.ChestCount
+                    },
+                    ResetGame,
+                    CompleteSettlement,
+                    true);
+            }
+
             MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 0.95f, 1f);
         }
 

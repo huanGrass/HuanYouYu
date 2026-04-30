@@ -24,7 +24,6 @@ namespace HuanYouYu.MiniGameHall.EditorTools
             public string descriptionKey;
             public bool isPlayable;
             public string statusLabelKey;
-            public int sortOrder;
         }
 
         [Serializable]
@@ -126,13 +125,10 @@ namespace HuanYouYu.MiniGameHall.EditorTools
         private static void ApplyCatalogOrder(List<ManifestFile> manifests, List<string> errors)
         {
             var fullOrderPath = GetProjectFullPath(CatalogOrderSourcePath);
-            if (!File.Exists(fullOrderPath))
-            {
-                manifests.Sort(CompareManifestFiles);
-                return;
-            }
-
-            var payload = JsonUtility.FromJson<CatalogOrderPayload>(File.ReadAllText(fullOrderPath, Encoding.UTF8));
+            var orderFileExists = File.Exists(fullOrderPath);
+            var payload = orderFileExists
+                ? JsonUtility.FromJson<CatalogOrderPayload>(File.ReadAllText(fullOrderPath, Encoding.UTF8))
+                : new CatalogOrderPayload();
             if (payload == null || payload.gameIds == null)
             {
                 errors.Add("小游戏排序配置格式无效: " + CatalogOrderSourcePath);
@@ -157,6 +153,7 @@ namespace HuanYouYu.MiniGameHall.EditorTools
             }
 
             var seenGameIds = new HashSet<string>(StringComparer.Ordinal);
+            var orderedGameIds = new List<string>();
             var explicitIndex = 0;
             for (var i = 0; i < payload.gameIds.Count; i++)
             {
@@ -181,10 +178,98 @@ namespace HuanYouYu.MiniGameHall.EditorTools
                 }
 
                 manifest.ExplicitOrderIndex = explicitIndex;
+                orderedGameIds.Add(trimmedGameId);
                 explicitIndex++;
             }
 
+            var appendManifests = new List<ManifestFile>();
+            for (var i = 0; i < manifests.Count; i++)
+            {
+                var manifest = manifests[i];
+                if (manifest == null || manifest.Payload == null || string.IsNullOrWhiteSpace(manifest.Payload.gameId))
+                {
+                    continue;
+                }
+
+                if (!seenGameIds.Contains(manifest.Payload.gameId.Trim()))
+                {
+                    appendManifests.Add(manifest);
+                }
+            }
+
+            appendManifests.Sort(CompareManifestFiles);
+            for (var i = 0; i < appendManifests.Count; i++)
+            {
+                var manifest = appendManifests[i];
+                var gameId = manifest.Payload.gameId.Trim();
+                manifest.ExplicitOrderIndex = explicitIndex;
+                orderedGameIds.Add(gameId);
+                seenGameIds.Add(gameId);
+                explicitIndex++;
+            }
+
+            if (errors.Count == 0 && (!orderFileExists || !IsSameCatalogOrder(payload.gameIds, orderedGameIds)))
+            {
+                WriteCatalogOrderFile(orderedGameIds);
+            }
+
             manifests.Sort(CompareManifestFiles);
+        }
+
+        private static bool IsSameCatalogOrder(List<string> sourceGameIds, List<string> normalizedGameIds)
+        {
+            if (sourceGameIds == null || sourceGameIds.Count != normalizedGameIds.Count)
+            {
+                return false;
+            }
+
+            for (var i = 0; i < sourceGameIds.Count; i++)
+            {
+                var sourceGameId = sourceGameIds[i];
+                var normalizedGameId = normalizedGameIds[i];
+                if (string.IsNullOrWhiteSpace(sourceGameId) || sourceGameId.Trim() != normalizedGameId)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static void WriteCatalogOrderFile(List<string> gameIds)
+        {
+            EnsureParentDirectory(CatalogOrderSourcePath);
+
+            var builder = new StringBuilder();
+            builder.AppendLine("{");
+            builder.AppendLine("  \"gameIds\": [");
+            for (var i = 0; i < gameIds.Count; i++)
+            {
+                builder.Append("    \"");
+                builder.Append(EscapeJsonString(gameIds[i]));
+                builder.Append("\"");
+                if (i < gameIds.Count - 1)
+                {
+                    builder.Append(",");
+                }
+
+                builder.AppendLine();
+            }
+
+            builder.AppendLine("  ]");
+            builder.AppendLine("}");
+
+            File.WriteAllText(GetProjectFullPath(CatalogOrderSourcePath), builder.ToString(), new UTF8Encoding(true));
+        }
+
+        private static string EscapeJsonString(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return string.Empty;
+            }
+
+            return value.Replace("\\", "\\\\").Replace("\"", "\\\"");
         }
 
         private static int CompareManifestFiles(ManifestFile left, ManifestFile right)
@@ -208,14 +293,6 @@ namespace HuanYouYu.MiniGameHall.EditorTools
                 {
                     return explicitOrderCompare;
                 }
-            }
-
-            var leftOrder = left?.Payload != null ? left.Payload.sortOrder : 0;
-            var rightOrder = right?.Payload != null ? right.Payload.sortOrder : 0;
-            var orderCompare = leftOrder.CompareTo(rightOrder);
-            if (orderCompare != 0)
-            {
-                return orderCompare;
             }
 
             var leftId = left?.Payload != null ? left.Payload.gameId : string.Empty;

@@ -17,6 +17,7 @@ namespace HuanYouYu.MiniGameHall
         private static readonly Color ConflictCellColor = new Color32(222, 136, 120, 255);
         private static readonly Color GivenTextColor = new Color32(78, 92, 68, 255);
         private static readonly Color PlayerTextColor = new Color32(55, 69, 49, 255);
+        private static readonly Color HintTextColor = new Color32(38, 143, 116, 255);
         private static readonly Color ConflictTextColor = new Color32(255, 245, 240, 255);
         private static readonly Color CandidateTextColor = new Color32(120, 128, 111, 255);
         private static readonly Color DividerColor = new Color32(116, 108, 89, 255);
@@ -101,10 +102,28 @@ namespace HuanYouYu.MiniGameHall
                 cell.ValueLabel.text = value == 0 ? string.Empty : value.ToString();
                 cell.ValueLabel.color = hasConflict
                     ? ConflictTextColor
-                    : boardState.IsGiven(cellIndex) ? GivenTextColor : PlayerTextColor;
+                    : ResolveValueTextColor(boardState, cellIndex);
                 RenderCandidates(cell, boardState.GetCandidateMask(cellIndex), value == 0);
                 cell.Background.color = ResolveCellColor(isSelected, isRelated || hasSameValue, hasConflict);
             }
+        }
+
+        public bool TryGetCellCenterInRoot(int cellIndex, out Vector2 anchoredPosition)
+        {
+            anchoredPosition = Vector2.zero;
+            if (cellIndex < 0 || cellIndex >= cellViews.Length || cellViews[cellIndex] == null || root == null)
+            {
+                return false;
+            }
+
+            var cellRect = cellViews[cellIndex].Root;
+            anchoredPosition = root.InverseTransformPoint(cellRect.TransformPoint(cellRect.rect.center));
+            return true;
+        }
+
+        public RectTransform Root
+        {
+            get { return root; }
         }
 
         private void BuildBoard(RectTransform parent)
@@ -180,7 +199,7 @@ namespace HuanYouYu.MiniGameHall
                     candidatesRoot.offsetMax = new Vector2(-6f, -6f);
                     var candidateLabels = BuildCandidateLabels(candidatesRoot);
 
-                    cellViews[cellIndex] = new CellView(background, label, candidatesRoot, candidateLabels);
+                    cellViews[cellIndex] = new CellView(cellRect, background, label, candidatesRoot, candidateLabels);
                 }
             }
 
@@ -339,6 +358,16 @@ namespace HuanYouYu.MiniGameHall
             return CellBaseColor;
         }
 
+        private static Color ResolveValueTextColor(SudokuBoardState boardState, int cellIndex)
+        {
+            if (boardState.IsGiven(cellIndex))
+            {
+                return GivenTextColor;
+            }
+
+            return boardState.IsHintRevealed(cellIndex) ? HintTextColor : PlayerTextColor;
+        }
+
         private TextMeshProUGUI CreateText(string name, RectTransform parent, string text, float fontSize, FontStyles fontStyle)
         {
             var textRect = CreateRect(name, parent, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
@@ -409,16 +438,20 @@ namespace HuanYouYu.MiniGameHall
         private sealed class CellView
         {
             public CellView(
+                RectTransform root,
                 RoundedRectGraphic background,
                 TextMeshProUGUI valueLabel,
                 RectTransform candidatesRoot,
                 TextMeshProUGUI[] candidateLabels)
             {
+                Root = root;
                 Background = background;
                 ValueLabel = valueLabel;
                 CandidatesRoot = candidatesRoot;
                 CandidateLabels = candidateLabels;
             }
+
+            public RectTransform Root { get; }
 
             public RoundedRectGraphic Background { get; }
 

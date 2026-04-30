@@ -1,0 +1,7 @@
+﻿{
+  "gameId": "whacamole",
+  "nameKey": "game.whacamole.name",
+  "descriptionKey": "game.whacamole.description",
+  "isPlayable": true,
+  "statusLabelKey": "status.playable"
+}

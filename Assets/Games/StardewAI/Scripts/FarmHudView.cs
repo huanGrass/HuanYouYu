@@ -1368,7 +1368,7 @@ namespace FarmPrototype
 
             TextMeshProUGUI text = rect.GetComponent<TextMeshProUGUI>();
             text.text = string.Empty;
-            text.font = fontAsset != null ? fontAsset : TMP_Settings.defaultFontAsset;
+            text.font = fontAsset != null ? fontAsset : MiniGameFontProvider.DefaultFont;
             text.fontSize = maxFontSize;
             text.fontSizeMin = minFontSize;
             text.enableAutoSizing = true;

@@ -1,0 +1,36 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.jumpjump.name",
+      "value": "跳一跳"
+    },
+    {
+      "key": "game.jumpjump.description",
+      "value": "按住蓄力，松手起跳，连续落到平台上刷新分数。"
+    },
+    {
+      "key": "jumpjump.hud.score",
+      "value": "得分 {0}"
+    },
+    {
+      "key": "jumpjump.settlement.summary",
+      "value": "本局跳中 {0} 个平台，获得 {1} 金币和 {2} 个宝箱。"
+    },
+    {
+      "key": "jumpjump.settlement.failure_title",
+      "value": "落空了"
+    },
+    {
+      "key": "jumpjump.settlement.platforms",
+      "value": "平台"
+    },
+    {
+      "key": "jumpjump.settlement.best",
+      "value": "本局"
+    },
+    {
+      "key": "game.jumpjump.help",
+      "value": "按住游戏区域开始蓄力，松手后角色会朝下一个平台跳出。\n每成功落到一个新平台得 1 分，落空后本局立即结算。"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.lightsout.name",
+      "value": "数学电灯"
+    },
+    {
+      "key": "game.lightsout.description",
+      "value": "计算算式答案，点击灯泡翻转十字区域，让亮灯数字之和等于答案。"
+    },
+    {
+      "key": "lightsout.hud.score_questions",
+      "value": "分数 {0}"
+    },
+    {
+      "key": "lightsout.hud.current_sum",
+      "value": "当前亮灯和：{0}"
+    },
+    {
+      "key": "lightsout.hud.steps",
+      "value": "步数：{0} / 推荐 {1}"
+    },
+    {
+      "key": "lightsout.question.prompt",
+      "value": "算式：{0}"
+    },
+    {
+      "key": "lightsout.status.playing",
+      "value": "点击灯泡会翻转自己和上下左右。"
+    },
+    {
+      "key": "lightsout.status.correct",
+      "value": "正确！本题 +{0} 分"
+    },
+    {
+      "key": "lightsout.action.restart",
+      "value": "重新开始"
+    },
+    {
+      "key": "lightsout.settlement.score",
+      "value": "本局分数"
+    },
+    {
+      "key": "lightsout.settlement.completed",
+      "value": "完成题数"
+    },
+    {
+      "key": "lightsout.settlement.summary",
+      "value": "本局获得 {0} 分，完成 {1} 题。"
+    },
+    {
+      "key": "game.lightsout.help",
+      "value": "先算出题目答案，再点击灯泡。每次点击会翻转该灯泡和上下左右相邻灯泡；只有亮起的数字参与求和。当前亮灯和等于算式答案时自动进入下一题。推荐步数内完成可获得更高分。"
+    }
+  ]
+}

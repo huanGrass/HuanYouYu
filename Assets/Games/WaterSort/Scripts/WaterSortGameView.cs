@@ -94,9 +94,7 @@ namespace HuanYouYu.MiniGameHall
         private RectTransform streamLayer;
         private Button levelSelectButton;
         private Button restartButton;
-        private MiniGameWinSettlementView settlementView;
         private MiniGameLevelSelectView levelSelectView;
-        private MiniGameSettlement activeSettlement;
         private MiniGameLevelProgressController levelProgress;
         private int currentLevelIndex;
         private int unlockedLevelCount = 1;
@@ -129,8 +127,7 @@ namespace HuanYouYu.MiniGameHall
 
         protected override void BuildOrBindSections()
         {
-            Shell.SetPauseButtonVisible(true);
-            fontAsset = Resources.Load<TMP_FontAsset>(FontResourcePath);
+            fontAsset = MiniGameFontProvider.DefaultFont;
 
             var topBarRefs = MiniGameShellTopBarBuilder.CreateTopBar(
                 Shell.TopHost,
@@ -145,7 +142,7 @@ namespace HuanYouYu.MiniGameHall
         protected override void ResetGame()
         {
             Shell.ClosePopup();
-            CloseSettlementView();
+            CloseRewardSettlementPanel();
             CloseLevelSelectView();
             StopPourAnimation();
             EnsureLevelProgress();
@@ -164,7 +161,6 @@ namespace HuanYouYu.MiniGameHall
             AdvanceBottleReceiveAnimations(deltaTime);
             AdvanceBottleCapAnimations(deltaTime);
             AdvanceIdleWater(deltaTime);
-            AdvanceSettlementView(deltaTime);
         }
 
         protected override void OnPauseRequested()
@@ -180,7 +176,7 @@ namespace HuanYouYu.MiniGameHall
         protected override void OnBeforeDispose()
         {
             Shell.ClosePopup();
-            CloseSettlementView();
+            CloseRewardSettlementPanel();
             StopPourAnimation();
 
             if (restartButton != null)
@@ -197,7 +193,7 @@ namespace HuanYouYu.MiniGameHall
 
         protected override (string helpKey, string creditsKey)? GetPauseHelpKeys()
         {
-            return ("game.water_sort.help", "game.water_sort.credits");
+            return ("game.water_sort.help", null);
         }
 
         private void CompleteRound()
@@ -217,7 +213,13 @@ namespace HuanYouYu.MiniGameHall
             selectedBottleIndex = -1;
             settlementShown = true;
             MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 1f);
-            ShowSettlementAndComplete(CreateSettlement(false));
+            var settlement = CreateSettlement(false);
+            ShowBackHallRewardSettlementPanel(
+                settlement,
+                "WaterSortSettlementPanel",
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("water_sort.settlement.steps"), moveCount + UiTextCatalog.Get("water_sort.settlement.step_unit")),
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("water_sort.settlement.rating"), ResolveSettlementRating(moveCount)),
+                delegate { CompleteGame?.Invoke(settlement); });
         }
 
         private MiniGameSettlement CreateSettlement(bool completed)
@@ -343,16 +345,17 @@ namespace HuanYouYu.MiniGameHall
             return levelProgress.CanGoNext();
         }
 
-        private void LoadNextLevel()
+        private void LoadNextLevel(MiniGameSettlement settlement)
         {
             EnsureLevelProgress();
             if (!CanGoNextLevel())
             {
-                CompleteSettlement();
+                CompleteGame?.Invoke(settlement);
                 return;
             }
 
             levelProgress.GoNext();
+            GrantSettlementReward(settlement);
             SyncLevelProgressFields();
             ResetGame();
         }

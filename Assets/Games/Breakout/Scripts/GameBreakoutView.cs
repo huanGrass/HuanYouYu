@@ -11,26 +11,26 @@ namespace HuanYouYu.MiniGameHall
         private const int PointsPerBrick = 100;
         private static readonly BreakoutLevelDefinition[] LevelPool =
         {
-            new BreakoutLevelDefinition("breakout.level.classic", "11111111", "11111111", "11111111", "11111111", "11111111"),
-            new BreakoutLevelDefinition("breakout.level.hollow_box", "11111111", "10000001", "10000001", "10000001", "11111111"),
-            new BreakoutLevelDefinition("breakout.level.cross", "00111100", "00111100", "11111111", "00111100", "00111100"),
-            new BreakoutLevelDefinition("breakout.level.stairs", "10000000", "11000000", "11100000", "11110000", "11111000"),
-            new BreakoutLevelDefinition("breakout.level.twin_towers", "11000011", "11000011", "11100111", "01111110", "00111100"),
-            new BreakoutLevelDefinition("breakout.level.waves", "11001100", "11100110", "01111100", "00111110", "00110011"),
-            new BreakoutLevelDefinition("breakout.level.arrow", "00011000", "00111100", "01111110", "11111111", "00111100"),
-            new BreakoutLevelDefinition("breakout.level.diamond", "00011000", "00111100", "01111110", "00111100", "00011000"),
-            new BreakoutLevelDefinition("breakout.level.spiral_turn", "11110000", "10011100", "11000110", "00111001", "00001111"),
-            new BreakoutLevelDefinition("breakout.level.sawtooth", "10101010", "01100110", "00111100", "01100110", "10101010"),
-            new BreakoutLevelDefinition("breakout.level.double_ring", "01111110", "01000010", "01100110", "01000010", "01111110"),
-            new BreakoutLevelDefinition("breakout.level.spire", "00011000", "00111100", "00111100", "01111110", "11111111"),
-            new BreakoutLevelDefinition("breakout.level.wall", "11111111", "10111101", "11111111", "10111101", "11111111"),
-            new BreakoutLevelDefinition("breakout.level.diagonal", "10000001", "01000010", "00100100", "01000010", "10000001"),
-            new BreakoutLevelDefinition("breakout.level.funnel", "11000011", "01100110", "00111100", "00111100", "00011000"),
-            new BreakoutLevelDefinition("breakout.level.bridge", "11111111", "00011000", "11111111", "00011000", "11111111"),
-            new BreakoutLevelDefinition("breakout.level.wings", "11000011", "11100111", "01111110", "00111100", "00100100"),
-            new BreakoutLevelDefinition("breakout.level.hive", "01100110", "11111111", "01111110", "11111111", "01100110"),
-            new BreakoutLevelDefinition("breakout.level.spiral", "11111111", "00000001", "01111101", "01000101", "01111111"),
-            new BreakoutLevelDefinition("breakout.level.arch", "00111100", "01100110", "11000011", "11111111", "11000011")
+            new BreakoutLevelDefinition("breakout.level.classic", "11111111111", "11111111111", "11111111111", "11111111111", "11111111111", "11111111111", "11111111111", "11111111111", "11111111111", "11111111111", "11111111111", "11111111111", "11111111111", "11111111111", "11111111111"),
+            new BreakoutLevelDefinition("breakout.level.hollow_box", "11111111111", "10000000001", "10000000001", "10001110001", "10001010001", "10001110001", "10000000001", "10000000001", "10001110001", "10001010001", "10001110001", "10000000001", "10000000001", "10000000001", "11111111111"),
+            new BreakoutLevelDefinition("breakout.level.cross", "00001110000", "00001110000", "00001110000", "00001110000", "11111111111", "11111111111", "11111111111", "00001110000", "00001110000", "00001110000", "11111111111", "11111111111", "00001110000", "00001110000", "00001110000"),
+            new BreakoutLevelDefinition("breakout.level.stairs", "10000000000", "11000000000", "11100000000", "11110000000", "11111000000", "11111100000", "11111110000", "11111111000", "11111111100", "11111111110", "11111111111", "01111111111", "00111111111", "00011111111", "00001111111"),
+            new BreakoutLevelDefinition("breakout.level.twin_towers", "11000000011", "11000000011", "11100000111", "11100000111", "11110001111", "11110001111", "01111111110", "01111111110", "00111111100", "00111011100", "00110001100", "11100000111", "11100000111", "11000000011", "11000000011"),
+            new BreakoutLevelDefinition("breakout.level.waves", "11001100110", "11100110011", "01110011001", "00111100110", "00011110011", "00111100110", "01110011001", "11100110011", "11001100110", "10011100111", "00111110011", "01110011100", "11100110011", "11001100110", "10011001100"),
+            new BreakoutLevelDefinition("breakout.level.arrow", "00000100000", "00001110000", "00011111000", "00111111100", "01111111110", "11111111111", "00011111000", "00011111000", "00011111000", "00011111000", "00011111000", "00011111000", "00011111000", "00011111000", "00011111000"),
+            new BreakoutLevelDefinition("breakout.level.diamond", "00000100000", "00001110000", "00011111000", "00111111100", "01111111110", "11111111111", "01111111110", "00111111100", "00011111000", "00001110000", "00000100000", "00001110000", "00011111000", "00001110000", "00000100000"),
+            new BreakoutLevelDefinition("breakout.level.spiral_turn", "11111100000", "10000111000", "10110001100", "10111100110", "10000110010", "11110111010", "00010100010", "01110101110", "01000101000", "01011101111", "01011000001", "01001111101", "01100000101", "00111110101", "00000011111"),
+            new BreakoutLevelDefinition("breakout.level.sawtooth", "10101010101", "01010101010", "11100111001", "01110011100", "00111110011", "00011111000", "00111111100", "01111111110", "11100111001", "01010101010", "10101010101", "11100111001", "01110011100", "00111110011", "00011111000"),
+            new BreakoutLevelDefinition("breakout.level.double_ring", "01111111110", "01000000010", "01011111010", "01010001010", "01010101010", "01010001010", "01011111010", "01000000010", "01111111110", "00011111000", "00010001000", "00011111000", "00000000000", "00111111100", "00100000100"),
+            new BreakoutLevelDefinition("breakout.level.spire", "00000100000", "00001110000", "00011111000", "00011111000", "00111111100", "00111111100", "01111111110", "01111111110", "11111111111", "11111111111", "00111111100", "00111111100", "01111111110", "11111111111", "11111111111"),
+            new BreakoutLevelDefinition("breakout.level.wall", "11111111111", "10111111101", "11111111111", "11100100111", "11111111111", "10111111101", "11111111111", "11100100111", "11111111111", "10111111101", "11111111111", "11100100111", "11111111111", "10111111101", "11111111111"),
+            new BreakoutLevelDefinition("breakout.level.diagonal", "10000000001", "01000000010", "00100000100", "00010001000", "00001010000", "00000100000", "00001010000", "00010001000", "00100000100", "01000000010", "10000000001", "11000000011", "01100000110", "00110001100", "00011111000"),
+            new BreakoutLevelDefinition("breakout.level.funnel", "11100000111", "11110001111", "01111011110", "00111111100", "00011111000", "00001110000", "00000100000", "00001110000", "00011111000", "00111111100", "01111011110", "11110001111", "11100000111", "11000000011", "10000000001"),
+            new BreakoutLevelDefinition("breakout.level.bridge", "11111111111", "00001110000", "11111111111", "10001110001", "11111111111", "00001110000", "11111111111", "10001110001", "11111111111", "00001110000", "11111111111", "10001110001", "11111111111", "00001110000", "11111111111"),
+            new BreakoutLevelDefinition("breakout.level.wings", "11000000011", "11100000111", "11110001111", "11111011111", "01111111110", "00111111100", "00011111000", "00001110000", "00111111100", "01111111110", "11111011111", "11110001111", "11100000111", "11000000011", "10000000001"),
+            new BreakoutLevelDefinition("breakout.level.hive", "01100110011", "11111111111", "01111111110", "11111111111", "11001100110", "11111111111", "01111111110", "11111111111", "11001100110", "11111111111", "01111111110", "11111111111", "11001100110", "11111111111", "01100110011"),
+            new BreakoutLevelDefinition("breakout.level.spiral", "11111111111", "00000000001", "01111111101", "01000000101", "01011110101", "01010010101", "01010110101", "01010000101", "01011111101", "01000000000", "01111111110", "00000000010", "11111111010", "10000001010", "11111111110"),
+            new BreakoutLevelDefinition("breakout.level.arch", "00011111000", "00110001100", "01100000110", "11000000011", "11000000011", "11000000011", "11111111111", "11000000011", "11000000011", "11000000011", "11111111111", "01100000110", "00110001100", "00011111000", "00001110000")
         };
 
         private BreakoutGameState state;
@@ -97,8 +97,6 @@ namespace HuanYouYu.MiniGameHall
             board = new BreakoutBoard(Shell.ContentHost);
             input = new BreakoutInput(board.BoardRect);
 
-            Shell.SetPauseButtonVisible(true);
-
             hud.ActionRequested += OnActionRequested;
             board.BrickBroken += OnBrickBroken;
             board.BallLost += OnBallLost;
@@ -153,7 +151,7 @@ namespace HuanYouYu.MiniGameHall
 
         protected override (string helpKey, string creditsKey)? GetPauseHelpKeys()
         {
-            return ("game.breakout.help", "game.breakout.credits");
+            return ("game.breakout.help", null);
         }
 
         private void StartNewGame()
@@ -225,7 +223,7 @@ namespace HuanYouYu.MiniGameHall
             board.LaunchBall();
             state = BreakoutGameState.Playing;
             hud.SetAction(
-                UiTextCatalog.Get("breakout.action.restart"),
+                UiTextCatalog.Get("common.action.restart"),
                 true,
                 true);
             MiniGameSfxPlayer.Play(MiniGameSfxType.UiTap, 0.95f);
@@ -248,15 +246,13 @@ namespace HuanYouYu.MiniGameHall
             state = BreakoutGameState.Paused;
             Shell.ClosePopup();
             MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 1f);
-            Shell.ShowSettlementPopup(
-                UiTextCatalog.Format("breakout.settlement.exit", score, brokenBrickCount, brokenBrickCount * 2),
-                ConfirmSettlement);
-        }
-
-        private void ConfirmSettlement()
-        {
-            Shell.ClosePopup();
-            CompleteGame?.Invoke(BuildSettlement());
+            var settlement = BuildSettlement();
+            ShowBackHallRewardSettlementPanel(
+                settlement,
+                "BreakoutSettlementPanel",
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("breakout.settlement.score"), score.ToString()),
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("breakout.settlement.bricks"), brokenBrickCount.ToString()),
+                delegate { CompleteGame?.Invoke(settlement); });
         }
 
         private void OnActionRequested()
@@ -305,13 +301,11 @@ namespace HuanYouYu.MiniGameHall
 
             state = BreakoutGameState.Lost;
             hud.SetAction(
-                UiTextCatalog.Get("breakout.action.restart"),
+                UiTextCatalog.Get("common.action.restart"),
                 true,
                 true);
             MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 1f);
-            Shell.ShowSettlementPopup(
-                UiTextCatalog.Format("breakout.settlement.lose", score, brokenBrickCount),
-                ConfirmSettlement);
+            ShowRoundSettlementPanel(BuildSettlement(), MiniGameRewardSettlementPanelStyle.Failure);
         }
 
         private void OnBoardCleared()
@@ -323,13 +317,34 @@ namespace HuanYouYu.MiniGameHall
 
             state = BreakoutGameState.Won;
             hud.SetAction(
-                UiTextCatalog.Get("breakout.action.restart"),
+                UiTextCatalog.Get("common.action.restart"),
                 true,
                 true);
             MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 1f);
-            Shell.ShowSettlementPopup(
-                UiTextCatalog.Format("breakout.settlement.win", score, lives, brokenBrickCount, brokenBrickCount * 2, 1),
-                ConfirmSettlement);
+            ShowRoundSettlementPanel(BuildSettlement(), MiniGameRewardSettlementPanelStyle.Success);
+        }
+
+        private void ShowRoundSettlementPanel(MiniGameSettlement settlement, MiniGameRewardSettlementPanelStyle style)
+        {
+            ShowRewardSettlementPanel(
+                settlement,
+                new MiniGameRewardSettlementPanelParams
+                {
+                    RootName = "BreakoutSettlementPanel",
+                    Style = style,
+                    PrimaryAction = MiniGameRewardSettlementPrimaryAction.Retry,
+                    Title = UiTextCatalog.Get(style == MiniGameRewardSettlementPanelStyle.Success ? "breakout.settlement.win_title" : "breakout.settlement.failure_title"),
+                    PrimaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("breakout.settlement.score"), score.ToString()),
+                    SecondaryInfo = new MiniGameSettlementInfoRow(
+                        UiTextCatalog.Get(style == MiniGameRewardSettlementPanelStyle.Success ? "breakout.settlement.lives" : "breakout.settlement.bricks"),
+                        (style == MiniGameRewardSettlementPanelStyle.Success ? lives : brokenBrickCount).ToString()),
+                    RewardLabel = UiTextCatalog.Get("settlement.reward_label"),
+                    CoinCount = settlement.CoinCount,
+                    ChestCount = settlement.ChestCount
+                },
+                StartNewGame,
+                delegate { CompleteGame?.Invoke(settlement); },
+                true);
         }
 
         private MiniGameSettlement BuildSettlement()
@@ -359,6 +374,12 @@ namespace HuanYouYu.MiniGameHall
             Won,
             Lost
         }
+    }
+
+    internal enum BreakoutPowerUpType
+    {
+        SplitCurrentBalls,
+        ExtraServeBalls
     }
 
     internal sealed class BreakoutLevelDefinition

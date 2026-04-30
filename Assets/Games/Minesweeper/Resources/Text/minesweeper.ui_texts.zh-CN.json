@@ -13,10 +13,6 @@
       "value": "剩余雷数 {0}"
     },
     {
-      "key": "minesweeper.action.restart",
-      "value": "重新开始"
-    },
-    {
       "key": "minesweeper.mode.reveal",
       "value": "翻开"
     },
@@ -57,12 +53,24 @@
       "value": "本次累计翻开了 {0} 个安全格，获得 {1} 金币和 {2} 个宝箱。"
     },
     {
-      "key": "game.minesweeper.help",
-      "value": "点击格子翻开区域，数字表示周围八格中的地雷数量。根据数字推理安全格与地雷位置，必要时切换到插旗模式做标记，避开所有地雷即可通关。"
+      "key": "minesweeper.settlement.win_title",
+      "value": "雷区扫清"
     },
     {
-      "key": "game.minesweeper.credits",
-      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
+      "key": "minesweeper.settlement.failure_title",
+      "value": "踩到地雷"
+    },
+    {
+      "key": "minesweeper.settlement.safe_cells",
+      "value": "安全格"
+    },
+    {
+      "key": "minesweeper.settlement.flags",
+      "value": "旗标"
+    },
+    {
+      "key": "game.minesweeper.help",
+      "value": "点击格子翻开区域，数字表示周围八格中的地雷数量。根据数字推理安全格与地雷位置，必要时切换到插旗模式做标记，避开所有地雷即可通关。"
     }
   ]
 }

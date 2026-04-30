@@ -1,0 +1,7 @@
+﻿{
+  "gameId": "jumpjump",
+  "nameKey": "game.jumpjump.name",
+  "descriptionKey": "game.jumpjump.description",
+  "isPlayable": true,
+  "statusLabelKey": "status.playable"
+}

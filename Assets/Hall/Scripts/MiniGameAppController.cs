@@ -8,7 +8,7 @@ namespace HuanYouYu.MiniGameHall
     /// <summary>
     /// 大厅主控制器：负责大厅与小游戏切换、进度存档、音频与基础 UI 环境初始化。
     /// </summary>
-    public sealed partial class MiniGameAppController : MonoBehaviour, IMiniGameLevelProgressStore
+    public sealed partial class MiniGameAppController : MonoBehaviour, IMiniGameLevelProgressStore, IMiniGameRewardSink
     {
         public const float ReferenceWidth = 750f;
         public const float ReferenceHeight = 1334f;
@@ -135,22 +135,41 @@ private static readonly string[] DefaultFavoriteGameIds =
                 return;
             }
 
-            MiniGameProgressData progress;
-            if (!progressLookup.TryGetValue(activeGameId, out progress))
-            {
-                progress = MiniGameSaveStore.CreateEmpty(activeGameId);
-                progressLookup[activeGameId] = progress;
-            }
-
-            progress.PlayCount += 1;
-            progress.BestScore = Mathf.Max(progress.BestScore, settlement.Score);
-            progress.TotalChestCount += Mathf.Max(0, settlement.ChestCount);
-            progress.TotalCoinCount += Mathf.Max(0, settlement.CoinCount);
-            SaveHallState();
+            ApplySettlementProgress(activeGameId, settlement, true);
 
             DisposeActiveGame();
 
             RefreshHall();
+        }
+
+        public void GrantSettlementReward(string gameId, MiniGameSettlement settlement)
+        {
+            ApplySettlementProgress(gameId, settlement, false);
+        }
+
+        private void ApplySettlementProgress(string gameId, MiniGameSettlement settlement, bool countPlay)
+        {
+            if (settlement == null || string.IsNullOrWhiteSpace(gameId))
+            {
+                return;
+            }
+
+            MiniGameProgressData progress;
+            if (!progressLookup.TryGetValue(gameId, out progress))
+            {
+                progress = MiniGameSaveStore.CreateEmpty(gameId);
+                progressLookup[gameId] = progress;
+            }
+
+            if (countPlay)
+            {
+                progress.PlayCount += 1;
+            }
+
+            progress.BestScore = Mathf.Max(progress.BestScore, settlement.Score);
+            progress.TotalChestCount += Mathf.Max(0, settlement.ChestCount);
+            progress.TotalCoinCount += Mathf.Max(0, settlement.CoinCount);
+            SaveHallState();
         }
 
         /// <summary>

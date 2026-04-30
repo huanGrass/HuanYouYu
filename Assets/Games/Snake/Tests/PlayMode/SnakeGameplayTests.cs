@@ -232,12 +232,12 @@ namespace Tests
             var gameRoot = GameObject.Find("SnakeView");
             Assert.IsNotNull(gameRoot, "Snake shell root was not found.");
             Assert.Greater(CountTransientEffects(runtime, "SnakeCollisionFlash"), 0, "Self collision should briefly play collision flash effects.");
-            Assert.IsNull(gameRoot.transform.Find("PopupHost/MiniGamePopup"), "Settlement popup should wait until the short collision effect has played.");
+            Assert.IsNull(gameRoot.transform.Find("PopupHost/SnakeSettlementPanel"), "Settlement popup should wait until the short collision effect has played.");
 
             yield return new WaitForSecondsRealtime(0.12f);
             yield return null;
 
-            Assert.IsNotNull(gameRoot.transform.Find("PopupHost/MiniGamePopup"), "Settlement popup should appear after the collision effect delay.");
+            Assert.IsNotNull(gameRoot.transform.Find("PopupHost/SnakeSettlementPanel"), "Settlement popup should appear after the collision effect delay.");
         }
 
         [UnityTest]
@@ -331,11 +331,14 @@ namespace Tests
             confirmExitButton.onClick.Invoke();
             yield return null;
 
-            var settlementPopup = gameRoot.transform.Find("PopupHost/MiniGamePopup");
-            Assert.IsNotNull(settlementPopup, "Exit should open a settlement popup before returning to hall.");
+            var settlementPopup = gameRoot.transform.Find("PopupHost/SnakeSettlementPanel");
+            Assert.IsNotNull(settlementPopup, "Exit should open a reward settlement popup before returning to hall.");
 
-            var settlementConfirmButton = settlementPopup.Find("Dialog/Buttons/ConfirmButton")?.GetComponent<Button>();
-            Assert.IsNotNull(settlementConfirmButton, "Settlement confirm button was not found after exiting.");
+            var duplicateBackHallButton = settlementPopup.Find("Dialog/BackHallButton")?.gameObject;
+            Assert.IsNotNull(duplicateBackHallButton, "Settlement secondary back hall button should exist.");
+            Assert.IsFalse(duplicateBackHallButton.activeSelf, "Exit settlement should not show a duplicate back hall button.");
+            var settlementConfirmButton = settlementPopup.Find("Dialog/NextButton")?.GetComponent<Button>();
+            Assert.IsNotNull(settlementConfirmButton, "Settlement back hall button was not found after exiting.");
             settlementConfirmButton.onClick.Invoke();
             yield return null;
 
@@ -385,10 +388,10 @@ namespace Tests
 
             var gameRoot = GameObject.Find("SnakeView");
             Assert.IsNotNull(gameRoot, "Snake shell root was not found.");
-            var settlementPopup = gameRoot.transform.Find("PopupHost/MiniGamePopup");
+            var settlementPopup = gameRoot.transform.Find("PopupHost/SnakeSettlementPanel");
             Assert.IsNotNull(settlementPopup, "Self collision should show the settlement popup.");
 
-            var confirmButton = settlementPopup.Find("Dialog/Buttons/ConfirmButton")?.GetComponent<Button>();
+            var confirmButton = settlementPopup.Find("Dialog/BackHallButton")?.GetComponent<Button>();
             Assert.IsNotNull(confirmButton, "Settlement confirm button was not found.");
             confirmButton.onClick.Invoke();
             yield return null;

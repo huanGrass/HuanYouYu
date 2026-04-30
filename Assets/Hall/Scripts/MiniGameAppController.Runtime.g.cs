@@ -49,6 +49,22 @@ namespace HuanYouYu.MiniGameHall
                     return new GameStardewAIView(this, rootCanvas.transform, CompleteCurrentGame, ExitCurrentGameToHall);
                 case GameControlPointView.GameIdConstant:
                     return new GameControlPointView(this, rootCanvas.transform, CompleteCurrentGame, ExitCurrentGameToHall);
+                case MiniGameWhacAMoleGameView.GameIdConstant:
+                    return new MiniGameWhacAMoleGameView(this, rootCanvas.transform, CompleteCurrentGame, ExitCurrentGameToHall);
+                case MiniGameJumpJumpGameView.GameIdConstant:
+                    return new MiniGameJumpJumpGameView(this, rootCanvas.transform, CompleteCurrentGame, ExitCurrentGameToHall);
+                case MiniGameLightsOutGameView.GameIdConstant:
+                    return new MiniGameLightsOutGameView(this, rootCanvas.transform, CompleteCurrentGame, ExitCurrentGameToHall);
+                case MiniGameRiverCrossingGameView.GameIdConstant:
+                    return new MiniGameRiverCrossingGameView(this, rootCanvas.transform, CompleteCurrentGame, ExitCurrentGameToHall);
+                case MiniGameSlidingPuzzleGameView.GameIdConstant:
+                    return new MiniGameSlidingPuzzleGameView(this, rootCanvas.transform, CompleteCurrentGame, ExitCurrentGameToHall);
+                case MiniGameTowerOfHanoiGameView.GameIdConstant:
+                    return new MiniGameTowerOfHanoiGameView(this, rootCanvas.transform, CompleteCurrentGame, ExitCurrentGameToHall);
+                case MiniGameWaterPouringGameView.GameIdConstant:
+                    return new MiniGameWaterPouringGameView(this, rootCanvas.transform, CompleteCurrentGame, ExitCurrentGameToHall);
+                case MiniGameAkariGameView.GameIdConstant:
+                    return new MiniGameAkariGameView(this, rootCanvas.transform, CompleteCurrentGame, ExitCurrentGameToHall);
 
                 default:
                     Debug.LogWarning("未注册小游戏运行时: " + gameId);

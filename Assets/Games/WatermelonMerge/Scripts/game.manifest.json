@@ -3,6 +3,5 @@
   "nameKey": "game.watermelon_merge.name",
   "descriptionKey": "game.watermelon_merge.description",
   "isPlayable": true,
-  "statusLabelKey": "status.playable",
-  "sortOrder": 10
+  "statusLabelKey": "status.playable"
 }

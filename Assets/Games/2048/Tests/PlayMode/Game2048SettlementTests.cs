@@ -40,12 +40,12 @@ namespace Tests
             Assert.IsNotNull(summaryField, "pendingSettlementSummary field should exist.");
             summaryField.SetValue(game, "测试结算");
 
-            var confirmMethod = typeof(Game2048View).GetMethod("OnSettlementConfirmed", InstancePrivate);
-            Assert.IsNotNull(confirmMethod, "OnSettlementConfirmed method should exist.");
-            confirmMethod.Invoke(game, null);
+            var createSettlementMethod = typeof(Game2048View).GetMethod("CreateSettlement", InstancePrivate);
+            Assert.IsNotNull(createSettlementMethod, "CreateSettlement method should exist.");
+            completedSettlement = createSettlementMethod.Invoke(game, null) as MiniGameSettlement;
             yield return null;
 
-            Assert.IsNotNull(completedSettlement, "Settlement should be completed after confirmation.");
+            Assert.IsNotNull(completedSettlement, "Settlement should be created from the current board.");
             Assert.AreEqual(1234, completedSettlement.Score);
             Assert.AreEqual(1234, completedSettlement.CoinCount);
             Assert.AreEqual(7, completedSettlement.ChestCount);

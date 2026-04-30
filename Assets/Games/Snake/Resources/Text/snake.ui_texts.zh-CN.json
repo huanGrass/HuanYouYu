@@ -41,12 +41,24 @@
       "value": "贪吃蛇通关：得分 {0}，长度 {1}，吃到食物 {2} 个，获得 {3} 金币和 {4} 个宝箱。"
     },
     {
-      "key": "game.snake.help",
-      "value": "控制小蛇吃掉食物来不断变长。移动过程中要避开自身和危险走位，尽量为后续转向预留空间，随着长度增长保持路线有序。"
+      "key": "snake.settlement.win_title",
+      "value": "小蛇满格"
     },
     {
-      "key": "game.snake.credits",
-      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
+      "key": "snake.settlement.failure_title",
+      "value": "本局结束"
+    },
+    {
+      "key": "snake.settlement.score",
+      "value": "得分"
+    },
+    {
+      "key": "snake.settlement.length",
+      "value": "长度"
+    },
+    {
+      "key": "game.snake.help",
+      "value": "控制小蛇吃掉食物来不断变长。移动过程中要避开自身和危险走位，尽量为后续转向预留空间，随着长度增长保持路线有序。"
     }
   ]
 }

@@ -1,0 +1,136 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.waterpouring.name",
+      "value": "倒水量杯"
+    },
+    {
+      "key": "game.waterpouring.description",
+      "value": "装满、倒空、互倒量杯，倒出指定水量。"
+    },
+    {
+      "key": "waterpouring.hud.score",
+      "value": "分数 {0}"
+    },
+    {
+      "key": "waterpouring.hud.target",
+      "value": "{0} 目标：{1} 升"
+    },
+    {
+      "key": "waterpouring.hud.moves",
+      "value": "步数：{0}"
+    },
+    {
+      "key": "waterpouring.cup.amount",
+      "value": "{0}/{1} 升"
+    },
+    {
+      "key": "waterpouring.cup.capacity",
+      "value": "容量 {0} 升"
+    },
+    {
+      "key": "waterpouring.action.restart",
+      "value": "重新开始"
+    },
+    {
+      "key": "waterpouring.action.fill",
+      "value": "装满"
+    },
+    {
+      "key": "waterpouring.action.empty",
+      "value": "倒空"
+    },
+    {
+      "key": "waterpouring.tip.select_cup",
+      "value": "先选择一个量杯，再装满、倒空，或点击另一个量杯互倒。"
+    },
+    {
+      "key": "waterpouring.tip.selected",
+      "value": "已选择 {0} 号量杯：可装满、倒空，或点击另一个量杯互倒。"
+    },
+    {
+      "key": "waterpouring.tip.completed",
+      "value": "目标水量已达成。"
+    },
+    {
+      "key": "waterpouring.level.1",
+      "value": "第 1 关"
+    },
+    {
+      "key": "waterpouring.level.2",
+      "value": "第 2 关"
+    },
+    {
+      "key": "waterpouring.level.3",
+      "value": "第 3 关"
+    },
+    {
+      "key": "waterpouring.level.4",
+      "value": "第 4 关"
+    },
+    {
+      "key": "waterpouring.level.5",
+      "value": "第 5 关"
+    },
+    {
+      "key": "waterpouring.level.6",
+      "value": "第 6 关"
+    },
+    {
+      "key": "waterpouring.level.7",
+      "value": "第 7 关"
+    },
+    {
+      "key": "waterpouring.level.8",
+      "value": "第 8 关"
+    },
+    {
+      "key": "waterpouring.level.9",
+      "value": "第 9 关"
+    },
+    {
+      "key": "waterpouring.level.10",
+      "value": "第 10 关"
+    },
+    {
+      "key": "waterpouring.settlement.score",
+      "value": "本局分数"
+    },
+    {
+      "key": "waterpouring.settlement.win_title",
+      "value": "目标达成"
+    },
+    {
+      "key": "waterpouring.settlement.level",
+      "value": "完成关卡"
+    },
+    {
+      "key": "waterpouring.settlement.moves",
+      "value": "使用步数"
+    },
+    {
+      "key": "waterpouring.settlement.exit_label",
+      "value": "结算方式"
+    },
+    {
+      "key": "waterpouring.settlement.exit_value",
+      "value": "返回大厅"
+    },
+    {
+      "key": "waterpouring.settlement.summary",
+      "value": "本局获得 {0} 分。"
+    },
+    {
+      "key": "waterpouring.settlement.win_summary",
+      "value": "{0} 用 {1} 步完成，获得 {2} 分。"
+    },
+    {
+      "key": "waterpouring.settlement.exit_summary",
+      "value": "已从 {0} 返回大厅，本局获得 {1} 分。"
+    },
+    {
+      "key": "game.waterpouring.help",
+      "value": "先选择一个量杯，可以将它装满或倒空；再点击另一个量杯，会把选中量杯中的水倒过去，直到原杯倒空或目标杯装满。任意量杯达到目标水量即可过关。"
+    }
+  ]
+}

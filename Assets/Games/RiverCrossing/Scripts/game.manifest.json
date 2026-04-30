@@ -1,0 +1,7 @@
+﻿{
+  "gameId": "rivercrossing",
+  "nameKey": "game.rivercrossing.name",
+  "descriptionKey": "game.rivercrossing.description",
+  "isPlayable": true,
+  "statusLabelKey": "status.playable"
+}

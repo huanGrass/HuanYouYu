@@ -66,7 +66,7 @@ namespace Tests
 
             var gameRoot = GameObject.Find("GameBreakoutView");
             Assert.IsNotNull(gameRoot, "Breakout shell root should still exist.");
-            Assert.IsNotNull(gameRoot.transform.Find("PopupHost/MiniGamePopup"), "Winning breakout should still show the settlement popup.");
+            Assert.IsNotNull(gameRoot.transform.Find("PopupHost/BreakoutSettlementPanel"), "Winning breakout should show the reward settlement panel.");
         }
 
         [UnityTest]
@@ -88,14 +88,14 @@ namespace Tests
             for (var i = 0; i < bricks.Count; i++)
             {
                 var brick = bricks[i];
-                if (GetProperty<bool>(brick, "Active"))
+                if (GetProperty<bool>(brick, "Active") && GetProperty<int>(brick, "HitPoints") == 1)
                 {
                     firstActiveBrick = brick;
                     break;
                 }
             }
 
-            Assert.IsNotNull(firstActiveBrick, "Expected at least one active brick in the current breakout layout.");
+            Assert.IsNotNull(firstActiveBrick, "Expected at least one one-hit active brick in the current breakout layout.");
 
             var brickRect = GetProperty<RectTransform>(firstActiveBrick, "Rect");
             Assert.IsNotNull(brickRect, "Brick rect should exist.");
@@ -111,6 +111,55 @@ namespace Tests
             yield return null;
 
             Assert.AreEqual(0, GetProperty<int>(board, "ActiveTransientEffectCount"), "Transient brick effects should clean themselves up after a short delay.");
+        }
+
+        [UnityTest]
+        public IEnumerator DurableBrickTakesMultipleHitsBeforeBreaking()
+        {
+            ResetProgress();
+
+            MiniGameAppController controller = null;
+            yield return LoadController(value => controller = value);
+
+            controller.EnterGame(GameBreakoutView.GameIdConstant);
+            yield return null;
+
+            var board = GetBoard(GetActiveGame(controller));
+            var bricks = GetPrivateField(board, "bricks") as System.Collections.IList;
+            Assert.IsNotNull(bricks, "Breakout bricks list should exist.");
+
+            object durableBrick = null;
+            for (var i = 0; i < bricks.Count; i++)
+            {
+                var brick = bricks[i];
+                if (GetProperty<bool>(brick, "Active") && GetProperty<int>(brick, "HitPoints") > 1)
+                {
+                    durableBrick = brick;
+                    break;
+                }
+            }
+
+            Assert.IsNotNull(durableBrick, "Expected at least one durable brick in the current breakout layout.");
+
+            var brickRect = GetProperty<RectTransform>(durableBrick, "Rect");
+            var startingHitPoints = GetProperty<int>(durableBrick, "HitPoints");
+            SetPrivateField(board, "ballVelocity", new Vector2(120f, -240f));
+
+            var args = new object[] { brickRect.anchoredPosition };
+            var collided = (bool)GetMethod(board, "CheckBrickCollision").Invoke(board, args);
+            Assert.IsTrue(collided, "Direct durable brick collision should report a hit.");
+            Assert.IsTrue(GetProperty<bool>(durableBrick, "Active"), "Durable brick should survive its first hit.");
+            Assert.AreEqual(startingHitPoints - 1, GetProperty<int>(durableBrick, "HitPoints"), "Durable brick should lose exactly one hit point.");
+
+            for (var i = 1; i < startingHitPoints; i++)
+            {
+                SetPrivateField(board, "ballVelocity", new Vector2(120f, -240f));
+                args = new object[] { brickRect.anchoredPosition };
+                collided = (bool)GetMethod(board, "CheckBrickCollision").Invoke(board, args);
+                Assert.IsTrue(collided, "Durable brick should keep colliding until it breaks.");
+            }
+
+            Assert.IsFalse(GetProperty<bool>(durableBrick, "Active"), "Durable brick should break after enough hits.");
         }
 
         [UnityTest]
@@ -152,6 +201,69 @@ namespace Tests
 
             Assert.IsFalse(GetProperty<bool>(board, "IsPaddlePulseActive"), "Paddle pulse should stop after its short animation window.");
             Assert.IsFalse(GetProperty<bool>(board, "IsBallPulseActive"), "Ball pulse should stop after its short animation window.");
+        }
+
+        [UnityTest]
+        public IEnumerator PowerUpsCreateAdditionalBalls()
+        {
+            ResetProgress();
+
+            MiniGameAppController controller = null;
+            yield return LoadController(value => controller = value);
+
+            controller.EnterGame(GameBreakoutView.GameIdConstant);
+            yield return null;
+
+            var runtime = GetActiveGame(controller);
+            InvokePrivate(runtime, "LaunchBall");
+            yield return null;
+
+            var board = GetBoard(runtime);
+            InvokeAny(board, "SetPaddlePosition", 0f);
+
+            var paddleRect = GetPrivateField(board, "paddleRect") as RectTransform;
+            Assert.IsNotNull(paddleRect, "Paddle rect should exist.");
+
+            var powerUpType = typeof(GameBreakoutView).Assembly.GetType("HuanYouYu.MiniGameHall.BreakoutPowerUpType");
+            Assert.IsNotNull(powerUpType, "Failed to access breakout power-up type.");
+            var splitType = Enum.Parse(powerUpType, "SplitCurrentBalls");
+
+            Assert.AreEqual(1, GetProperty<int>(board, "ActiveBallCount"), "Breakout should start with one active ball after launch.");
+            InvokeAny(board, "SpawnPowerUp", paddleRect.anchoredPosition + new Vector2(0f, 8f), splitType);
+            Assert.AreEqual(1, GetProperty<int>(board, "ActivePowerUpCount"), "Spawned power-up should be tracked before collection.");
+
+            InvokeAny(board, "Tick", 0.02f);
+            yield return null;
+
+            Assert.AreEqual(0, GetProperty<int>(board, "ActivePowerUpCount"), "Caught power-up should be removed after collection.");
+            Assert.AreEqual(3, GetProperty<int>(board, "ActiveBallCount"), "Split power-up should turn the current ball into three active balls.");
+
+            var extraServeType = Enum.Parse(powerUpType, "ExtraServeBalls");
+            InvokeAny(board, "SpawnPowerUp", paddleRect.anchoredPosition + new Vector2(0f, 8f), extraServeType);
+            InvokeAny(board, "Tick", 0.02f);
+            yield return null;
+
+            Assert.AreEqual(6, GetProperty<int>(board, "ActiveBallCount"), "Extra serve power-up should add three newly served balls.");
+        }
+
+        [UnityTest]
+        public IEnumerator BallUsesCircleGraphic()
+        {
+            ResetProgress();
+
+            MiniGameAppController controller = null;
+            yield return LoadController(value => controller = value);
+
+            controller.EnterGame(GameBreakoutView.GameIdConstant);
+            yield return null;
+
+            var board = GetBoard(GetActiveGame(controller));
+            var ballRect = GetPrivateField(board, "ballRect") as RectTransform;
+            Assert.IsNotNull(ballRect, "Ball rect should exist.");
+            Assert.IsNull(ballRect.GetComponent<UnityEngine.UI.Image>(), "Breakout ball should no longer use the square Image graphic.");
+            Assert.IsTrue(
+                ballRect.GetComponent<UnityEngine.UI.MaskableGraphic>() != null,
+                "Breakout ball should use a custom maskable graphic for circular rendering.");
         }
 
         private static void ResetProgress()

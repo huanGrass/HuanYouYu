@@ -1,8 +1,7 @@
-{
+﻿{
   "gameId": "reversi",
   "nameKey": "game.reversi.name",
   "descriptionKey": "game.reversi.description",
   "isPlayable": true,
-  "statusLabelKey": "status.playable",
-  "sortOrder": 10
+  "statusLabelKey": "status.playable"
 }

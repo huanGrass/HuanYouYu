@@ -147,11 +147,14 @@ namespace Tests
             settleMethod.Invoke(runtime, null);
             yield return null;
 
-            var popup = GameObject.Find("MiniGamePopup");
+            var popup = GameObject.Find("Match3SettlementPanel");
             Assert.IsNotNull(popup, "Settlement popup should exist.");
-            var confirmButton = popup.transform.Find("Dialog/Buttons/ConfirmButton")?.GetComponent<Button>();
-            Assert.IsNotNull(confirmButton, "Settlement confirm button should exist.");
-            confirmButton.onClick.Invoke();
+            var primaryButton = popup.transform.Find("Dialog/NextButton")?.GetComponent<Button>();
+            Assert.IsNotNull(primaryButton, "Settlement primary back hall button should exist.");
+            var secondaryButton = popup.transform.Find("Dialog/BackHallButton")?.gameObject;
+            Assert.IsNotNull(secondaryButton, "Settlement secondary back hall button should exist.");
+            Assert.IsFalse(secondaryButton.activeSelf, "Exit settlement should not show a duplicate back hall button.");
+            primaryButton.onClick.Invoke();
             yield return null;
 
             var progress = controller.GetProgress(Match3GameView.GameIdConstant);

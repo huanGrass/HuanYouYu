@@ -11,6 +11,7 @@ namespace HuanYouYu.MiniGameHall
         private readonly int[] solution;
         private readonly int[] currentValues;
         private readonly int[] candidateMasks;
+        private readonly bool[] hintRevealedCells;
 
         public SudokuBoardState(SudokuPuzzle puzzle)
         {
@@ -23,6 +24,7 @@ namespace HuanYouYu.MiniGameHall
             solution = new int[CellCount];
             currentValues = new int[CellCount];
             candidateMasks = new int[CellCount];
+            hintRevealedCells = new bool[CellCount];
 
             Array.Copy(puzzle.Givens, givens, CellCount);
             Array.Copy(puzzle.Solution, solution, CellCount);
@@ -41,7 +43,12 @@ namespace HuanYouYu.MiniGameHall
 
         public bool CanEdit(int cellIndex)
         {
-            return IsValidIndex(cellIndex) && !IsGiven(cellIndex);
+            return IsValidIndex(cellIndex) && !IsGiven(cellIndex) && !IsHintRevealed(cellIndex);
+        }
+
+        public bool IsHintRevealed(int cellIndex)
+        {
+            return IsValidIndex(cellIndex) && hintRevealedCells[cellIndex];
         }
 
         public void SetPlayerValue(int cellIndex, int value)
@@ -199,6 +206,62 @@ namespace HuanYouYu.MiniGameHall
             return true;
         }
 
+        public bool TryFindHint(out int cellIndex, out int value)
+        {
+            cellIndex = -1;
+            value = 0;
+
+            for (var i = 0; i < CellCount; i++)
+            {
+                if (!CanRevealHint(i) || currentValues[i] == 0 || currentValues[i] == solution[i])
+                {
+                    continue;
+                }
+
+                cellIndex = i;
+                value = solution[i];
+                return true;
+            }
+
+            var bestCandidateCount = int.MaxValue;
+            for (var i = 0; i < CellCount; i++)
+            {
+                if (!CanRevealHint(i) || currentValues[i] != 0)
+                {
+                    continue;
+                }
+
+                var candidateCount = CountAvailableCandidates(i);
+                if (candidateCount < bestCandidateCount)
+                {
+                    bestCandidateCount = candidateCount;
+                    cellIndex = i;
+                    value = solution[i];
+                    if (candidateCount <= 1)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return cellIndex >= 0;
+        }
+
+        public bool ApplyHint(int cellIndex)
+        {
+            if (!CanRevealHint(cellIndex))
+            {
+                return false;
+            }
+
+            var value = solution[cellIndex];
+            currentValues[cellIndex] = value;
+            candidateMasks[cellIndex] = 0;
+            hintRevealedCells[cellIndex] = true;
+            ClearRelatedCandidates(cellIndex, value);
+            return true;
+        }
+
         public int FindFirstEditableCell()
         {
             for (var i = 0; i < CellCount; i++)
@@ -210,6 +273,14 @@ namespace HuanYouYu.MiniGameHall
             }
 
             return -1;
+        }
+
+        private bool CanRevealHint(int cellIndex)
+        {
+            return IsValidIndex(cellIndex) &&
+                   !IsGiven(cellIndex) &&
+                   !IsHintRevealed(cellIndex) &&
+                   currentValues[cellIndex] != solution[cellIndex];
         }
 
         private static int BuildCandidateMask(int candidate)
@@ -276,6 +347,20 @@ namespace HuanYouYu.MiniGameHall
             }
 
             return true;
+        }
+
+        private int CountAvailableCandidates(int cellIndex)
+        {
+            var count = 0;
+            for (var candidate = 1; candidate <= Size; candidate++)
+            {
+                if (CanPlaceValue(cellIndex, candidate))
+                {
+                    count++;
+                }
+            }
+
+            return count;
         }
 
         private void ClearRelatedCandidates(int cellIndex, int candidate)

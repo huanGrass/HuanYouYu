@@ -12,18 +12,18 @@ namespace HuanYouYu.MiniGameHall
         private const float WallPadding = 34f;
         private const float TopPadding = 54f;
         private const float BottomPadding = 40f;
-        private const float PaddleWidth = 190f;
-        private const float PaddleHeight = 28f;
+        private const float PaddleWidth = 150f;
+        private const float PaddleHeight = 22f;
         private const float PaddleY = -470f;
-        private const float BallRadius = 18f;
+        private const float BallRadius = 14f;
         private const float InitialBallSpeed = 760f;
-        private const int BrickRows = 5;
-        private const int BrickColumns = 8;
-        private const float BrickWidth = 92f;
-        private const float BrickHeight = 38f;
-        private const float BrickSpacingX = 10f;
-        private const float BrickSpacingY = 12f;
-        private const float BrickTopY = 360f;
+        private const int BrickRows = 15;
+        private const int BrickColumns = 11;
+        private const float BrickWidth = 60f;
+        private const float BrickHeight = 24f;
+        private const float BrickSpacingX = 7f;
+        private const float BrickSpacingY = 7f;
+        private const float BrickTopY = 400f;
         private const float SubstepDuration = 1f / 120f;
         private const float MinimumBounceHorizontal = 0.2f;
         private const float BrickBurstDuration = 0.24f;
@@ -31,6 +31,10 @@ namespace HuanYouYu.MiniGameHall
         private const float PaddlePulseDuration = 0.16f;
         private const float BallPulseDuration = 0.14f;
         private const float BoardPulseDuration = 0.28f;
+        private const float PowerUpDropChance = 0.14f;
+        private const float PowerUpFallSpeed = 260f;
+        private const float PowerUpSize = 54f;
+        private const int MaxActiveBalls = 9;
 
         private static readonly Color BoardColor = new Color32(15, 27, 44, 255);
         private static readonly Color BoardBorderColor = new Color32(57, 89, 128, 255);
@@ -39,6 +43,9 @@ namespace HuanYouYu.MiniGameHall
         private static readonly Color BoardPulseColor = new Color32(48, 80, 120, 255);
         private static readonly Color BoardBorderPulseColor = new Color32(173, 221, 255, 255);
         private static readonly Color BrickFlashColor = new Color(1f, 0.97f, 0.86f, 0.95f);
+        private static readonly Color BrickDamageColor = new Color(1f, 1f, 1f, 0.62f);
+        private static readonly Color SplitPowerUpColor = new Color32(255, 184, 108, 255);
+        private static readonly Color ExtraServePowerUpColor = new Color32(72, 211, 221, 255);
         private static readonly Color[] BrickColors =
         {
             new Color32(255, 126, 95, 255),
@@ -56,10 +63,12 @@ namespace HuanYouYu.MiniGameHall
         private readonly RectTransform ballRect;
         private readonly List<BrickView> bricks = new List<BrickView>(BrickRows * BrickColumns);
         private readonly List<TransientVisual> transientEffects = new List<TransientVisual>(12);
+        private readonly List<PowerUpView> powerUps = new List<PowerUpView>(6);
+        private readonly List<BallView> extraBalls = new List<BallView>(MaxActiveBalls - 1);
         private readonly float layoutScale;
         private readonly Image boardImage;
         private readonly Image paddleImage;
-        private readonly Image ballImage;
+        private readonly CircleGraphic ballImage;
         private readonly BoardBorderGraphic borderGraphic;
         private BreakoutLevelDefinition currentLevel;
 
@@ -110,7 +119,7 @@ namespace HuanYouYu.MiniGameHall
                 new Vector2(0.5f, 0.5f),
                 Vector2.zero,
                 new Vector2(Scaled(BallRadius * 2f), Scaled(BallRadius * 2f)));
-            ballImage = ballRect.gameObject.AddComponent<Image>();
+            ballImage = ballRect.gameObject.AddComponent<CircleGraphic>();
             ballImage.color = BallColor;
             ballRect.SetAsLastSibling();
 
@@ -148,6 +157,16 @@ namespace HuanYouYu.MiniGameHall
             get { return boardPulseTimer > 0f; }
         }
 
+        internal int ActivePowerUpCount
+        {
+            get { return powerUps.Count; }
+        }
+
+        internal int ActiveBallCount
+        {
+            get { return ballAttached ? 1 : 1 + extraBalls.Count; }
+        }
+
         public void ResetBoard()
         {
             paddleX = 0f;
@@ -158,6 +177,8 @@ namespace HuanYouYu.MiniGameHall
             ballPulseTimer = 0f;
             boardPulseTimer = 0f;
             ClearTransientEffects();
+            ClearPowerUps();
+            ClearExtraBalls();
             ApplyVisualPulseState();
             ApplyCurrentLevel();
             SyncAttachedBall();
@@ -177,6 +198,7 @@ namespace HuanYouYu.MiniGameHall
                 return;
             }
 
+            UpdatePowerUps(deltaTime);
             var remaining = deltaTime;
             while (remaining > 0f)
             {
@@ -241,11 +263,14 @@ namespace HuanYouYu.MiniGameHall
 
             ballAttached = false;
             ballVelocity = new Vector2(0.32f, 1f).normalized * Scaled(InitialBallSpeed);
+            ClearExtraBalls();
         }
 
         public void Dispose()
         {
             ClearTransientEffects();
+            ClearPowerUps();
+            ClearExtraBalls();
             if (root != null)
             {
                 UnityEngine.Object.Destroy(root.gameObject);
@@ -284,54 +309,90 @@ namespace HuanYouYu.MiniGameHall
 
         private void SimulateStep(float deltaTime)
         {
-            var position = ballRect.anchoredPosition;
-            position += ballVelocity * deltaTime;
+            var primaryLost = SimulateBallStep(ballRect, ref ballVelocity, deltaTime);
+            for (var i = extraBalls.Count - 1; i >= 0; i--)
+            {
+                var extraBall = extraBalls[i];
+                var velocity = extraBall.Velocity;
+                if (SimulateBallStep(extraBall.Rect, ref velocity, deltaTime))
+                {
+                    DestroyExtraBallAt(i);
+                    continue;
+                }
+
+                extraBall.Velocity = velocity;
+            }
+
+            if (!primaryLost)
+            {
+                return;
+            }
+
+            if (extraBalls.Count > 0)
+            {
+                PromoteExtraBallToPrimary();
+                return;
+            }
+
+            ballAttached = true;
+            ballVelocity = Vector2.zero;
+            BallLost?.Invoke();
+        }
+
+        private bool SimulateBallStep(RectTransform activeBallRect, ref Vector2 activeBallVelocity, float deltaTime)
+        {
+            var position = activeBallRect.anchoredPosition;
+            position += activeBallVelocity * deltaTime;
 
             if (position.x <= MinBallX)
             {
                 position.x = MinBallX;
-                ballVelocity.x = Mathf.Abs(ballVelocity.x);
+                activeBallVelocity.x = Mathf.Abs(activeBallVelocity.x);
             }
             else if (position.x >= MaxBallX)
             {
                 position.x = MaxBallX;
-                ballVelocity.x = -Mathf.Abs(ballVelocity.x);
+                activeBallVelocity.x = -Mathf.Abs(activeBallVelocity.x);
             }
 
             if (position.y >= MaxBallY)
             {
                 position.y = MaxBallY;
-                ballVelocity.y = -Mathf.Abs(ballVelocity.y);
+                activeBallVelocity.y = -Mathf.Abs(activeBallVelocity.y);
             }
 
-            if (ballVelocity.y < 0f && CheckPaddleCollision(ref position))
+            if (activeBallVelocity.y < 0f && CheckPaddleCollisionForBall(ref position, ref activeBallVelocity))
             {
-                ballRect.anchoredPosition = position;
-                return;
+                activeBallRect.anchoredPosition = position;
+                return false;
             }
 
-            if (CheckBrickCollision(ref position))
+            if (CheckBrickCollisionForBall(ref position, ref activeBallVelocity))
             {
-                ballRect.anchoredPosition = position;
-                return;
+                activeBallRect.anchoredPosition = position;
+                return false;
             }
 
             if (position.y <= MinBallY)
             {
-                ballRect.anchoredPosition = position;
-                ballAttached = true;
-                ballVelocity = Vector2.zero;
-                BallLost?.Invoke();
-                return;
+                activeBallRect.anchoredPosition = position;
+                return true;
             }
 
-            ballRect.anchoredPosition = position;
+            activeBallRect.anchoredPosition = position;
+            return false;
         }
 
         private bool CheckPaddleCollision(ref Vector2 position)
         {
-            var paddleLeft = paddleX - (Scaled(PaddleWidth) * 0.5f) - Scaled(BallRadius);
-            var paddleRight = paddleX + (Scaled(PaddleWidth) * 0.5f) + Scaled(BallRadius);
+            return CheckPaddleCollisionForBall(ref position, ref ballVelocity);
+        }
+
+        private bool CheckPaddleCollisionForBall(ref Vector2 position, ref Vector2 activeBallVelocity)
+        {
+            var paddleHalfWidth = GetCurrentPaddleWidth() * 0.5f;
+            var paddleLeft = paddleX - paddleHalfWidth - Scaled(BallRadius);
+            var paddleRight = paddleX + paddleHalfWidth + Scaled(BallRadius);
             var paddleTop = Scaled(PaddleY + (PaddleHeight * 0.5f) + BallRadius);
             var paddleBottom = Scaled(PaddleY - (PaddleHeight * 0.5f) - BallRadius);
             if (position.x < paddleLeft || position.x > paddleRight || position.y > paddleTop || position.y < paddleBottom)
@@ -340,14 +401,14 @@ namespace HuanYouYu.MiniGameHall
             }
 
             position.y = Scaled(PaddleY + (PaddleHeight * 0.5f) + BallRadius);
-            var hitFactor = Mathf.Clamp((position.x - paddleX) / (Scaled(PaddleWidth) * 0.5f), -1f, 1f);
+            var hitFactor = Mathf.Clamp((position.x - paddleX) / paddleHalfWidth, -1f, 1f);
             if (Mathf.Abs(hitFactor) < MinimumBounceHorizontal)
             {
                 hitFactor = MinimumBounceHorizontal * (hitFactor >= 0f ? 1f : -1f);
             }
 
             var bounceDirection = new Vector2(hitFactor, 1f).normalized;
-            ballVelocity = bounceDirection * Mathf.Max(Scaled(InitialBallSpeed), ballVelocity.magnitude);
+            activeBallVelocity = bounceDirection * Mathf.Max(Scaled(InitialBallSpeed), activeBallVelocity.magnitude);
             paddlePulseTimer = PaddlePulseDuration;
             ballPulseTimer = BallPulseDuration;
             ApplyVisualPulseState();
@@ -356,6 +417,11 @@ namespace HuanYouYu.MiniGameHall
         }
 
         private bool CheckBrickCollision(ref Vector2 position)
+        {
+            return CheckBrickCollisionForBall(ref position, ref ballVelocity);
+        }
+
+        private bool CheckBrickCollisionForBall(ref Vector2 position, ref Vector2 activeBallVelocity)
         {
             for (var i = 0; i < bricks.Count; i++)
             {
@@ -381,17 +447,24 @@ namespace HuanYouYu.MiniGameHall
                 {
                     var sign = delta.x >= 0f ? 1f : -1f;
                     position.x = brickCenter.x + sign * ((brickWidth * 0.5f) + ballRadius);
-                    ballVelocity.x *= -1f;
+                    activeBallVelocity.x *= -1f;
                 }
                 else
                 {
                     var sign = delta.y >= 0f ? 1f : -1f;
                     position.y = brickCenter.y + sign * ((brickHeight * 0.5f) + ballRadius);
-                    ballVelocity.y *= -1f;
+                    activeBallVelocity.y *= -1f;
+                }
+
+                if (!brick.ApplyHit())
+                {
+                    CreateBrickHitEffect(brick);
+                    MiniGameSfxPlayer.Play(MiniGameSfxType.TileSelect, 0.78f);
+                    return true;
                 }
 
                 CreateBrickBreakEffect(brick);
-                brick.SetActive(false);
+                TrySpawnPowerUp(brick.Rect.anchoredPosition);
                 BrickBroken?.Invoke();
                 MiniGameSfxPlayer.Play(MiniGameSfxType.MatchSuccess, 0.9f);
 
@@ -429,18 +502,45 @@ namespace HuanYouYu.MiniGameHall
             {
                 var row = i / BrickColumns;
                 var column = i % BrickColumns;
+                var hitPoints = 0;
                 var active = rows != null &&
                     row < rows.Length &&
                     !string.IsNullOrEmpty(rows[row]) &&
                     column < rows[row].Length &&
-                    rows[row][column] == '1';
-                bricks[i].SetActive(active);
+                    rows[row][column] != '0';
+                if (active)
+                {
+                    hitPoints = GetBrickHitPoints(rows[row][column], row, column);
+                }
+
+                bricks[i].SetActive(active, hitPoints);
             }
+        }
+
+        private static int GetBrickHitPoints(char levelMark, int row, int column)
+        {
+            if (levelMark >= '2' && levelMark <= '3')
+            {
+                return levelMark - '0';
+            }
+
+            if (row < 3 && column % 2 == 0)
+            {
+                return 3;
+            }
+
+            if (row < 8 && (row + column) % 3 != 0)
+            {
+                return 2;
+            }
+
+            return 1;
         }
 
         private void ApplyPaddlePosition()
         {
             paddleRect.anchoredPosition = new Vector2(paddleX, Scaled(PaddleY));
+            paddleRect.sizeDelta = new Vector2(GetCurrentPaddleWidth(), Scaled(PaddleHeight));
         }
 
         private void CreateBricks()
@@ -499,6 +599,23 @@ namespace HuanYouYu.MiniGameHall
                 new Vector2(1.2f, 1.2f));
         }
 
+        private void CreateBrickHitEffect(BrickView brick)
+        {
+            if (brick == null || brick.Rect == null)
+            {
+                return;
+            }
+
+            CreateTransientQuad(
+                "BreakoutBrickDamage",
+                brick.Rect.anchoredPosition,
+                new Vector2(brick.Rect.sizeDelta.x * 0.86f, brick.Rect.sizeDelta.y * 0.66f),
+                BrickDamageColor,
+                BrickFlashDuration,
+                new Vector2(0.82f, 0.82f),
+                new Vector2(1.08f, 1.08f));
+        }
+
         private void CreateTransientQuad(
             string name,
             Vector2 anchoredPosition,
@@ -520,7 +637,7 @@ namespace HuanYouYu.MiniGameHall
             effectRect.localScale = new Vector3(startScale.x, startScale.y, 1f);
             transientEffects.Add(new TransientVisual(effectRect, image, color, duration, startScale, endScale));
             effectRect.SetAsLastSibling();
-            ballRect.SetAsLastSibling();
+            SetBallsAsLastSiblings();
         }
 
         private void UpdateTransientEffects(float deltaTime)
@@ -576,8 +693,225 @@ namespace HuanYouYu.MiniGameHall
             paddleImage.color = Color.Lerp(PaddleColor, Color.white, paddlePulse * 0.28f);
             ballRect.localScale = Vector3.one * Mathf.Lerp(1f, 1.18f, ballPulse);
             ballImage.color = Color.Lerp(BallColor, Color.white, ballPulse * 0.72f);
+            for (var i = 0; i < extraBalls.Count; i++)
+            {
+                extraBalls[i].Rect.localScale = ballRect.localScale;
+                extraBalls[i].Graphic.color = ballImage.color;
+            }
+
             boardImage.color = Color.Lerp(BoardColor, BoardPulseColor, boardPulse * 0.88f);
             borderGraphic.SetColor(Color.Lerp(BoardBorderColor, BoardBorderPulseColor, boardPulse));
+            ApplyPaddlePosition();
+        }
+
+        private void TrySpawnPowerUp(Vector2 anchoredPosition)
+        {
+            if (UnityEngine.Random.value > PowerUpDropChance)
+            {
+                return;
+            }
+
+            SpawnPowerUp(anchoredPosition, (BreakoutPowerUpType)UnityEngine.Random.Range(0, 2));
+        }
+
+        private void SpawnPowerUp(Vector2 anchoredPosition, BreakoutPowerUpType type)
+        {
+            var rect = CreateRect(
+                "PowerUp_" + type,
+                effectsRoot,
+                new Vector2(0.5f, 0.5f),
+                new Vector2(0.5f, 0.5f),
+                anchoredPosition,
+                new Vector2(Scaled(PowerUpSize), Scaled(PowerUpSize)));
+            var icon = rect.gameObject.AddComponent<PowerUpIconGraphic>();
+            icon.Initialize(type, GetPowerUpColor(type), BallColor, PaddleColor);
+            powerUps.Add(new PowerUpView(rect, icon, type));
+            rect.SetAsLastSibling();
+            SetBallsAsLastSiblings();
+        }
+
+        private void UpdatePowerUps(float deltaTime)
+        {
+            for (var i = powerUps.Count - 1; i >= 0; i--)
+            {
+                var powerUp = powerUps[i];
+                var position = powerUp.Rect.anchoredPosition;
+                position.y -= Scaled(PowerUpFallSpeed) * deltaTime;
+                powerUp.Rect.anchoredPosition = position;
+                powerUp.Rect.Rotate(0f, 0f, 120f * deltaTime);
+
+                if (CheckPowerUpPaddleCollision(powerUp))
+                {
+                    CollectPowerUp(powerUp);
+                    powerUps.RemoveAt(i);
+                    continue;
+                }
+
+                if (position.y < MinBallY - Scaled(PowerUpSize))
+                {
+                    if (powerUp.Rect != null)
+                    {
+                        UnityEngine.Object.Destroy(powerUp.Rect.gameObject);
+                    }
+
+                    powerUps.RemoveAt(i);
+                }
+            }
+        }
+
+        private bool CheckPowerUpPaddleCollision(PowerUpView powerUp)
+        {
+            var position = powerUp.Rect.anchoredPosition;
+            var paddleHalfWidth = GetCurrentPaddleWidth() * 0.5f;
+            var powerUpHalfSize = Scaled(PowerUpSize) * 0.5f;
+            var paddleTop = Scaled(PaddleY + (PaddleHeight * 0.5f)) + powerUpHalfSize;
+            var paddleBottom = Scaled(PaddleY - (PaddleHeight * 0.5f)) - powerUpHalfSize;
+            return position.x >= paddleX - paddleHalfWidth - powerUpHalfSize &&
+                position.x <= paddleX + paddleHalfWidth + powerUpHalfSize &&
+                position.y >= paddleBottom &&
+                position.y <= paddleTop;
+        }
+
+        private void CollectPowerUp(PowerUpView powerUp)
+        {
+            ApplyPowerUp(powerUp.Type, powerUp.Rect.anchoredPosition);
+
+            CreateTransientQuad(
+                "BreakoutPowerUpCollect",
+                powerUp.Rect.anchoredPosition,
+                powerUp.Rect.sizeDelta,
+                powerUp.Graphic.color,
+                BrickBurstDuration,
+                new Vector2(1f, 1f),
+                new Vector2(1.35f, 1.35f));
+
+            UnityEngine.Object.Destroy(powerUp.Rect.gameObject);
+            ApplyVisualPulseState();
+            MiniGameSfxPlayer.Play(MiniGameSfxType.TileSelect, 1f);
+        }
+
+        private float GetCurrentPaddleWidth()
+        {
+            return Scaled(PaddleWidth);
+        }
+
+        private void ApplyPowerUp(BreakoutPowerUpType type, Vector2 collectPosition)
+        {
+            if (type == BreakoutPowerUpType.ExtraServeBalls)
+            {
+                AddServedBalls();
+                return;
+            }
+
+            SplitCurrentBalls(collectPosition);
+        }
+
+        private void SplitCurrentBalls(Vector2 fallbackPosition)
+        {
+            if (ballAttached)
+            {
+                AddBall(fallbackPosition, new Vector2(-0.42f, 1f).normalized * Scaled(InitialBallSpeed));
+                AddBall(fallbackPosition, new Vector2(0f, 1f).normalized * Scaled(InitialBallSpeed));
+                AddBall(fallbackPosition, new Vector2(0.42f, 1f).normalized * Scaled(InitialBallSpeed));
+                ballAttached = false;
+                return;
+            }
+
+            var origin = ballRect.anchoredPosition;
+            var direction = ballVelocity;
+            var speed = Mathf.Max(Scaled(InitialBallSpeed), ballVelocity.magnitude);
+            ballVelocity = RotateDirection(direction, -24f) * speed;
+            AddBall(origin, RotateDirection(direction, 0f) * speed);
+            AddBall(origin, RotateDirection(direction, 24f) * speed);
+            ballPulseTimer = BallPulseDuration;
+        }
+
+        private void AddServedBalls()
+        {
+            var origin = new Vector2(paddleX, Scaled(PaddleY + (PaddleHeight * 0.5f) + BallRadius + 8f));
+            AddBall(origin, new Vector2(-0.42f, 1f).normalized * Scaled(InitialBallSpeed));
+            AddBall(origin, new Vector2(0f, 1f).normalized * Scaled(InitialBallSpeed));
+            AddBall(origin, new Vector2(0.42f, 1f).normalized * Scaled(InitialBallSpeed));
+            ballPulseTimer = BallPulseDuration;
+        }
+
+        private void AddBall(Vector2 anchoredPosition, Vector2 velocity)
+        {
+            if (ballAttached)
+            {
+                ballRect.anchoredPosition = anchoredPosition;
+                ballVelocity = velocity;
+                ballAttached = false;
+                return;
+            }
+
+            if (ActiveBallCount >= MaxActiveBalls)
+            {
+                return;
+            }
+
+            var rect = CreateRect(
+                "ExtraBall",
+                boardRect,
+                new Vector2(0.5f, 0.5f),
+                new Vector2(0.5f, 0.5f),
+                anchoredPosition,
+                new Vector2(Scaled(BallRadius * 2f), Scaled(BallRadius * 2f)));
+            var graphic = rect.gameObject.AddComponent<CircleGraphic>();
+            graphic.color = BallColor;
+            extraBalls.Add(new BallView(rect, graphic, velocity));
+            SetBallsAsLastSiblings();
+        }
+
+        private void PromoteExtraBallToPrimary()
+        {
+            var promoted = extraBalls[extraBalls.Count - 1];
+            ballRect.anchoredPosition = promoted.Rect.anchoredPosition;
+            ballVelocity = promoted.Velocity;
+            DestroyExtraBallAt(extraBalls.Count - 1);
+        }
+
+        private void DestroyExtraBallAt(int index)
+        {
+            var extraBall = extraBalls[index];
+            if (extraBall.Rect != null)
+            {
+                UnityEngine.Object.Destroy(extraBall.Rect.gameObject);
+            }
+
+            extraBalls.RemoveAt(index);
+        }
+
+        private void SetBallsAsLastSiblings()
+        {
+            for (var i = 0; i < extraBalls.Count; i++)
+            {
+                extraBalls[i].Rect.SetAsLastSibling();
+            }
+
+            ballRect.SetAsLastSibling();
+        }
+
+        private static Vector2 RotateDirection(Vector2 velocity, float degrees)
+        {
+            var direction = velocity.sqrMagnitude > 0.01f ? velocity.normalized : Vector2.up;
+            var radians = degrees * Mathf.Deg2Rad;
+            var sin = Mathf.Sin(radians);
+            var cos = Mathf.Cos(radians);
+            return new Vector2(
+                (direction.x * cos) - (direction.y * sin),
+                (direction.x * sin) + (direction.y * cos)).normalized;
+        }
+
+        private static Color GetPowerUpColor(BreakoutPowerUpType type)
+        {
+            switch (type)
+            {
+                case BreakoutPowerUpType.ExtraServeBalls:
+                    return ExtraServePowerUpColor;
+                default:
+                    return SplitPowerUpColor;
+            }
         }
 
         private void ClearTransientEffects()
@@ -591,6 +925,32 @@ namespace HuanYouYu.MiniGameHall
             }
 
             transientEffects.Clear();
+        }
+
+        private void ClearPowerUps()
+        {
+            for (var i = 0; i < powerUps.Count; i++)
+            {
+                if (powerUps[i].Rect != null)
+                {
+                    UnityEngine.Object.Destroy(powerUps[i].Rect.gameObject);
+                }
+            }
+
+            powerUps.Clear();
+        }
+
+        private void ClearExtraBalls()
+        {
+            for (var i = 0; i < extraBalls.Count; i++)
+            {
+                if (extraBalls[i].Rect != null)
+                {
+                    UnityEngine.Object.Destroy(extraBalls[i].Rect.gameObject);
+                }
+            }
+
+            extraBalls.Clear();
         }
 
         private static float EvaluatePulse01(float timer, float duration)
@@ -652,6 +1012,8 @@ namespace HuanYouYu.MiniGameHall
                 Image = image;
                 BaseColor = baseColor;
                 Active = true;
+                MaxHitPoints = 1;
+                HitPoints = 1;
             }
 
             public RectTransform Rect { get; }
@@ -662,10 +1024,50 @@ namespace HuanYouYu.MiniGameHall
 
             public bool Active { get; private set; }
 
-            public void SetActive(bool active)
+            public int HitPoints { get; private set; }
+
+            public int MaxHitPoints { get; private set; }
+
+            public void SetActive(bool active, int hitPoints)
             {
                 Active = active;
+                MaxHitPoints = Mathf.Max(1, hitPoints);
+                HitPoints = active ? MaxHitPoints : 0;
                 Rect.gameObject.SetActive(active);
+                ApplyColor();
+            }
+
+            public bool ApplyHit()
+            {
+                if (!Active)
+                {
+                    return false;
+                }
+
+                HitPoints = Mathf.Max(0, HitPoints - 1);
+                if (HitPoints > 0)
+                {
+                    ApplyColor();
+                    return false;
+                }
+
+                Active = false;
+                Rect.gameObject.SetActive(false);
+                return true;
+            }
+
+            private void ApplyColor()
+            {
+                if (!Active)
+                {
+                    Image.color = BaseColor;
+                    return;
+                }
+
+                var strength = Mathf.Clamp01((MaxHitPoints - 1) / 2f);
+                var damage = Mathf.Clamp01((MaxHitPoints - HitPoints) / 2f);
+                var toughColor = Color.Lerp(BaseColor, Color.white, strength * 0.28f);
+                Image.color = Color.Lerp(toughColor, BaseColor, damage * 0.72f);
             }
         }
 
@@ -700,6 +1102,130 @@ namespace HuanYouYu.MiniGameHall
             public Vector2 EndScale { get; }
 
             public float Elapsed { get; set; }
+        }
+
+        private sealed class PowerUpView
+        {
+            public PowerUpView(RectTransform rect, PowerUpIconGraphic graphic, BreakoutPowerUpType type)
+            {
+                Rect = rect;
+                Graphic = graphic;
+                Type = type;
+            }
+
+            public RectTransform Rect { get; }
+
+            public PowerUpIconGraphic Graphic { get; }
+
+            public BreakoutPowerUpType Type { get; }
+        }
+
+        private sealed class BallView
+        {
+            public BallView(RectTransform rect, CircleGraphic graphic, Vector2 velocity)
+            {
+                Rect = rect;
+                Graphic = graphic;
+                Velocity = velocity;
+            }
+
+            public RectTransform Rect { get; }
+
+            public CircleGraphic Graphic { get; }
+
+            public Vector2 Velocity { get; set; }
+        }
+
+        [RequireComponent(typeof(CanvasRenderer))]
+        private sealed class CircleGraphic : MaskableGraphic
+        {
+            private const int SegmentCount = 28;
+
+            protected override void OnPopulateMesh(VertexHelper vh)
+            {
+                vh.Clear();
+                var rect = rectTransform.rect;
+                var radius = Mathf.Min(rect.width, rect.height) * 0.5f;
+                var center = rect.center;
+                vh.AddVert(center, color, new Vector2(0.5f, 0.5f));
+                for (var i = 0; i <= SegmentCount; i++)
+                {
+                    var angle = (Mathf.PI * 2f * i) / SegmentCount;
+                    var point = center + new Vector2(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius);
+                    vh.AddVert(point, color, Vector2.zero);
+                    if (i > 0)
+                    {
+                        vh.AddTriangle(0, i, i + 1);
+                    }
+                }
+            }
+        }
+
+        [RequireComponent(typeof(CanvasRenderer))]
+        private sealed class PowerUpIconGraphic : MaskableGraphic
+        {
+            private BreakoutPowerUpType type;
+            private Color ballColor;
+            private Color paddleColor;
+
+            public void Initialize(BreakoutPowerUpType powerUpType, Color backgroundColor, Color iconBallColor, Color iconPaddleColor)
+            {
+                type = powerUpType;
+                color = backgroundColor;
+                ballColor = iconBallColor;
+                paddleColor = iconPaddleColor;
+                SetAllDirty();
+            }
+
+            protected override void OnPopulateMesh(VertexHelper vh)
+            {
+                vh.Clear();
+                var rect = rectTransform.rect;
+                var radius = Mathf.Min(rect.width, rect.height) * 0.5f;
+                AddCircle(vh, rect.center, radius, color, 28);
+
+                if (type == BreakoutPowerUpType.ExtraServeBalls)
+                {
+                    AddQuad(vh, new Rect(rect.center.x - (radius * 0.52f), rect.yMin + (radius * 0.32f), radius * 1.04f, radius * 0.22f), paddleColor);
+                    AddCircle(vh, rect.center + new Vector2(-radius * 0.42f, radius * 0.18f), radius * 0.18f, ballColor, 18);
+                    AddCircle(vh, rect.center + new Vector2(0f, radius * 0.42f), radius * 0.18f, ballColor, 18);
+                    AddCircle(vh, rect.center + new Vector2(radius * 0.42f, radius * 0.18f), radius * 0.18f, ballColor, 18);
+                    return;
+                }
+
+                AddCircle(vh, rect.center, radius * 0.18f, ballColor, 18);
+                AddCircle(vh, rect.center + new Vector2(-radius * 0.42f, radius * 0.34f), radius * 0.18f, ballColor, 18);
+                AddCircle(vh, rect.center + new Vector2(radius * 0.42f, radius * 0.34f), radius * 0.18f, ballColor, 18);
+                AddQuad(vh, new Rect(rect.center.x - (radius * 0.48f), rect.center.y + (radius * 0.09f), radius * 0.4f, radius * 0.08f), ballColor);
+                AddQuad(vh, new Rect(rect.center.x + (radius * 0.08f), rect.center.y + (radius * 0.09f), radius * 0.4f, radius * 0.08f), ballColor);
+            }
+
+            private static void AddCircle(VertexHelper vh, Vector2 center, float radius, Color circleColor, int segments)
+            {
+                var startIndex = vh.currentVertCount;
+                vh.AddVert(center, circleColor, new Vector2(0.5f, 0.5f));
+                for (var i = 0; i <= segments; i++)
+                {
+                    var angle = (Mathf.PI * 2f * i) / segments;
+                    var point = center + new Vector2(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius);
+                    vh.AddVert(point, circleColor, Vector2.zero);
+                    if (i > 0)
+                    {
+                        vh.AddTriangle(startIndex, startIndex + i, startIndex + i + 1);
+                    }
+                }
+            }
+
+            private static void AddQuad(VertexHelper vh, Rect rect, Color quadColor)
+            {
+                var startIndex = vh.currentVertCount;
+                vh.AddVert(new Vector3(rect.xMin, rect.yMin), quadColor, Vector2.zero);
+                vh.AddVert(new Vector3(rect.xMin, rect.yMax), quadColor, Vector2.up);
+                vh.AddVert(new Vector3(rect.xMax, rect.yMax), quadColor, Vector2.one);
+                vh.AddVert(new Vector3(rect.xMax, rect.yMin), quadColor, Vector2.right);
+                vh.AddTriangle(startIndex, startIndex + 1, startIndex + 2);
+                vh.AddTriangle(startIndex, startIndex + 2, startIndex + 3);
+            }
         }
 
         [RequireComponent(typeof(CanvasRenderer))]

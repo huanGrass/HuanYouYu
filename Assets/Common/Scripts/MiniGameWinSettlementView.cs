@@ -8,6 +8,7 @@ namespace HuanYouYu.MiniGameHall
     public sealed class MiniGameWinSettlementView : IDisposable
     {
         private const float EnterDuration = 0.36f;
+        private const float InputBlockDuration = 0.48f;
         private const float IdlePulseScale = 0.018f;
         private const string PanelSpritePath = "HallTheme/popup_panel";
         private const string PanelTopDecorSpritePath = "HallTheme/popup_panel_top_decor_side";
@@ -25,6 +26,7 @@ namespace HuanYouYu.MiniGameHall
         private readonly RectTransform rewardRow;
         private readonly Button nextButton;
         private readonly Button hallButton;
+        private readonly GameObject inputBlocker;
 
         private float elapsed;
 
@@ -36,7 +38,8 @@ namespace HuanYouYu.MiniGameHall
             Graphic[] sparkleGraphics,
             RectTransform rewardRowRect,
             Button nextAction,
-            Button hallAction)
+            Button hallAction,
+            GameObject inputBlockerObject)
         {
             root = rootObject;
             dialog = dialogRect;
@@ -46,6 +49,7 @@ namespace HuanYouYu.MiniGameHall
             rewardRow = rewardRowRect;
             nextButton = nextAction;
             hallButton = hallAction;
+            inputBlocker = inputBlockerObject;
         }
 
         public static MiniGameWinSettlementView Create(
@@ -65,8 +69,10 @@ namespace HuanYouYu.MiniGameHall
             var rootRect = root.GetComponent<RectTransform>();
             Stretch(rootRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
+            var theme = MiniGameSettlementPanelTheme.Resolve(panelParams.Style);
+
             var blockerGraphic = root.AddComponent<RoundedRectGraphic>();
-            blockerGraphic.color = new Color(0.13f, 0.28f, 0.16f, 0.42f);
+            blockerGraphic.color = theme.BlockerColor;
             blockerGraphic.CornerRadius = 0f;
             blockerGraphic.raycastTarget = true;
 
@@ -83,13 +89,14 @@ namespace HuanYouYu.MiniGameHall
             cardGraphic.raycastTarget = false;
 
             PopupPanelTopDecorUtility.CreateMirroredTopDecor(dialogRect, LoadSprite(PanelTopDecorSpritePath), 620f);
-            CreateRibbon(dialogRect);
-            CreateHeader(dialogRect, fontAsset, panelParams.Title);
-            CreateInfoRows(dialogRect, fontAsset, panelParams);
+            CreateRibbon(dialogRect, theme.RibbonColor);
+            CreateHeader(dialogRect, fontAsset, panelParams.Title, theme.TitleColor, theme.DividerColor);
+            CreateInfoRows(dialogRect, fontAsset, panelParams, theme.DividerColor);
             var rewardRow = CreateRewardRow(dialogRect, fontAsset, panelParams.RewardLabel, panelParams.CoinCount, panelParams.ChestCount);
-            CreateButtons(dialogRect, fontAsset, panelParams.NextButtonText, onNextLevel, onBackHall, out var nextButton, out var hallButton);
-            var starRefs = CreateStar(dialogRect);
-            var sparkles = CreateSparkles(dialogRect);
+            CreateButtons(dialogRect, fontAsset, panelParams.PrimaryAction, theme.PrimaryButtonColor, onNextLevel, onBackHall, out var nextButton, out var hallButton);
+            var starRefs = CreateStatusMark(dialogRect, fontAsset, theme);
+            var sparkles = CreateSparkles(dialogRect, theme.SparkleColor, theme.ShowSparkles);
+            var inputBlocker = CreateInputBlocker(rootRect);
 
             var view = new MiniGameWinSettlementView(
                 root,
@@ -99,8 +106,14 @@ namespace HuanYouYu.MiniGameHall
                 sparkles,
                 rewardRow,
                 nextButton,
-                hallButton);
+                hallButton,
+                inputBlocker);
             view.ApplyInitialState();
+            if (panelParams.AutoTick)
+            {
+                root.AddComponent<MiniGameSettlementViewTicker>().Bind(view);
+            }
+
             return view;
         }
 
@@ -110,6 +123,10 @@ namespace HuanYouYu.MiniGameHall
             var enter = SmoothStep01(elapsed / EnterDuration);
             dialog.localScale = Vector3.one * Mathf.Lerp(0.72f, 1f, enter);
             dialog.anchoredPosition = new Vector2(0f, Mathf.Lerp(-108f, -32f, enter));
+            if (inputBlocker != null && inputBlocker.activeSelf && elapsed >= InputBlockDuration)
+            {
+                inputBlocker.SetActive(false);
+            }
 
             if (star != null)
             {
@@ -168,6 +185,11 @@ namespace HuanYouYu.MiniGameHall
         private void ApplyInitialState()
         {
             elapsed = 0f;
+            if (inputBlocker != null)
+            {
+                inputBlocker.SetActive(true);
+            }
+
             if (dialog != null)
             {
                 dialog.localScale = Vector3.one * 0.72f;
@@ -175,7 +197,7 @@ namespace HuanYouYu.MiniGameHall
             }
         }
 
-        private static void CreateRibbon(RectTransform parent)
+        private static void CreateRibbon(RectTransform parent, Color color)
         {
             var ribbon = CreateRectObject("GoldRibbon", parent);
             var rect = ribbon.GetComponent<RectTransform>();
@@ -185,13 +207,13 @@ namespace HuanYouYu.MiniGameHall
             rect.sizeDelta = new Vector2(310f, 54f);
             rect.anchoredPosition = new Vector2(0f, -24f);
             var graphic = ribbon.AddComponent<MiniGameSettlementRibbonGraphic>();
-            graphic.color = new Color32(231, 165, 24, 255);
+            graphic.color = color;
             graphic.raycastTarget = false;
         }
 
-        private static void CreateHeader(RectTransform parent, TMP_FontAsset fontAsset, string titleText)
+        private static void CreateHeader(RectTransform parent, TMP_FontAsset fontAsset, string titleText, Color titleColor, Color dividerColor)
         {
-            var title = CreateText(parent, "Title", titleText, fontAsset, 42f, FontStyles.Bold, new Color32(50, 132, 63, 255));
+            var title = CreateText(parent, "Title", titleText, fontAsset, 42f, FontStyles.Bold, titleColor);
             var titleRect = title.rectTransform;
             titleRect.anchorMin = new Vector2(0.5f, 1f);
             titleRect.anchorMax = new Vector2(0.5f, 1f);
@@ -200,16 +222,16 @@ namespace HuanYouYu.MiniGameHall
             titleRect.anchoredPosition = new Vector2(0f, -60f);
             title.alignment = TextAlignmentOptions.Center;
 
-            CreateDivider(parent, "HeaderLineLeft", new Vector2(-166f, -102f), 86f);
-            CreateDivider(parent, "HeaderLineRight", new Vector2(166f, -102f), 86f);
+            CreateDivider(parent, "HeaderLineLeft", new Vector2(-166f, -102f), 86f, dividerColor);
+            CreateDivider(parent, "HeaderLineRight", new Vector2(166f, -102f), 86f, dividerColor);
         }
 
-        private static void CreateInfoRows(RectTransform parent, TMP_FontAsset fontAsset, MiniGameRewardSettlementPanelParams panelParams)
+        private static void CreateInfoRows(RectTransform parent, TMP_FontAsset fontAsset, MiniGameRewardSettlementPanelParams panelParams, Color dividerColor)
         {
             CreateInfoRow(parent, fontAsset, "PrimaryInfoRow", -146f, panelParams.PrimaryInfo.Label, panelParams.PrimaryInfo.Value);
             CreateInfoRow(parent, fontAsset, "SecondaryInfoRow", -216f, panelParams.SecondaryInfo.Label, panelParams.SecondaryInfo.Value);
-            CreateDivider(parent, "InfoDividerA", new Vector2(0f, -184f), 404f);
-            CreateDivider(parent, "InfoDividerB", new Vector2(0f, -254f), 404f);
+            CreateDivider(parent, "InfoDividerA", new Vector2(0f, -184f), 404f, dividerColor);
+            CreateDivider(parent, "InfoDividerB", new Vector2(0f, -254f), 404f, dividerColor);
         }
 
         private static RectTransform CreateRewardRow(RectTransform parent, TMP_FontAsset fontAsset, string rewardLabel, int coinCount, int chestCount)
@@ -230,44 +252,48 @@ namespace HuanYouYu.MiniGameHall
             label.rectTransform.anchoredPosition = new Vector2(0f, 0f);
             label.alignment = TextAlignmentOptions.MidlineLeft;
 
-            var coinIcon = CreateRewardIcon(rowRect, "CoinIcon", LoadSprite(CoinSpritePath), new Vector2(132f, 0f), new Vector2(54f, 51f));
+            var coinIcon = CreateRewardIcon(rowRect, "CoinIcon", LoadSprite(CoinSpritePath), new Vector2(106f, 0f), new Vector2(54f, 51f));
             var coinText = CreateText(rowRect, "CoinText", "+" + coinCount, fontAsset, 40f, FontStyles.Bold, new Color32(246, 190, 38, 255));
             coinText.rectTransform.anchorMin = new Vector2(0f, 0.5f);
             coinText.rectTransform.anchorMax = new Vector2(0f, 0.5f);
             coinText.rectTransform.pivot = new Vector2(0f, 0.5f);
-            coinText.rectTransform.sizeDelta = new Vector2(108f, 54f);
-            coinText.rectTransform.anchoredPosition = new Vector2(160f, 0f);
+            coinText.rectTransform.sizeDelta = new Vector2(136f, 54f);
+            coinText.rectTransform.anchoredPosition = new Vector2(134f, 0f);
             coinText.alignment = TextAlignmentOptions.MidlineLeft;
+            coinText.enableAutoSizing = true;
+            coinText.fontSizeMin = 32f;
+            coinText.fontSizeMax = 40f;
             AddTextShadow(coinText, new Color(0.47f, 0.31f, 0.02f, 0.45f), new Vector2(2f, -2f));
 
-            CreateRewardIcon(rowRect, "ChestIcon", LoadSprite(ChestSpritePath), new Vector2(294f, 0f), new Vector2(82f, 66f));
-            var chestText = CreateText(rowRect, "ChestText", "x" + chestCount, fontAsset, 38f, FontStyles.Bold, new Color32(126, 80, 26, 255));
+            CreateRewardIcon(rowRect, "ChestIcon", LoadSprite(ChestSpritePath), new Vector2(314f, 0f), new Vector2(82f, 66f));
+            var chestText = CreateText(rowRect, "ChestText", "+" + chestCount, fontAsset, 38f, FontStyles.Bold, new Color32(126, 80, 26, 255));
             chestText.rectTransform.anchorMin = new Vector2(0f, 0.5f);
             chestText.rectTransform.anchorMax = new Vector2(0f, 0.5f);
             chestText.rectTransform.pivot = new Vector2(0f, 0.5f);
-            chestText.rectTransform.sizeDelta = new Vector2(72f, 52f);
-            chestText.rectTransform.anchoredPosition = new Vector2(344f, -1f);
+            chestText.rectTransform.sizeDelta = new Vector2(86f, 52f);
+            chestText.rectTransform.anchoredPosition = new Vector2(366f, -1f);
             chestText.alignment = TextAlignmentOptions.MidlineLeft;
 
             coinIcon.SetAsLastSibling();
             return rowRect;
         }
 
-        private static void CreateButtons(RectTransform parent, TMP_FontAsset fontAsset, string nextText, Action onNextLevel, Action onBackHall, out Button nextButton, out Button hallButton)
+        private static void CreateButtons(RectTransform parent, TMP_FontAsset fontAsset, MiniGameRewardSettlementPrimaryAction primaryAction, Color primaryButtonColor, Action onNextLevel, Action onBackHall, out Button nextButton, out Button hallButton)
         {
+            var primaryReturnsToHall = primaryAction == MiniGameRewardSettlementPrimaryAction.BackHall;
             nextButton = CreateActionButton(
                 parent,
                 "NextButton",
-                new Vector2(0f, -400f),
+                primaryReturnsToHall ? new Vector2(0f, -428f) : new Vector2(0f, -400f),
                 new Vector2(286f, 87f),
                 34f,
-                new Color32(255, 183, 31, 255),
+                primaryButtonColor,
                 LoadSprite(PrimaryButtonSpritePath),
-                nextText,
+                ResolvePrimaryActionText(primaryAction),
                 38f,
                 Color.white,
                 fontAsset,
-                onNextLevel);
+                primaryReturnsToHall ? onBackHall : onNextLevel);
             var nextLabel = nextButton.transform.Find("Label")?.GetComponent<RectTransform>();
             if (nextLabel != null)
             {
@@ -288,6 +314,7 @@ namespace HuanYouYu.MiniGameHall
                 new Color32(92, 82, 70, 255),
                 fontAsset,
                 onBackHall);
+            hallButton.gameObject.SetActive(!primaryReturnsToHall);
             var hallLabel = hallButton.transform.Find("Label")?.GetComponent<RectTransform>();
             if (hallLabel != null)
             {
@@ -296,7 +323,41 @@ namespace HuanYouYu.MiniGameHall
             }
         }
 
-        private static (RectTransform star, Graphic glow) CreateStar(RectTransform parent)
+        private static (RectTransform star, Graphic glow) CreateStatusMark(RectTransform parent, TMP_FontAsset fontAsset, MiniGameSettlementPanelTheme theme)
+        {
+            if (theme.UseStarBadge)
+            {
+                return CreateStar(parent, theme.GlowColor);
+            }
+
+            var glow = CreateRectObject("StatusGlow", parent);
+            var glowRect = glow.GetComponent<RectTransform>();
+            glowRect.anchorMin = new Vector2(0.5f, 1f);
+            glowRect.anchorMax = new Vector2(0.5f, 1f);
+            glowRect.pivot = new Vector2(0.5f, 0.5f);
+            glowRect.sizeDelta = new Vector2(124f, 124f);
+            glowRect.anchoredPosition = new Vector2(0f, 0f);
+            var glowGraphic = glow.AddComponent<MiniGameSettlementGlowGraphic>();
+            glowGraphic.color = theme.GlowColor;
+            glowGraphic.raycastTarget = false;
+
+            var badge = CreateRectObject("StatusBadge", parent);
+            var badgeRect = badge.GetComponent<RectTransform>();
+            badgeRect.anchorMin = new Vector2(0.5f, 1f);
+            badgeRect.anchorMax = new Vector2(0.5f, 1f);
+            badgeRect.pivot = new Vector2(0.5f, 0.5f);
+            badgeRect.sizeDelta = new Vector2(78f, 78f);
+            badgeRect.anchoredPosition = new Vector2(0f, -6f);
+            var badgeGraphic = EnsureRoundedRectGraphic(badge, theme.BadgeColor, 39f, false);
+            badgeGraphic.raycastTarget = false;
+
+            var symbol = CreateText(badgeRect, "Symbol", theme.BadgeText, fontAsset, 48f, FontStyles.Bold, Color.white);
+            Stretch(symbol.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, new Vector2(0f, 3f));
+            symbol.alignment = TextAlignmentOptions.Center;
+            return (badgeRect, glowGraphic);
+        }
+
+        private static (RectTransform star, Graphic glow) CreateStar(RectTransform parent, Color glowColor)
         {
             var glow = CreateRectObject("StarGlow", parent);
             var glowRect = glow.GetComponent<RectTransform>();
@@ -306,7 +367,7 @@ namespace HuanYouYu.MiniGameHall
             glowRect.sizeDelta = new Vector2(132f, 132f);
             glowRect.anchoredPosition = new Vector2(0f, 4f);
             var glowGraphic = glow.AddComponent<MiniGameSettlementGlowGraphic>();
-            glowGraphic.color = new Color32(255, 221, 64, 112);
+            glowGraphic.color = glowColor;
             glowGraphic.raycastTarget = false;
 
             var star = CreateRectObject("StarBadge", parent);
@@ -321,8 +382,13 @@ namespace HuanYouYu.MiniGameHall
             return (starRect, glowGraphic);
         }
 
-        private static Graphic[] CreateSparkles(RectTransform parent)
+        private static Graphic[] CreateSparkles(RectTransform parent, Color sparkleColor, bool showSparkles)
         {
+            if (!showSparkles)
+            {
+                return Array.Empty<Graphic>();
+            }
+
             var positions = new[]
             {
                 new Vector2(-206f, -314f),
@@ -342,12 +408,23 @@ namespace HuanYouYu.MiniGameHall
                 rect.sizeDelta = new Vector2(i < 2 ? 34f : 22f, i < 2 ? 34f : 22f);
                 rect.anchoredPosition = positions[i];
                 var graphic = sparkle.AddComponent<MiniGameSettlementSparkleGraphic>();
-                graphic.color = new Color32(255, 222, 82, 190);
+                graphic.color = sparkleColor;
                 graphic.raycastTarget = false;
                 sparkles[i] = graphic;
             }
 
             return sparkles;
+        }
+
+        private static GameObject CreateInputBlocker(RectTransform parent)
+        {
+            var blocker = CreateRectObject("InputBlocker", parent);
+            var rect = blocker.GetComponent<RectTransform>();
+            Stretch(rect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            var graphic = EnsureRoundedRectGraphic(blocker, new Color(1f, 1f, 1f, 0f), 0f, true);
+            graphic.raycastTarget = true;
+            blocker.transform.SetAsLastSibling();
+            return blocker;
         }
 
         private static void CreateInfoRow(RectTransform parent, TMP_FontAsset fontAsset, string name, float y, string labelText, string valueText)
@@ -357,27 +434,33 @@ namespace HuanYouYu.MiniGameHall
             rowRect.anchorMin = new Vector2(0.5f, 1f);
             rowRect.anchorMax = new Vector2(0.5f, 1f);
             rowRect.pivot = new Vector2(0.5f, 0.5f);
-            rowRect.sizeDelta = new Vector2(360f, 52f);
+            rowRect.sizeDelta = new Vector2(404f, 52f);
             rowRect.anchoredPosition = new Vector2(0f, y);
 
             var label = CreateText(rowRect, "Label", labelText, fontAsset, 28f, FontStyles.Normal, new Color32(88, 77, 66, 255));
             label.rectTransform.anchorMin = new Vector2(0f, 0.5f);
             label.rectTransform.anchorMax = new Vector2(0f, 0.5f);
             label.rectTransform.pivot = new Vector2(0f, 0.5f);
-            label.rectTransform.sizeDelta = new Vector2(116f, 48f);
+            label.rectTransform.sizeDelta = new Vector2(150f, 48f);
             label.rectTransform.anchoredPosition = Vector2.zero;
             label.alignment = TextAlignmentOptions.MidlineLeft;
+            label.enableAutoSizing = true;
+            label.fontSizeMin = 22f;
+            label.fontSizeMax = 28f;
 
             var value = CreateText(rowRect, "Value", valueText, fontAsset, 30f, FontStyles.Normal, new Color32(68, 58, 48, 255));
             value.rectTransform.anchorMin = new Vector2(0f, 0.5f);
             value.rectTransform.anchorMax = new Vector2(1f, 0.5f);
             value.rectTransform.pivot = new Vector2(0f, 0.5f);
-            value.rectTransform.offsetMin = new Vector2(118f, -24f);
+            value.rectTransform.offsetMin = new Vector2(166f, -24f);
             value.rectTransform.offsetMax = new Vector2(0f, 24f);
             value.alignment = TextAlignmentOptions.MidlineLeft;
+            value.enableAutoSizing = true;
+            value.fontSizeMin = 24f;
+            value.fontSizeMax = 30f;
         }
 
-        private static void CreateDivider(RectTransform parent, string name, Vector2 anchoredPosition, float width)
+        private static void CreateDivider(RectTransform parent, string name, Vector2 anchoredPosition, float width, Color color)
         {
             var line = CreateRectObject(name, parent);
             var lineRect = line.GetComponent<RectTransform>();
@@ -386,7 +469,7 @@ namespace HuanYouYu.MiniGameHall
             lineRect.pivot = new Vector2(0.5f, 0.5f);
             lineRect.sizeDelta = new Vector2(width, 2f);
             lineRect.anchoredPosition = anchoredPosition;
-            var graphic = EnsureRoundedRectGraphic(line, new Color32(224, 202, 146, 98), 1f, false);
+            var graphic = EnsureRoundedRectGraphic(line, color, 1f, false);
             graphic.raycastTarget = false;
         }
 
@@ -495,6 +578,23 @@ namespace HuanYouYu.MiniGameHall
             return string.IsNullOrWhiteSpace(resourcePath) ? null : Resources.Load<Sprite>(resourcePath);
         }
 
+        private static string ResolvePrimaryActionText(MiniGameRewardSettlementPrimaryAction action)
+        {
+            switch (action)
+            {
+                case MiniGameRewardSettlementPrimaryAction.Retry:
+                    return UiTextCatalog.Get("common.action.retry");
+                case MiniGameRewardSettlementPrimaryAction.Continue:
+                    return UiTextCatalog.Get("common.action.continue");
+                case MiniGameRewardSettlementPrimaryAction.Confirm:
+                    return UiTextCatalog.Get("common.action.got_it");
+                case MiniGameRewardSettlementPrimaryAction.BackHall:
+                    return UiTextCatalog.Get("common.action.back_hall");
+                default:
+                    return UiTextCatalog.Get("common.action.next_level");
+            }
+        }
+
         private static Image CreateSpriteImage(GameObject target, Sprite sprite, Color color, bool preserveAspect, bool raycastTarget)
         {
             var image = target.AddComponent<Image>();
@@ -561,6 +661,24 @@ namespace HuanYouYu.MiniGameHall
             vertex.color = color;
             vh.AddVert(vertex);
             return vh.currentVertCount - 1;
+        }
+
+        private sealed class MiniGameSettlementViewTicker : MonoBehaviour
+        {
+            private MiniGameWinSettlementView view;
+
+            public void Bind(MiniGameWinSettlementView settlementView)
+            {
+                view = settlementView;
+            }
+
+            private void Update()
+            {
+                if (view != null)
+                {
+                    view.Tick(Time.unscaledDeltaTime);
+                }
+            }
         }
 
         [RequireComponent(typeof(CanvasRenderer))]
@@ -644,13 +762,98 @@ namespace HuanYouYu.MiniGameHall
     public sealed class MiniGameRewardSettlementPanelParams
     {
         public string RootName = "MiniGameWinSettlementPanel";
+        public MiniGameRewardSettlementPanelStyle Style = MiniGameRewardSettlementPanelStyle.Success;
+        public MiniGameRewardSettlementPrimaryAction PrimaryAction = MiniGameRewardSettlementPrimaryAction.NextLevel;
+        public bool AutoTick;
         public string Title;
         public MiniGameSettlementInfoRow PrimaryInfo;
         public MiniGameSettlementInfoRow SecondaryInfo;
         public string RewardLabel;
-        public string NextButtonText;
         public int CoinCount;
         public int ChestCount;
+    }
+
+    public enum MiniGameRewardSettlementPanelStyle
+    {
+        Success,
+        Failure,
+        Neutral
+    }
+
+    public enum MiniGameRewardSettlementPrimaryAction
+    {
+        NextLevel,
+        Retry,
+        Continue,
+        Confirm,
+        BackHall
+    }
+
+    internal sealed class MiniGameSettlementPanelTheme
+    {
+        public Color BlockerColor;
+        public Color RibbonColor;
+        public Color TitleColor;
+        public Color DividerColor;
+        public Color PrimaryButtonColor;
+        public Color GlowColor;
+        public Color BadgeColor;
+        public Color SparkleColor;
+        public string BadgeText;
+        public bool UseStarBadge;
+        public bool ShowSparkles;
+
+        public static MiniGameSettlementPanelTheme Resolve(MiniGameRewardSettlementPanelStyle style)
+        {
+            switch (style)
+            {
+                case MiniGameRewardSettlementPanelStyle.Failure:
+                    return new MiniGameSettlementPanelTheme
+                    {
+                        BlockerColor = new Color(0.22f, 0.12f, 0.11f, 0.46f),
+                        RibbonColor = new Color32(191, 92, 63, 255),
+                        TitleColor = new Color32(176, 70, 55, 255),
+                        DividerColor = new Color32(216, 172, 154, 116),
+                        PrimaryButtonColor = new Color32(236, 128, 72, 255),
+                        GlowColor = new Color32(235, 121, 88, 88),
+                        BadgeColor = new Color32(204, 83, 64, 255),
+                        SparkleColor = new Color32(235, 139, 94, 160),
+                        BadgeText = "!",
+                        UseStarBadge = false,
+                        ShowSparkles = false
+                    };
+                case MiniGameRewardSettlementPanelStyle.Neutral:
+                    return new MiniGameSettlementPanelTheme
+                    {
+                        BlockerColor = new Color(0.12f, 0.16f, 0.22f, 0.42f),
+                        RibbonColor = new Color32(99, 128, 163, 255),
+                        TitleColor = new Color32(74, 103, 140, 255),
+                        DividerColor = new Color32(177, 192, 213, 112),
+                        PrimaryButtonColor = new Color32(94, 139, 190, 255),
+                        GlowColor = new Color32(116, 158, 211, 82),
+                        BadgeColor = new Color32(86, 126, 176, 255),
+                        SparkleColor = new Color32(140, 174, 218, 150),
+                        BadgeText = "i",
+                        UseStarBadge = false,
+                        ShowSparkles = false
+                    };
+                default:
+                    return new MiniGameSettlementPanelTheme
+                    {
+                        BlockerColor = new Color(0.13f, 0.28f, 0.16f, 0.42f),
+                        RibbonColor = new Color32(231, 165, 24, 255),
+                        TitleColor = new Color32(50, 132, 63, 255),
+                        DividerColor = new Color32(224, 202, 146, 98),
+                        PrimaryButtonColor = new Color32(255, 183, 31, 255),
+                        GlowColor = new Color32(255, 221, 64, 112),
+                        BadgeColor = new Color32(255, 183, 31, 255),
+                        SparkleColor = new Color32(255, 222, 82, 190),
+                        BadgeText = string.Empty,
+                        UseStarBadge = true,
+                        ShowSparkles = true
+                    };
+            }
+        }
     }
 
     public sealed class MiniGameSettlementInfoRow

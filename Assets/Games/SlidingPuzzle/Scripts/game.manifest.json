@@ -1,0 +1,7 @@
+﻿{
+  "gameId": "slidingpuzzle",
+  "nameKey": "game.slidingpuzzle.name",
+  "descriptionKey": "game.slidingpuzzle.description",
+  "isPlayable": true,
+  "statusLabelKey": "status.playable"
+}

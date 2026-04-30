@@ -58,8 +58,6 @@ namespace HuanYouYu.MiniGameHall
         private RectTransform flyingNeedle;
         private MiniGameLevelProgressController levelProgress;
         private MiniGameLevelSelectView levelSelectView;
-        private MiniGameWinSettlementView winSettlementView;
-        private MiniGameSettlement activeWinSettlement;
         private int currentLevelIndex;
         private bool flyingNeedleInMotion;
         private int score;
@@ -108,8 +106,6 @@ namespace HuanYouYu.MiniGameHall
 
         protected override void BuildOrBindSections()
         {
-            Shell.SetPauseButtonVisible(true);
-
             var topBarRefs = MiniGameShellTopBarBuilder.CreateTopBar(
                 Shell.TopHost,
                 MiniGameShellTopBarBuilder.CreateDefaultConfig("NeedleHitTop"));
@@ -147,7 +143,7 @@ namespace HuanYouYu.MiniGameHall
         {
             Shell.ClosePopup();
             CloseLevelSelectView();
-            CloseWinSettlementView();
+            CloseRewardSettlementPanel();
             EnsureLevelProgress();
             currentLevelIndex = levelProgress.CurrentLevelIndex;
             interactionLocked = false;
@@ -166,11 +162,6 @@ namespace HuanYouYu.MiniGameHall
 
         public override void Tick(float deltaTime)
         {
-            if (winSettlementView != null)
-            {
-                winSettlementView.Tick(deltaTime);
-            }
-
             if (runState != NeedleHitRunState.Running || interactionLocked)
             {
                 return;
@@ -230,14 +221,14 @@ namespace HuanYouYu.MiniGameHall
             }
 
             CloseLevelSelectView();
-            CloseWinSettlementView();
+            CloseRewardSettlementPanel();
 
             ClearSpawnedNeedles();
         }
 
         protected override (string helpKey, string creditsKey)? GetPauseHelpKeys()
         {
-            return ("game.needlehit.help", "game.needlehit.credits");
+            return ("game.needlehit.help", null);
         }
 
         private void ConfigurePlayfieldVisuals()
@@ -498,14 +489,23 @@ namespace HuanYouYu.MiniGameHall
                 Summary = BuildSettlementSummaryText()
             };
 
-            Shell.ShowRetryOrExitPopup(
-                settlement.Summary,
-                ResetGame,
-                delegate
+            ShowRewardSettlementPanel(
+                settlement,
+                new MiniGameRewardSettlementPanelParams
                 {
-                    Shell.ClosePopup();
-                    CompleteGame?.Invoke(settlement);
-                });
+                    RootName = "NeedleHitFailureSettlementPanel",
+                    Style = MiniGameRewardSettlementPanelStyle.Failure,
+                    PrimaryAction = MiniGameRewardSettlementPrimaryAction.Retry,
+                    Title = UiTextCatalog.Get("needlehit.settlement.failure_title"),
+                    PrimaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("needlehit.settlement.score"), score.ToString()),
+                    SecondaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("needlehit.settlement.target"), CurrentLevel.TargetNeedleCount.ToString()),
+                    RewardLabel = UiTextCatalog.Get("settlement.reward_label"),
+                    CoinCount = settlement.CoinCount,
+                    ChestCount = settlement.ChestCount
+                },
+                ResetGame,
+                delegate { CompleteGame?.Invoke(settlement); },
+                true);
         }
 
         private void CompleteCurrentRound()
@@ -532,7 +532,7 @@ namespace HuanYouYu.MiniGameHall
         {
             EnsureLevelProgress();
             Shell.ClosePopup();
-            CloseWinSettlementView();
+            CloseRewardSettlementPanel();
             CloseLevelSelectView();
             levelSelectView = MiniGameLevelSelectView.Create(
                 Shell.PopupHost,
@@ -558,16 +558,16 @@ namespace HuanYouYu.MiniGameHall
             ResetGame();
         }
 
-        private void LoadNextLevel()
+        private void LoadNextLevel(MiniGameSettlement settlement)
         {
             EnsureLevelProgress();
             if (!levelProgress.GoNext())
             {
-                CompleteWinSettlement();
+                CompleteGame?.Invoke(settlement);
                 return;
             }
 
-            CloseWinSettlementView();
+            GrantSettlementReward(settlement);
             ResetGame();
         }
 
@@ -579,37 +579,22 @@ namespace HuanYouYu.MiniGameHall
             }
 
             var level = CurrentLevel;
-            Shell.ClosePopup();
-            CloseWinSettlementView();
-            activeWinSettlement = settlement;
-            winSettlementView = MiniGameWinSettlementView.Create(
-                Shell.PopupHost,
-                titleLabel == null ? null : titleLabel.font,
+            ShowRewardSettlementPanel(
+                settlement,
                 new MiniGameRewardSettlementPanelParams
                 {
                     RootName = "NeedleHitSettlementPanel",
                     Title = UiTextCatalog.Get("needlehit.settlement.title"),
                     PrimaryInfo = MiniGameSettlementInfoRow.CreateLevel(currentLevelIndex + 1),
                     SecondaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("needlehit.settlement.target"), level.TargetNeedleCount.ToString()),
-                    RewardLabel = UiTextCatalog.Get("needlehit.settlement.reward"),
-                    NextButtonText = UiTextCatalog.Get("needlehit.action.next_level"),
+                    RewardLabel = UiTextCatalog.Get("settlement.reward_label"),
+                    PrimaryAction = MiniGameRewardSettlementPrimaryAction.NextLevel,
                     CoinCount = settlement.CoinCount,
                     ChestCount = settlement.ChestCount
                 },
-                LoadNextLevel,
-                CompleteWinSettlement);
-        }
-
-        private void CompleteWinSettlement()
-        {
-            if (activeWinSettlement == null)
-            {
-                return;
-            }
-
-            var settlement = activeWinSettlement;
-            CloseWinSettlementView();
-            CompleteGame?.Invoke(settlement);
+                delegate { LoadNextLevel(settlement); },
+                delegate { CompleteGame?.Invoke(settlement); },
+                false);
         }
 
         private void CloseLevelSelectView()
@@ -619,17 +604,6 @@ namespace HuanYouYu.MiniGameHall
                 levelSelectView.Dispose();
                 levelSelectView = null;
             }
-        }
-
-        private void CloseWinSettlementView()
-        {
-            if (winSettlementView != null)
-            {
-                winSettlementView.Dispose();
-                winSettlementView = null;
-            }
-
-            activeWinSettlement = null;
         }
 
         private void EnsureLevelProgress()
@@ -655,7 +629,12 @@ namespace HuanYouYu.MiniGameHall
                 Summary = BuildExitSettlementSummaryText()
             };
 
-            Shell.ShowSettlementPopup(settlement.Summary, delegate { CompleteGame?.Invoke(settlement); });
+            ShowBackHallRewardSettlementPanel(
+                settlement,
+                "NeedleHitSettlementPanel",
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("needlehit.settlement.score"), score.ToString()),
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("needlehit.settlement.target"), CurrentLevel.TargetNeedleCount.ToString()),
+                delegate { CompleteGame?.Invoke(settlement); });
         }
 
         private void ClearSpawnedNeedles()

@@ -11,55 +11,29 @@ namespace HuanYouYu.MiniGameHall
                 return;
             }
 
-            Shell.ClosePopup();
             CloseLevelSelectView();
-            CloseSettlementView();
-            activeSettlement = settlement;
-            settlementView = MiniGameWinSettlementView.Create(
-                Shell.PopupHost,
-                fontAsset,
+            ShowRewardSettlementPanel(
+                settlement,
                 new MiniGameRewardSettlementPanelParams
                 {
                     RootName = "WaterSortSettlementPanel",
-                    Title = UiTextCatalog.Get("water_sort.settlement.title"),
+                    Title = UiTextCatalog.Get("popup.settlement.title"),
                     PrimaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("water_sort.settlement.steps"), moveCount + UiTextCatalog.Get("water_sort.settlement.step_unit")),
                     SecondaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("water_sort.settlement.rating"), ResolveSettlementRating(moveCount)),
                     RewardLabel = UiTextCatalog.Get("water_sort.settlement.reward"),
-                    NextButtonText = UiTextCatalog.Get("water_sort.settlement.next"),
+                    PrimaryAction = MiniGameRewardSettlementPrimaryAction.NextLevel,
                     CoinCount = settlement.CoinCount,
                     ChestCount = settlement.ChestCount
                 },
-                LoadNextLevel,
-                CompleteSettlement);
-        }
-
-        private void CompleteSettlement()
-        {
-            if (activeSettlement == null)
-            {
-                return;
-            }
-
-            var settlement = activeSettlement;
-            CloseSettlementView();
-            CompleteGame?.Invoke(settlement);
-        }
-
-        private void CloseSettlementView()
-        {
-            if (settlementView != null)
-            {
-                settlementView.Dispose();
-                settlementView = null;
-            }
-
-            activeSettlement = null;
+                delegate { LoadNextLevel(settlement); },
+                delegate { CompleteGame?.Invoke(settlement); },
+                false);
         }
 
         private void ShowLevelSelectView()
         {
             Shell.ClosePopup();
-            CloseSettlementView();
+            CloseRewardSettlementPanel();
             CloseLevelSelectView();
             EnsureLevelProgress();
             levelSelectView = MiniGameLevelSelectView.Create(
@@ -80,14 +54,6 @@ namespace HuanYouYu.MiniGameHall
             {
                 levelSelectView.Dispose();
                 levelSelectView = null;
-            }
-        }
-
-        private void AdvanceSettlementView(float deltaTime)
-        {
-            if (settlementView != null)
-            {
-                settlementView.Tick(deltaTime);
             }
         }
 

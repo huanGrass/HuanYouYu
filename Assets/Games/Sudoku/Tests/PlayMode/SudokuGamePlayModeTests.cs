@@ -14,6 +14,7 @@ namespace Tests
         private const BindingFlags InstancePrivate = BindingFlags.Instance | BindingFlags.NonPublic;
         private static readonly Color FillModeActiveColor = new Color32(238, 196, 110, 255);
         private static readonly Color ModeTabInactiveColor = new Color32(242, 233, 214, 255);
+        private static readonly Color HintDigitTextColor = new Color32(38, 143, 116, 255);
         private const float ExpectedTopHostHeight = 224f;
         private const float ExpectedBottomHostHeight = 324f;
 
@@ -367,6 +368,38 @@ namespace Tests
             CollectionAssert.DoesNotContain(GetVisibleCandidateDigits(targetCell), pair.Digit.ToString());
         }
 
+        [UnityTest]
+        public IEnumerator HintRevealsBestCandidateCellWithDistinctColorAndLocksIt()
+        {
+            var board = ReadBoardFromUi();
+            var solution = (int[])board.Clone();
+            Assert.IsTrue(SolveBoard(solution));
+            var expectedHintIndex = FindBestEmptyCell(board);
+            Assert.GreaterOrEqual(expectedHintIndex, 0);
+
+            Click("HintButton");
+            yield return null;
+            Assert.IsNotNull(Find("SudokuHintFlyDigit"));
+
+            yield return new WaitForSeconds(0.55f);
+
+            var afterHint = ReadBoardFromUi();
+            var changedIndex = FindSingleChangedCell(board, afterHint);
+            Assert.AreEqual(expectedHintIndex, changedIndex);
+            Assert.AreEqual(solution[changedIndex], afterHint[changedIndex]);
+
+            var hintCell = FindCell(changedIndex);
+            Assert.AreEqual(HintDigitTextColor, GetComponentColor(hintCell.transform.Find("Value").gameObject));
+
+            Click(hintCell.name);
+            Click("ClearButton");
+            Assert.AreEqual(solution[changedIndex].ToString(), GetCellLabelText(hintCell));
+
+            var replacement = solution[changedIndex] == 9 ? 1 : solution[changedIndex] + 1;
+            Click("NumberButton_" + replacement);
+            Assert.AreEqual(solution[changedIndex].ToString(), GetCellLabelText(hintCell));
+        }
+
         [Test]
         public void ShellLayoutUsesSudokuSpecificTopAndBottomInsets()
         {
@@ -468,21 +501,18 @@ namespace Tests
 
             yield return null;
 
-            Assert.IsNotNull(Find("MiniGamePopup"));
-            var message = Find("MiniGamePopup").transform.Find("Dialog/MessagePanel/Message");
-            Assert.IsNotNull(message);
-            var messageText = GetComponentText(message.gameObject);
-            Assert.IsFalse(string.IsNullOrWhiteSpace(messageText));
+            var popup = Find("SudokuSettlementPanel");
+            Assert.IsNotNull(popup);
 
-            var confirmButton = Find("MiniGamePopup").transform.Find("Dialog/Buttons/ConfirmButton")?.GetComponent<Button>();
-            Assert.IsNotNull(confirmButton, "Settlement confirm button should exist.");
-            confirmButton.onClick.Invoke();
+            var backHallButton = popup.transform.Find("Dialog/BackHallButton")?.GetComponent<Button>();
+            Assert.IsNotNull(backHallButton, "Settlement back hall button should exist.");
+            backHallButton.onClick.Invoke();
             yield return null;
 
             Assert.IsNotNull(completedSettlement, "Solved settlement should be reported.");
             Assert.AreEqual(60, completedSettlement.CoinCount);
             Assert.AreEqual(1, completedSettlement.ChestCount);
-            StringAssert.Contains("60 金币和 1 个宝箱", messageText);
+            StringAssert.Contains("60 金币和 1 个宝箱", completedSettlement.Summary);
         }
 
         [UnityTest]
@@ -498,9 +528,9 @@ namespace Tests
             InvokePrivate("ConfirmExitToHall");
             yield return null;
 
-            var popup = Find("MiniGamePopup");
+            var popup = Find("SudokuSettlementPanel");
             Assert.IsNotNull(popup, "Exit settlement popup should appear.");
-            var confirmButton = popup.transform.Find("Dialog/Buttons/ConfirmButton")?.GetComponent<Button>();
+            var confirmButton = popup.transform.Find("Dialog/NextButton")?.GetComponent<Button>();
             Assert.IsNotNull(confirmButton, "Exit settlement confirm button should exist.");
             confirmButton.onClick.Invoke();
             yield return null;
@@ -518,9 +548,9 @@ namespace Tests
             InvokePrivate("ConfirmExitToHall");
             yield return null;
 
-            var popup = Find("MiniGamePopup");
+            var popup = Find("SudokuSettlementPanel");
             Assert.IsNotNull(popup, "Exit settlement popup should appear.");
-            var confirmButton = popup.transform.Find("Dialog/Buttons/ConfirmButton")?.GetComponent<Button>();
+            var confirmButton = popup.transform.Find("Dialog/NextButton")?.GetComponent<Button>();
             Assert.IsNotNull(confirmButton, "Exit settlement confirm button should exist.");
             confirmButton.onClick.Invoke();
             yield return null;
@@ -802,6 +832,23 @@ namespace Tests
             return string.Join(",", ReadBoardFromUi());
         }
 
+        private static int FindSingleChangedCell(int[] before, int[] after)
+        {
+            var changedIndex = -1;
+            for (var i = 0; i < before.Length; i++)
+            {
+                if (before[i] == after[i])
+                {
+                    continue;
+                }
+
+                Assert.AreEqual(-1, changedIndex, "Only one cell should change.");
+                changedIndex = i;
+            }
+
+            return changedIndex;
+        }
+
         private static bool SolveBoard(int[] board)
         {
             var index = FindBestEmptyCell(board);
@@ -938,6 +985,20 @@ namespace Tests
             var property = component.GetType().GetProperty("text");
             Assert.IsNotNull(property, "Missing text property on: " + component.GetType().Name);
             return property.GetValue(component, null) as string ?? string.Empty;
+        }
+
+        private static Color GetComponentColor(GameObject gameObject)
+        {
+            var component = gameObject.GetComponent("TMP_Text");
+            if (component == null)
+            {
+                component = gameObject.GetComponent("Text");
+            }
+
+            Assert.IsNotNull(component, "Missing text component on: " + gameObject.name);
+            var property = component.GetType().GetProperty("color");
+            Assert.IsNotNull(property, "Missing color property on: " + component.GetType().Name);
+            return (Color)property.GetValue(component, null);
         }
     }
 }

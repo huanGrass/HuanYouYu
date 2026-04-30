@@ -94,7 +94,6 @@ namespace HuanYouYu.MiniGameHall
 
         protected override void BuildOrBindSections()
         {
-            Shell.SetPauseButtonVisible(true);
             Shell.ConfigureBottomMode(MiniGameShellBottomMode.DefaultSlot, BottomLayoutInset);
             BuildTop();
             BuildBoard();
@@ -119,7 +118,7 @@ namespace HuanYouYu.MiniGameHall
 
         protected override (string helpKey, string creditsKey)? GetPauseHelpKeys()
         {
-            return ("game.tetris.help", "game.tetris.credits");
+            return ("game.tetris.help", null);
         }
 
         private void BuildTop()
@@ -277,7 +276,7 @@ namespace HuanYouYu.MiniGameHall
             hardDropRect.anchoredPosition = new Vector2(130f, -36f);
             hardDropRect.sizeDelta = new Vector2(128f, 66f);
 
-            restartButton = CreateControlButton(rootRect, "RestartButton", UiTextCatalog.Get("tetris.action.restart"), StartNewGame);
+            restartButton = CreateControlButton(rootRect, "RestartButton", UiTextCatalog.Get("common.action.restart"), StartNewGame);
             var restartRect = restartButton.GetComponent<RectTransform>();
             restartRect.anchorMin = new Vector2(1f, 0.5f);
             restartRect.anchorMax = new Vector2(1f, 0.5f);
@@ -512,10 +511,24 @@ namespace HuanYouYu.MiniGameHall
             }
 
             MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 1f);
-            Shell.ShowRetryOrExitPopup(
-                UiTextCatalog.Format("tetris.settlement.game_over", score, clearedLineCount, GetCoinCount(), GetChestCount()),
+            var settlement = BuildSettlement();
+            ShowRewardSettlementPanel(
+                settlement,
+                new MiniGameRewardSettlementPanelParams
+                {
+                    RootName = "TetrisSettlementPanel",
+                    Style = MiniGameRewardSettlementPanelStyle.Failure,
+                    PrimaryAction = MiniGameRewardSettlementPrimaryAction.Retry,
+                    Title = UiTextCatalog.Get("tetris.settlement.failure_title"),
+                    PrimaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("tetris.settlement.score"), score.ToString()),
+                    SecondaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("tetris.settlement.lines"), clearedLineCount.ToString()),
+                    RewardLabel = UiTextCatalog.Get("settlement.reward_label"),
+                    CoinCount = settlement.CoinCount,
+                    ChestCount = settlement.ChestCount
+                },
                 StartNewGame,
-                ConfirmSettlement);
+                delegate { CompleteGame?.Invoke(settlement); },
+                true);
         }
 
         private void ResumeGame()
@@ -529,15 +542,13 @@ namespace HuanYouYu.MiniGameHall
             Shell.ClosePopup();
             isPaused = true;
             MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 1f);
-            Shell.ShowSettlementPopup(
-                UiTextCatalog.Format("tetris.settlement.exit", score, clearedLineCount, GetCoinCount()),
-                ConfirmSettlement);
-        }
-
-        private void ConfirmSettlement()
-        {
-            Shell.ClosePopup();
-            CompleteGame?.Invoke(BuildSettlement());
+            var settlement = BuildSettlement();
+            ShowBackHallRewardSettlementPanel(
+                settlement,
+                "TetrisSettlementPanel",
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("tetris.settlement.score"), score.ToString()),
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("tetris.settlement.lines"), clearedLineCount.ToString()),
+                delegate { CompleteGame?.Invoke(settlement); });
         }
 
         private MiniGameSettlement BuildSettlement()

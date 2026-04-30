@@ -13,7 +13,6 @@ namespace HuanYouYu.MiniGameHall
 
         private const int CoinsPerPair = 5;
         private const float MismatchRevealSeconds = 0.6f;
-        private const string FontResourcePath = "Fonts & Materials/NotoSansCJKsc-Subset SDF";
 
         private static readonly LevelDefinition[] LevelDefinitions =
         {
@@ -76,8 +75,6 @@ namespace HuanYouYu.MiniGameHall
         private Coroutine mismatchRoutine;
         private MiniGameLevelProgressController levelProgress;
         private MiniGameLevelSelectView levelSelectView;
-        private MiniGameWinSettlementView winSettlementView;
-        private MiniGameSettlement activeWinSettlement;
         private int currentLevelIndex;
         private int matchedPairCount;
         private bool interactionLocked;
@@ -128,16 +125,11 @@ namespace HuanYouYu.MiniGameHall
 
         public override void Tick(float deltaTime)
         {
-            if (winSettlementView != null)
-            {
-                winSettlementView.Tick(deltaTime);
-            }
         }
 
         protected override void BuildOrBindSections()
         {
-            Shell.SetPauseButtonVisible(true);
-            fontAsset = Resources.Load<TMP_FontAsset>(FontResourcePath);
+            fontAsset = MiniGameFontProvider.DefaultFont;
 
             var topBarRefs = MiniGameShellTopBarBuilder.CreateTopBar(
                 Shell.TopHost,
@@ -153,7 +145,7 @@ namespace HuanYouYu.MiniGameHall
         {
             Shell.ClosePopup();
             CloseLevelSelectView();
-            CloseWinSettlementView();
+            CloseRewardSettlementPanel();
             StopMismatchRoutine();
             interactionLocked = false;
             settlementShown = false;
@@ -190,12 +182,12 @@ namespace HuanYouYu.MiniGameHall
             }
 
             CloseLevelSelectView();
-            CloseWinSettlementView();
+            CloseRewardSettlementPanel();
         }
 
         protected override (string helpKey, string creditsKey)? GetPauseHelpKeys()
         {
-            return ("game.memory_flip.help", "game.memory_flip.credits");
+            return ("game.memory_flip.help", null);
         }
 
         private void BuildContentSection()
@@ -428,7 +420,13 @@ namespace HuanYouYu.MiniGameHall
             interactionLocked = true;
             settlementShown = true;
             MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 1f);
-            ShowSettlementAndComplete(CreateSettlement(false));
+            var settlement = CreateSettlement(false);
+            ShowBackHallRewardSettlementPanel(
+                settlement,
+                "MemoryFlipSettlementPanel",
+                MiniGameSettlementInfoRow.CreateLevel(currentLevelIndex + 1),
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("memory_flip.settlement.pairs"), matchedPairCount + "/" + LevelDefinitions[currentLevelIndex].PairCount),
+                delegate { CompleteGame?.Invoke(settlement); });
         }
 
         private MiniGameSettlement CreateSettlement(bool completed)
@@ -451,7 +449,7 @@ namespace HuanYouYu.MiniGameHall
         {
             EnsureLevelProgress();
             Shell.ClosePopup();
-            CloseWinSettlementView();
+            CloseRewardSettlementPanel();
             CloseLevelSelectView();
             levelSelectView = MiniGameLevelSelectView.Create(
                 Shell.PopupHost,
@@ -482,16 +480,16 @@ namespace HuanYouYu.MiniGameHall
             ResetGame();
         }
 
-        private void LoadNextLevel()
+        private void LoadNextLevel(MiniGameSettlement settlement)
         {
             EnsureLevelProgress();
             if (!levelProgress.GoNext())
             {
-                CompleteWinSettlement();
+                CompleteGame?.Invoke(settlement);
                 return;
             }
 
-            CloseWinSettlementView();
+            GrantSettlementReward(settlement);
             ResetGame();
         }
 
@@ -503,37 +501,22 @@ namespace HuanYouYu.MiniGameHall
             }
 
             var level = LevelDefinitions[currentLevelIndex];
-            Shell.ClosePopup();
-            CloseWinSettlementView();
-            activeWinSettlement = settlement;
-            winSettlementView = MiniGameWinSettlementView.Create(
-                Shell.PopupHost,
-                fontAsset,
+            ShowRewardSettlementPanel(
+                settlement,
                 new MiniGameRewardSettlementPanelParams
                 {
                     RootName = "MemoryFlipSettlementPanel",
                     Title = UiTextCatalog.Get("memory_flip.settlement.title"),
                     PrimaryInfo = MiniGameSettlementInfoRow.CreateLevel(currentLevelIndex + 1),
                     SecondaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("memory_flip.settlement.pairs"), level.PairCount.ToString()),
-                    RewardLabel = UiTextCatalog.Get("memory_flip.settlement.reward"),
-                    NextButtonText = UiTextCatalog.Get("memory_flip.action.next_level"),
+                    RewardLabel = UiTextCatalog.Get("settlement.reward_label"),
+                    PrimaryAction = MiniGameRewardSettlementPrimaryAction.NextLevel,
                     CoinCount = settlement.CoinCount,
                     ChestCount = settlement.ChestCount
                 },
-                LoadNextLevel,
-                CompleteWinSettlement);
-        }
-
-        private void CompleteWinSettlement()
-        {
-            if (activeWinSettlement == null)
-            {
-                return;
-            }
-
-            var settlement = activeWinSettlement;
-            CloseWinSettlementView();
-            CompleteGame?.Invoke(settlement);
+                delegate { LoadNextLevel(settlement); },
+                delegate { CompleteGame?.Invoke(settlement); },
+                false);
         }
 
         private void CloseLevelSelectView()
@@ -543,17 +526,6 @@ namespace HuanYouYu.MiniGameHall
                 levelSelectView.Dispose();
                 levelSelectView = null;
             }
-        }
-
-        private void CloseWinSettlementView()
-        {
-            if (winSettlementView != null)
-            {
-                winSettlementView.Dispose();
-                winSettlementView = null;
-            }
-
-            activeWinSettlement = null;
         }
 
         private void EnsureLevelProgress()

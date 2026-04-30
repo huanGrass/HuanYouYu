@@ -1,0 +1,7 @@
+﻿{
+  "gameId": "waterpouring",
+  "nameKey": "game.waterpouring.name",
+  "descriptionKey": "game.waterpouring.description",
+  "isPlayable": true,
+  "statusLabelKey": "status.playable"
+}

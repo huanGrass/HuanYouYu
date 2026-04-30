@@ -120,11 +120,6 @@ namespace HuanYouYu.MiniGameHall
             AttachToHost(target, bottomHost);
         }
 
-        public void SetPauseButtonVisible(bool visible)
-        {
-            pauseButton.gameObject.SetActive(visible);
-        }
-
         public void SetBackgroundVisible(bool visible)
         {
             backgroundObject.SetActive(visible);
@@ -170,6 +165,27 @@ namespace HuanYouYu.MiniGameHall
                 UiTextCatalog.GetOrFallback("popup.exit.message", "Leaving now will settle the current run."),
                 UiTextCatalog.GetOrFallback("common.action.confirm_exit", "Exit"),
                 UiTextCatalog.GetOrFallback("common.action.continue", "Continue"),
+                true,
+                true,
+                true,
+                onConfirm,
+                onCancel,
+                onCancel);
+        }
+
+        public void ShowConfirmPopup(
+            string title,
+            string message,
+            string confirmLabel,
+            string cancelLabel,
+            Action onCancel,
+            Action onConfirm)
+        {
+            ShowPopup(
+                title,
+                message,
+                confirmLabel,
+                cancelLabel,
                 true,
                 true,
                 true,

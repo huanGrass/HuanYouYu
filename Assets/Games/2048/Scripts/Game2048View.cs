@@ -40,7 +40,6 @@ namespace HuanYouYu.MiniGameHall
 
         protected override void BuildOrBindSections()
         {
-            Shell.SetPauseButtonVisible(true);
             AttachTopSection();
             AttachContentSection();
             AttachBottomSection();
@@ -106,7 +105,7 @@ namespace HuanYouYu.MiniGameHall
 
         protected override (string helpKey, string creditsKey)? GetPauseHelpKeys()
         {
-            return ("game.2048.help", "game.2048.credits");
+            return ("game.2048.help", null);
         }
 
         private void AttachTopSection()
@@ -189,7 +188,7 @@ namespace HuanYouYu.MiniGameHall
             {
                 MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 1f);
                 pendingSettlementSummary = BuildSettlementSummary("2048.settlement.win");
-                ShowSettlement(pendingSettlementSummary);
+                ShowRewardSettlement(MiniGameRewardSettlementPanelStyle.Success);
                 return;
             }
 
@@ -197,23 +196,38 @@ namespace HuanYouYu.MiniGameHall
             {
                 MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 1f);
                 pendingSettlementSummary = BuildSettlementSummary("2048.settlement.lose");
-                ShowSettlement(pendingSettlementSummary);
+                ShowRewardSettlement(MiniGameRewardSettlementPanelStyle.Failure);
                 return;
             }
 
             boardView.SetInputEnabled(true);
         }
 
-        private void ShowSettlement(string message)
+        private void ShowRewardSettlement(MiniGameRewardSettlementPanelStyle style)
         {
-            boardView.SetInputEnabled(false);
-            Shell.ShowSettlementPopup(message, OnSettlementConfirmed);
-        }
+            if (boardView != null)
+            {
+                boardView.SetInputEnabled(false);
+            }
 
-        private void OnSettlementConfirmed()
-        {
-            Shell.ClosePopup();
-            CompleteGame?.Invoke(CreateSettlement());
+            var settlement = CreateSettlement();
+            ShowRewardSettlementPanel(
+                settlement,
+                new MiniGameRewardSettlementPanelParams
+                {
+                    RootName = "Game2048SettlementPanel",
+                    Style = style,
+                    PrimaryAction = MiniGameRewardSettlementPrimaryAction.Retry,
+                    Title = UiTextCatalog.Get(style == MiniGameRewardSettlementPanelStyle.Success ? "2048.settlement.win_title" : "2048.settlement.failure_title"),
+                    PrimaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("2048.label.score"), settlement.Score.ToString()),
+                    SecondaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("2048.settlement.highest_tile"), GetHighestTileValue().ToString()),
+                    RewardLabel = UiTextCatalog.Get("settlement.reward_label"),
+                    CoinCount = settlement.CoinCount,
+                    ChestCount = settlement.ChestCount
+                },
+                ResetGame,
+                delegate { CompleteGame?.Invoke(settlement); },
+                true);
         }
 
         private MiniGameSettlement CreateSettlement()
@@ -357,7 +371,13 @@ namespace HuanYouYu.MiniGameHall
             Shell.ClosePopup();
             MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 1f);
             pendingSettlementSummary = BuildSettlementSummary("2048.settlement.exit");
-            ShowSettlement(pendingSettlementSummary);
+            var settlement = CreateSettlement();
+            ShowBackHallRewardSettlementPanel(
+                settlement,
+                "Game2048SettlementPanel",
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("2048.label.score"), settlement.Score.ToString()),
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("2048.settlement.highest_tile"), GetHighestTileValue().ToString()),
+                delegate { CompleteGame?.Invoke(settlement); });
         }
 
         private string BuildSettlementSummary(string textKey)

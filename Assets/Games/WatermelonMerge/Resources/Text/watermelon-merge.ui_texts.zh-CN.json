@@ -25,12 +25,20 @@
       "value": "本局已退出：得分 {0}，获得 {1} 金币和 {2} 个宝箱。"
     },
     {
-      "key": "game.watermelon_merge.help",
-      "value": "点击棋盘选择落点，水果会向下掉落并互相挤压。两个相同水果碰撞后会合成更大的水果，尽量控制落点，让空间保持开阔。水果长时间堆到警戒线以上时本局结束。"
+      "key": "watermelon_merge.settlement.failure_title",
+      "value": "水果堆满"
     },
     {
-      "key": "game.watermelon_merge.credits",
-      "value": "B站幻之小草\n参与方式\n在B站“幻之小草”视频下方留言，提出建议或反馈问题；被采纳后可加入参与制作名单。"
+      "key": "watermelon_merge.settlement.score",
+      "value": "得分"
+    },
+    {
+      "key": "watermelon_merge.settlement.fruits",
+      "value": "水果"
+    },
+    {
+      "key": "game.watermelon_merge.help",
+      "value": "点击棋盘选择落点，水果会向下掉落并互相挤压。两个相同水果碰撞后会合成更大的水果，尽量控制落点，让空间保持开阔。水果长时间堆到警戒线以上时本局结束。"
     }
   ]
 }

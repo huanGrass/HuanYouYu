@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -56,8 +56,6 @@ namespace HuanYouYu.MiniGameHall
 
         protected override void BuildOrBindSections()
         {
-            Shell.SetPauseButtonVisible(true);
-
             var topBarRefs = MiniGameShellTopBarBuilder.CreateTopBar(
                 Shell.TopHost,
                 MiniGameShellTopBarBuilder.CreateReversiConfig("ReversiTop"));
@@ -136,7 +134,7 @@ namespace HuanYouYu.MiniGameHall
 
         protected override (string helpKey, string creditsKey)? GetPauseHelpKeys()
         {
-            return ("game.reversi.help", "game.reversi.credits");
+            return ("game.reversi.help", null);
         }
 
         private void ConfigureRestartButton()
@@ -182,7 +180,7 @@ namespace HuanYouYu.MiniGameHall
                 restartButtonLabel.alignment = TextAlignmentOptions.Center;
             }
 
-            restartButtonLabel.text = Text("reversi.action.restart", "重新开始");
+            restartButtonLabel.text = Text("common.action.restart", "重新开始");
         }
         private void BuildContentArea()
         {
@@ -418,7 +416,53 @@ namespace HuanYouYu.MiniGameHall
             SetStatusText(settlement.Summary);
             MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 0.92f);
 
-            Shell.ShowSettlementPopup(settlement.Summary, delegate { CompleteGame?.Invoke(settlement); });
+            ShowRewardSettlementPanel(
+                settlement,
+                new MiniGameRewardSettlementPanelParams
+                {
+                    RootName = "ReversiSettlementPanel",
+                    Style = ResolveSettlementStyle(),
+                    PrimaryAction = MiniGameRewardSettlementPrimaryAction.Retry,
+                    Title = UiTextCatalog.Get(ResolveSettlementTitleKey()),
+                    PrimaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("reversi.settlement.black"), CountPieces(DiscState.Black).ToString()),
+                    SecondaryInfo = new MiniGameSettlementInfoRow(UiTextCatalog.Get("reversi.settlement.white"), CountPieces(DiscState.White).ToString()),
+                    RewardLabel = UiTextCatalog.Get("settlement.reward_label"),
+                    CoinCount = settlement.CoinCount,
+                    ChestCount = settlement.ChestCount
+                },
+                ResetGame,
+                delegate { CompleteGame?.Invoke(settlement); },
+                true);
+        }
+
+        private MiniGameRewardSettlementPanelStyle ResolveSettlementStyle()
+        {
+            var blackCount = CountPieces(DiscState.Black);
+            var whiteCount = CountPieces(DiscState.White);
+            if (blackCount > whiteCount)
+            {
+                return MiniGameRewardSettlementPanelStyle.Success;
+            }
+
+            if (blackCount == whiteCount)
+            {
+                return MiniGameRewardSettlementPanelStyle.Neutral;
+            }
+
+            return MiniGameRewardSettlementPanelStyle.Failure;
+        }
+
+        private string ResolveSettlementTitleKey()
+        {
+            switch (ResolveSettlementStyle())
+            {
+                case MiniGameRewardSettlementPanelStyle.Success:
+                    return "reversi.settlement.win_title";
+                case MiniGameRewardSettlementPanelStyle.Neutral:
+                    return "reversi.settlement.draw_title";
+                default:
+                    return "reversi.settlement.failure_title";
+            }
         }
 
         private MiniGameSettlement BuildSettlement(bool isExit)
@@ -799,7 +843,12 @@ namespace HuanYouYu.MiniGameHall
             MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 0.92f);
 
             var settlement = BuildSettlement(true);
-            Shell.ShowSettlementPopup(settlement.Summary, delegate { CompleteGame?.Invoke(settlement); });
+            ShowBackHallRewardSettlementPanel(
+                settlement,
+                "ReversiSettlementPanel",
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("reversi.settlement.black"), CountPieces(DiscState.Black).ToString()),
+                new MiniGameSettlementInfoRow(UiTextCatalog.Get("reversi.settlement.white"), CountPieces(DiscState.White).ToString()),
+                delegate { CompleteGame?.Invoke(settlement); });
         }
 
         private void OnRestartClicked()
@@ -875,7 +924,7 @@ namespace HuanYouYu.MiniGameHall
             text.alignment = TextAlignmentOptions.Center;
             text.text = string.Empty;
             text.enableAutoSizing = false;
-            text.font = Resources.Load<TMP_FontAsset>("Fonts & Materials/NotoSansCJKsc-Regular SDF") ?? TMP_Settings.defaultFontAsset;
+            text.font = MiniGameFontProvider.DefaultFont;
             return text;
         }
 

@@ -1,0 +1,80 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.towerofhanoi.name",
+      "value": "汉诺塔"
+    },
+    {
+      "key": "game.towerofhanoi.description",
+      "value": "移动圆盘到目标柱，每次只能移动最上方圆盘，大盘不能压在小盘上。"
+    },
+    {
+      "key": "towerofhanoi.hud.summary",
+      "value": "第 {0} 关 · {1} 盘 · 步数 {2}/{3}"
+    },
+    {
+      "key": "towerofhanoi.column.label",
+      "value": "柱 {0}"
+    },
+    {
+      "key": "towerofhanoi.status.ready",
+      "value": "点击或拖动最上方圆盘，把整塔移到右侧目标柱。"
+    },
+    {
+      "key": "towerofhanoi.status.selected",
+      "value": "已选中圆盘，请选择目标柱。"
+    },
+    {
+      "key": "towerofhanoi.status.moved",
+      "value": "移动成功。"
+    },
+    {
+      "key": "towerofhanoi.status.completed",
+      "value": "完成！"
+    },
+    {
+      "key": "towerofhanoi.status.invalid_move",
+      "value": "大盘不能放在小盘上。"
+    },
+    {
+      "key": "towerofhanoi.status.empty_column",
+      "value": "这根柱子没有可移动的圆盘。"
+    },
+    {
+      "key": "towerofhanoi.status.only_top",
+      "value": "只能移动每根柱子最上方的圆盘。"
+    },
+    {
+      "key": "towerofhanoi.settlement.win_title",
+      "value": "通关成功"
+    },
+    {
+      "key": "towerofhanoi.settlement.moves",
+      "value": "本关步数"
+    },
+    {
+      "key": "towerofhanoi.settlement.minimum_moves",
+      "value": "最少步数"
+    },
+    {
+      "key": "towerofhanoi.settlement.score",
+      "value": "本局分数"
+    },
+    {
+      "key": "towerofhanoi.settlement.exit_label",
+      "value": "结算方式"
+    },
+    {
+      "key": "towerofhanoi.settlement.exit_value",
+      "value": "返回大厅"
+    },
+    {
+      "key": "towerofhanoi.settlement.summary",
+      "value": "第 {0} 关移动 {1} 步，获得 {2} 分。"
+    },
+    {
+      "key": "game.towerofhanoi.help",
+      "value": "目标：把所有圆盘从左侧柱移动到右侧目标柱。\n规则：每次只能移动一枚圆盘，只能移动每根柱子最上方的圆盘，大盘不能放在小盘上。\n操作：点击圆盘或柱子选中，再点击目标柱移动；也可以直接拖动最上方圆盘到目标柱。"
+    }
+  ]
+}
