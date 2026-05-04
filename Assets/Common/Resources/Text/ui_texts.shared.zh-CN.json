@@ -7,6 +7,7 @@
     { "key": "hall.action.developing", "value": "开发中" },
     { "key": "hall.menu.about_game", "value": "关于游戏" },
     { "key": "hall.menu.settings", "value": "设置" },
+    { "key": "hall.menu.game_club", "value": "游戏圈" },
     { "key": "hall.menu.share", "value": "分享" },
     { "key": "hall.about.title", "value": "关于游戏" },
     { "key": "hall.about.message", "value": "轻量玩法合集，随时都能玩一会儿~\n不强制广告，玩起来更轻松。\n玩法持续更新中。\n游玩可获得金币和宝箱。\n金币和宝箱也能在部分玩法中派上用场。" },

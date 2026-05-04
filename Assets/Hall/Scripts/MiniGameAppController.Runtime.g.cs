@@ -65,6 +65,14 @@ namespace HuanYouYu.MiniGameHall
                     return new MiniGameWaterPouringGameView(this, rootCanvas.transform, CompleteCurrentGame, ExitCurrentGameToHall);
                 case MiniGameAkariGameView.GameIdConstant:
                     return new MiniGameAkariGameView(this, rootCanvas.transform, CompleteCurrentGame, ExitCurrentGameToHall);
+                case StackMatchGameView.GameIdConstant:
+                    return new StackMatchGameView(this, rootCanvas.transform, CompleteCurrentGame, ExitCurrentGameToHall);
+                case MiniGameBlockPuzzleGameView.GameIdConstant:
+                    return new MiniGameBlockPuzzleGameView(this, rootCanvas.transform, CompleteCurrentGame, ExitCurrentGameToHall);
+                case BullsCowsGameView.GameIdConstant:
+                    return new BullsCowsGameView(this, rootCanvas.transform, CompleteCurrentGame, ExitCurrentGameToHall);
+                case ArrowEscapeGameView.GameIdConstant:
+                    return new ArrowEscapeGameView(this, rootCanvas.transform, CompleteCurrentGame, ExitCurrentGameToHall);
 
                 default:
                     Debug.LogWarning("未注册小游戏运行时: " + gameId);

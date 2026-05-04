@@ -1,0 +1,88 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.arrow-escape.name",
+      "value": "箭头迷阵"
+    },
+    {
+      "key": "game.arrow-escape.description",
+      "value": "点击没有被阻挡的箭头方块，让它按方向飞出棋盘；按正确顺序清空全盘。"
+    },
+    {
+      "key": "game.arrow-escape.help",
+      "value": "每个箭头只能沿箭头方向飞出棋盘。若它前方还有未清除的箭头，就会被挡住。观察边缘和空洞，逐步打开通路；提示会标出当前一枚可飞出的箭头，撤回可以找回上一步。"
+    },
+    {
+      "key": "arrow-escape.hud",
+      "value": "第 {0} 关  剩余 {1}  分数 {2}"
+    },
+    {
+      "key": "arrow-escape.action.undo",
+      "value": "撤回"
+    },
+    {
+      "key": "arrow-escape.status.ready",
+      "value": "从边缘或空洞旁的可通行箭头开始"
+    },
+    {
+      "key": "arrow-escape.status.blocked",
+      "value": "前方被其他箭头挡住了"
+    },
+    {
+      "key": "arrow-escape.status.cleared",
+      "value": "箭头飞出，剩余 {0} 枚"
+    },
+    {
+      "key": "arrow-escape.status.undo",
+      "value": "已撤回上一步"
+    },
+    {
+      "key": "arrow-escape.status.hint",
+      "value": "蓝色箭头当前可以飞出"
+    },
+    {
+      "key": "arrow-escape.status.no_hint",
+      "value": "当前没有可用提示"
+    },
+    {
+      "key": "arrow-escape.status.complete",
+      "value": "迷阵已经清空"
+    },
+    {
+      "key": "arrow-escape.level.easy",
+      "value": "边缘入门"
+    },
+    {
+      "key": "arrow-escape.level.cross",
+      "value": "错位空洞"
+    },
+    {
+      "key": "arrow-escape.level.ring",
+      "value": "环形通路"
+    },
+    {
+      "key": "arrow-escape.level.hard",
+      "value": "密集迷阵"
+    },
+    {
+      "key": "arrow-escape.settlement.win_title",
+      "value": "迷阵清空"
+    },
+    {
+      "key": "arrow-escape.settlement.score",
+      "value": "分数"
+    },
+    {
+      "key": "arrow-escape.settlement.moves",
+      "value": "步数"
+    },
+    {
+      "key": "arrow-escape.settlement.remaining",
+      "value": "剩余"
+    },
+    {
+      "key": "arrow-escape.settlement.summary",
+      "value": "箭头迷阵第 {0} 关结束：分数 {1}，步数 {2}。"
+    }
+  ]
+}

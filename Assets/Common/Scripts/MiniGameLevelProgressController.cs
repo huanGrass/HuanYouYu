@@ -82,6 +82,11 @@ namespace HuanYouYu.MiniGameHall
             return true;
         }
 
+        public bool SaveNextAsCurrent()
+        {
+            return GoNext();
+        }
+
         private void Save()
         {
             if (progressStore == null)

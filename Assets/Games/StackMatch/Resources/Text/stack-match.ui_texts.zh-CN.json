@@ -1,0 +1,64 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.stack-match.name",
+      "value": "叠牌消消"
+    },
+    {
+      "key": "game.stack-match.description",
+      "value": "点击未被遮挡的牌加入收集槽，三张相同图案自动消除，清空牌堆即可通关。"
+    },
+    {
+      "key": "stack_match.hud.status",
+      "value": "第 {0} 关  {1}"
+    },
+    {
+      "key": "stack_match.difficulty.easy",
+      "value": "极简"
+    },
+    {
+      "key": "stack_match.difficulty.hard",
+      "value": "高难"
+    },
+    {
+      "key": "stack_match.action.move_out",
+      "value": "移出"
+    },
+    {
+      "key": "stack_match.action.shuffle",
+      "value": "洗牌"
+    },
+    {
+      "key": "stack_match.action.undo",
+      "value": "撤回"
+    },
+    {
+      "key": "stack_match.settlement.win_title",
+      "value": "清空牌堆"
+    },
+    {
+      "key": "stack_match.settlement.fail_title",
+      "value": "收集槽已满"
+    },
+    {
+      "key": "stack_match.settlement.level",
+      "value": "关卡"
+    },
+    {
+      "key": "stack_match.settlement.cleared",
+      "value": "消除组数"
+    },
+    {
+      "key": "stack_match.settlement.win_summary",
+      "value": "第 {0} 关通关：消除 {1} 组，获得 {2} 金币和 {3} 个宝箱。"
+    },
+    {
+      "key": "stack_match.settlement.fail_summary",
+      "value": "第 {0} 关失败：已消除 {1} 组，获得 {2} 金币。"
+    },
+    {
+      "key": "game.stack-match.help",
+      "value": "点击没有被上层牌遮挡的牌，将它放入下方收集槽；槽内出现三张相同图案会自动消除。移出可将收集槽内四张牌放到收集槽上方，点击上方牌可放回收集槽。收集槽最多放七张牌，清空全部牌即可通关，槽满且无法消除则失败。"
+    }
+  ]
+}

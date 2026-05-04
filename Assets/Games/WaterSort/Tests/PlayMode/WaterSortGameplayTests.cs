@@ -997,6 +997,53 @@ namespace Tests
         }
 
         [UnityTest]
+        public IEnumerator CompletingPuzzleAndReturningHallSavesNextLevelForReentry()
+        {
+            ResetProgress();
+
+            var controller = default(MiniGameAppController);
+            yield return LoadController(result => controller = result);
+
+            controller.EnterGame(WaterSortGameView.GameIdConstant);
+            yield return null;
+
+            var runtime = GetActiveGame(controller);
+            SetBottleState(
+                runtime,
+                new[]
+                {
+                    new[] { 0, 0, 0 },
+                    new[] { 0 },
+                    new[] { 1, 1, 1, 1 },
+                    new[] { 2, 2, 2, 2 },
+                    new int[0]
+                });
+
+            ClickButton("WaterSortBottle_1");
+            ClickButton("WaterSortBottle_0");
+            yield return new WaitForSeconds(6f);
+            Canvas.ForceUpdateCanvases();
+
+            var gameRoot = GameObject.Find("WaterSortView");
+            var backHallButton = gameRoot.transform.Find("PopupHost/WaterSortSettlementPanel/Dialog/BackHallButton")?.GetComponent<Button>();
+            Assert.IsNotNull(backHallButton, "Settlement back hall button should exist.");
+            backHallButton.onClick.Invoke();
+            yield return null;
+
+            Assert.IsTrue(controller.IsHallVisible, "Back hall should return to hall.");
+            var progress = controller.GetProgress(WaterSortGameView.GameIdConstant);
+            Assert.AreEqual(1, progress.CurrentLevelIndex, "Returning hall after winning should save next level for reentry.");
+            Assert.AreEqual(2, progress.UnlockedLevelCount);
+
+            controller.EnterGame(WaterSortGameView.GameIdConstant);
+            yield return null;
+
+            runtime = GetActiveGame(controller);
+            Assert.AreEqual(1, GetIntField(runtime, "currentLevelIndex"), "Reentry should load level 2.");
+            Assert.AreEqual(GetExpectedBottleCount(1), GetBottles(runtime).Count, "Reentry should create level 2 layout.");
+        }
+
+        [UnityTest]
         public IEnumerator PauseExitSettlesCompletedBottlesWithoutChest()
         {
             ResetProgress();

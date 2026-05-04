@@ -1,0 +1,52 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.bulls-cows.name",
+      "value": "猜数字"
+    },
+    {
+      "key": "game.bulls-cows.description",
+      "value": "输入四位不重复数字，根据位置正确和数字正确的提示猜出答案，尝试次数越少奖励越高。"
+    },
+    {
+      "key": "bulls-cows.hud.attempts",
+      "value": "次数 {0}  奖励目标 {1} 次"
+    },
+    {
+      "key": "bulls-cows.history.row",
+      "value": "第 {0} 次  {1}  位置正确 {2} 个，数字正确但位置不对 {3} 个"
+    },
+    {
+      "key": "bulls-cows.action.backspace",
+      "value": "退格"
+    },
+    {
+      "key": "bulls-cows.action.restart",
+      "value": "重开"
+    },
+    {
+      "key": "bulls-cows.settlement.win_title",
+      "value": "成功猜中"
+    },
+    {
+      "key": "bulls-cows.settlement.end_title",
+      "value": "本局结束"
+    },
+    {
+      "key": "bulls-cows.settlement.answer",
+      "value": "答案"
+    },
+    {
+      "key": "bulls-cows.settlement.attempts",
+      "value": "尝试"
+    },
+    {
+      "key": "bulls-cows.settlement.summary",
+      "value": "猜数字结束：答案 {0}，尝试 {1} 次，获得 {2} 分。"
+    },
+    {
+      "key": "game.bulls-cows.help",
+      "value": "目标是猜出 4 位不重复数字。每次提交后，会提示数字和位置都正确的数量，以及数字正确但位置不对的数量。利用提示排除数字和位置，8 次内猜中奖励更高。"
+    }
+  ]
+}

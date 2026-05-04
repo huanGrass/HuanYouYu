@@ -1,0 +1,7 @@
+﻿{
+  "gameId": "bulls-cows",
+  "nameKey": "game.bulls-cows.name",
+  "descriptionKey": "game.bulls-cows.description",
+  "isPlayable": true,
+  "statusLabelKey": "status.playable"
+}

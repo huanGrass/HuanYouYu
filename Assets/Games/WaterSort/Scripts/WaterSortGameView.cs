@@ -360,6 +360,13 @@ namespace HuanYouYu.MiniGameHall
             ResetGame();
         }
 
+        private void SaveNextLevelForReturn()
+        {
+            EnsureLevelProgress();
+            levelProgress.SaveNextAsCurrent();
+            SyncLevelProgressFields();
+        }
+
         private void EnsureLevelProgress()
         {
             if (levelProgress == null)

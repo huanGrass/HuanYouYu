@@ -14,7 +14,10 @@ namespace HuanYouYu.MiniGameHall
             { "control-point", "control-point" },
             { "game2048", "game2048" },
             { "tetris", "tetris" },
+            { "arrow-escape", "arrow-escape" },
             { "breakout", "breakout" },
+            { "blockpuzzle", "blockpuzzle" },
+            { "bulls-cows", "bulls-cows" },
             { "goldminer", "goldminer" },
             { "gomoku", "gomoku" },
             { "minesweeper", "minesweeper" },
@@ -35,7 +38,8 @@ namespace HuanYouYu.MiniGameHall
             { "rivercrossing", "rivercrossing" },
             { "slidingpuzzle", "slidingpuzzle" },
             { "towerofhanoi", "towerofhanoi" },
-            { "waterpouring", "waterpouring" }
+            { "waterpouring", "waterpouring" },
+            { "stack-match", "stack-match" }
         };
 
         private static readonly Dictionary<string, Texture2D> TextureCache = new Dictionary<string, Texture2D>();

@@ -22,21 +22,31 @@ namespace HuanYouYu.MiniGameHall
         private const float LevelOnePointSize = 96f;
         private const float LevelTwoPointSize = 114f;
         private const float LevelThreePointSize = 132f;
-        private const float LevelOneProduceInterval = 1f;
-        private const float LevelTwoProduceInterval = 0.8f;
-        private const float LevelThreeProduceInterval = 0.6f;
-        private const float TransferInterval = 0.55f;
+        private const float LevelOneIdleProduceInterval = 1.4f;
+        private const float LevelTwoIdleProduceInterval = 1.1f;
+        private const float LevelThreeIdleProduceInterval = 0.85f;
+        private const float LevelOneOneLineTransferInterval = 1f;
+        private const float LevelTwoOneLineTransferInterval = 0.75f;
+        private const float LevelTwoTwoLineTransferInterval = 1.05f;
+        private const float LevelThreeOneLineTransferInterval = 0.55f;
+        private const float LevelThreeTwoLineTransferInterval = 0.9f;
+        private const float LevelThreeThreeLineTransferInterval = 1.25f;
         private const float EnemyThinkInterval = 1.2f;
         private const float LineThickness = 18f;
         private const float MaxLineEndpointInset = 58f;
         private const float ArrowWidth = 34f;
         private const float ArrowHeight = 44f;
         private const float SoldierSize = 30f;
-        private const float SoldierTravelSpeed = 318f;
+        private const float CapacityDotSize = 10f;
+        private const float CapacityDotInnerSize = 5.5f;
+        private const float CapacityDotSpacing = 16f;
+        private const float SoldierTravelSpeed = 260f;
         private const float SoldierDestinationEpsilon = 0.5f;
         private const float CutLinePadding = 20f;
         private const float CutTrailThickness = 28f;
         private const float CutTrailMinPointDistance = 10f;
+        private const int MusterUnitGain = 8;
+        private const float MusterCooldownSeconds = 20f;
 
         private static readonly Color NeutralColor = new Color32(238, 229, 198, 255);
         private static readonly Color PlayerColor = new Color32(70, 145, 106, 255);
@@ -70,6 +80,8 @@ namespace HuanYouYu.MiniGameHall
         private TextMeshProUGUI scoreLabel;
         private Button restartButton;
         private Button levelSelectButton;
+        private Button musterButton;
+        private TextMeshProUGUI musterButtonLabel;
         private RectTransform contentRect;
         private RectTransform lineLayer;
         private RectTransform pointLayer;
@@ -80,6 +92,8 @@ namespace HuanYouYu.MiniGameHall
         private int currentLevelIndex;
         private int dragSourceIndex = -1;
         private bool isCuttingGesture;
+        private bool isMusterSelecting;
+        private float musterCooldownRemaining;
         private Vector2 lastCutLocalPoint;
         private int defeatedEnemyUnits;
         private bool isSettled;
@@ -116,6 +130,7 @@ namespace HuanYouYu.MiniGameHall
             TickConnections(clampedDelta);
             TickDetachedMovingUnits(clampedDelta);
             TickEnemyAi(clampedDelta);
+            TickSkills(clampedDelta);
             RefreshHud();
             RefreshPointViews();
             CheckRoundEnd();
@@ -157,6 +172,8 @@ namespace HuanYouYu.MiniGameHall
             isCuttingGesture = false;
             isSettled = false;
             roundResult = ControlPointRoundResult.None;
+            isMusterSelecting = false;
+            musterCooldownRemaining = 0f;
 
             RefreshHud();
             RefreshPointViews();
@@ -189,6 +206,11 @@ namespace HuanYouYu.MiniGameHall
             if (levelSelectButton != null)
             {
                 levelSelectButton.onClick.RemoveListener(OnLevelSelectClicked);
+            }
+
+            if (musterButton != null)
+            {
+                musterButton.onClick.RemoveListener(OnMusterClicked);
             }
         }
 
@@ -236,6 +258,11 @@ namespace HuanYouYu.MiniGameHall
             levelSelectButton.onClick.RemoveAllListeners();
             levelSelectButton.onClick.AddListener(OnLevelSelectClicked);
 
+            var musterRefs = MiniGameShellBottomBarBuilder.CreateLevelSelectButton(bottomRefs.ActionBar, "ControlPointMusterButton");
+            musterButton = musterRefs.Button;
+            musterButton.onClick.RemoveAllListeners();
+            musterButton.onClick.AddListener(OnMusterClicked);
+            musterButtonLabel = musterButton.GetComponentInChildren<TextMeshProUGUI>(true);
         }
 
         private ControlPointViewRefs CreatePointView(int index, Transform parent, Vector2 position)
@@ -263,6 +290,8 @@ namespace HuanYouYu.MiniGameHall
             levelRect.anchoredPosition = new Vector2(0f, -16f);
             levelRect.sizeDelta = new Vector2(74f, 24f);
 
+            var capacityDots = CreateCapacityDots(rect);
+
             var trigger = root.AddComponent<EventTrigger>();
             AddPointTrigger(trigger, EventTriggerType.PointerDown, index);
             AddPointTrigger(trigger, EventTriggerType.BeginDrag, index);
@@ -270,7 +299,41 @@ namespace HuanYouYu.MiniGameHall
             AddPointTrigger(trigger, EventTriggerType.EndDrag, index);
             AddPointTrigger(trigger, EventTriggerType.PointerUp, index);
 
-            return new ControlPointViewRefs(rect, graphic, label, levelLabel);
+            return new ControlPointViewRefs(rect, graphic, label, levelLabel, capacityDots);
+        }
+
+        private CapacityDotView[] CreateCapacityDots(Transform parent)
+        {
+            var dots = new CapacityDotView[3];
+            for (var i = 0; i < dots.Length; i++)
+            {
+                var dotRoot = CreateRectObject("ConnectionCapacityDot_" + i, parent);
+                var dotRect = dotRoot.GetComponent<RectTransform>();
+                dotRect.anchorMin = new Vector2(0.5f, 0.5f);
+                dotRect.anchorMax = new Vector2(0.5f, 0.5f);
+                dotRect.pivot = new Vector2(0.5f, 0.5f);
+                dotRect.sizeDelta = new Vector2(CapacityDotSize, CapacityDotSize);
+
+                var outer = dotRoot.AddComponent<RoundedRectGraphic>();
+                outer.CornerRadius = CapacityDotSize * 0.5f;
+                outer.raycastTarget = false;
+
+                var innerObject = CreateRectObject("Inner", dotRect);
+                var innerRect = innerObject.GetComponent<RectTransform>();
+                innerRect.anchorMin = new Vector2(0.5f, 0.5f);
+                innerRect.anchorMax = new Vector2(0.5f, 0.5f);
+                innerRect.pivot = new Vector2(0.5f, 0.5f);
+                innerRect.anchoredPosition = Vector2.zero;
+                innerRect.sizeDelta = new Vector2(CapacityDotInnerSize, CapacityDotInnerSize);
+
+                var inner = innerObject.AddComponent<RoundedRectGraphic>();
+                inner.CornerRadius = CapacityDotInnerSize * 0.5f;
+                inner.raycastTarget = false;
+
+                dots[i] = new CapacityDotView(dotRect, outer, inner);
+            }
+
+            return dots;
         }
 
         private void AddPointTrigger(EventTrigger trigger, EventTriggerType type, int pointIndex)
@@ -297,6 +360,16 @@ namespace HuanYouYu.MiniGameHall
         {
             if (eventData == null)
             {
+                return;
+            }
+
+            if (isMusterSelecting)
+            {
+                if (type == EventTriggerType.PointerDown || type == EventTriggerType.BeginDrag || type == EventTriggerType.PointerUp)
+                {
+                    TryApplyMuster(pointIndex);
+                }
+
                 return;
             }
 
@@ -352,10 +425,16 @@ namespace HuanYouYu.MiniGameHall
                     continue;
                 }
 
+                if (CountOutgoingConnections(i) > 0)
+                {
+                    point.ProduceTimer = 0f;
+                    continue;
+                }
+
                 point.ProduceTimer += deltaTime;
                 while (true)
                 {
-                    var interval = GetProduceInterval(point.UnitCount);
+                    var interval = GetIdleProduceInterval(point.UnitCount);
                     if (point.ProduceTimer < interval)
                     {
                         break;
@@ -391,10 +470,11 @@ namespace HuanYouYu.MiniGameHall
                     continue;
                 }
 
+                var transferInterval = GetTransferInterval(points[connection.SourceIndex].UnitCount, CountOutgoingConnections(connection.SourceIndex));
                 connection.TransferTimer += deltaTime;
-                while (connection.TransferTimer >= TransferInterval)
+                while (connection.TransferTimer >= transferInterval)
                 {
-                    connection.TransferTimer -= TransferInterval;
+                    connection.TransferTimer -= transferInterval;
                     LaunchOneUnit(connection);
                     if (!connections.Contains(connection))
                     {
@@ -412,13 +492,6 @@ namespace HuanYouYu.MiniGameHall
 
         private void LaunchOneUnit(ControlPointConnection connection)
         {
-            var source = points[connection.SourceIndex];
-            if (source.UnitCount <= 1)
-            {
-                return;
-            }
-
-            source.UnitCount--;
             var soldier = CreateMovingSoldier(
                 connection,
                 GetPointPosition(connection.SourceIndex),
@@ -453,20 +526,19 @@ namespace HuanYouYu.MiniGameHall
 
                 if (progress < 1f)
                 {
+                    ResolveOpposingUnitCollision(connection, soldier);
                     continue;
                 }
 
                 if (IsContestedConnection(connection))
                 {
-                    ResolveFrontlineArrival(connection, soldier);
-                    if (connection.MovingUnits.Contains(soldier))
+                    if (!ResolveOpposingUnitCollision(connection, soldier))
                     {
-                        soldier.WaitingAtFront = true;
+                        DestroyMovingSoldier(soldier);
+                        connection.MovingUnits.RemoveAt(i);
+                        ApplyIncomingUnit(connection.TargetIndex, connection.Side);
                     }
-                    else
-                    {
-                        i = Mathf.Min(i, connection.MovingUnits.Count - 1);
-                    }
+                    i = Mathf.Min(i, connection.MovingUnits.Count - 1);
                 }
                 else
                 {
@@ -502,18 +574,18 @@ namespace HuanYouYu.MiniGameHall
             }
         }
 
-        private void ResolveFrontlineArrival(ControlPointConnection connection, MovingUnitView soldier)
+        private bool ResolveOpposingUnitCollision(ControlPointConnection connection, MovingUnitView soldier)
         {
             var opposing = FindOpposingConnection(connection);
             if (opposing == null)
             {
-                return;
+                return false;
             }
 
             for (var i = opposing.MovingUnits.Count - 1; i >= 0; i--)
             {
                 var opposingSoldier = opposing.MovingUnits[i];
-                if (!opposingSoldier.WaitingAtFront)
+                if (opposingSoldier.WaitingAtFront || !HaveOpposingUnitsMet(connection, soldier, opposingSoldier))
                 {
                     continue;
                 }
@@ -522,8 +594,31 @@ namespace HuanYouYu.MiniGameHall
                 opposing.MovingUnits.RemoveAt(i);
                 DestroyMovingSoldier(soldier);
                 connection.MovingUnits.Remove(soldier);
-                return;
+                return true;
             }
+
+            return false;
+        }
+
+        private bool HaveOpposingUnitsMet(ControlPointConnection connection, MovingUnitView soldier, MovingUnitView opposingSoldier)
+        {
+            if (connection == null || soldier == null || opposingSoldier == null || soldier.Root == null || opposingSoldier.Root == null)
+            {
+                return false;
+            }
+
+            var source = GetPointPosition(connection.SourceIndex);
+            var target = GetPointPosition(connection.TargetIndex);
+            var route = target - source;
+            var lengthSquared = route.sqrMagnitude;
+            if (lengthSquared <= 0.0001f)
+            {
+                return false;
+            }
+
+            var soldierProgress = Mathf.Clamp01(Vector2.Dot(soldier.Root.anchoredPosition - source, route) / lengthSquared);
+            var opposingProgress = Mathf.Clamp01(Vector2.Dot(target - opposingSoldier.Root.anchoredPosition, route) / lengthSquared);
+            return soldierProgress + opposingProgress >= 1f;
         }
 
         private void ReleaseWaitingUnits(ControlPointConnection connection)
@@ -608,6 +703,20 @@ namespace HuanYouYu.MiniGameHall
                 {
                     EstablishConnection(sourceIndex, targetIndex, owner);
                 }
+            }
+        }
+
+        private void TickSkills(float deltaTime)
+        {
+            if (musterCooldownRemaining <= 0f)
+            {
+                return;
+            }
+
+            musterCooldownRemaining = Mathf.Max(0f, musterCooldownRemaining - deltaTime);
+            if (musterCooldownRemaining <= 0f)
+            {
+                RefreshMusterButton();
             }
         }
 
@@ -954,11 +1063,6 @@ namespace HuanYouYu.MiniGameHall
 
         private Vector2 ResolveUnitDestination(ControlPointConnection connection)
         {
-            if (IsContestedConnection(connection))
-            {
-                return (GetPointPosition(connection.SourceIndex) + GetPointPosition(connection.TargetIndex)) * 0.5f;
-            }
-
             return GetPointPosition(connection.TargetIndex);
         }
 
@@ -1474,6 +1578,7 @@ namespace HuanYouYu.MiniGameHall
                     CountEnemyOwned());
             }
 
+            RefreshMusterButton();
         }
 
         private void RefreshPointViews()
@@ -1494,6 +1599,41 @@ namespace HuanYouYu.MiniGameHall
                 view.UnitLabel.fontSize = pointSize >= LevelThreePointSize ? 48f : pointSize >= LevelTwoPointSize ? 44f : 40f;
                 view.UnitLabel.text = point.UnitCount.ToString();
                 view.LevelLabel.text = "Lv" + GetPointLevel(point.UnitCount);
+                RefreshCapacityDots(view, point, i, pointSize);
+            }
+        }
+
+        private void RefreshCapacityDots(ControlPointViewRefs view, ControlPointState point, int pointIndex, float pointSize)
+        {
+            if (view == null || view.CapacityDots == null || point == null)
+            {
+                return;
+            }
+
+            var capacity = GetConnectionCapacity(point.UnitCount);
+            var connectedCount = CountOutgoingConnections(pointIndex);
+            var startX = -((capacity - 1) * CapacityDotSpacing * 0.5f);
+            var dotY = -(pointSize * 0.32f);
+            var ownerColor = GetOwnerColor(point.Owner);
+            for (var i = 0; i < view.CapacityDots.Length; i++)
+            {
+                var dot = view.CapacityDots[i];
+                if (dot == null || dot.Root == null)
+                {
+                    continue;
+                }
+
+                var isVisible = i < capacity;
+                dot.Root.gameObject.SetActive(isVisible);
+                if (!isVisible)
+                {
+                    continue;
+                }
+
+                dot.Root.anchoredPosition = new Vector2(startX + (i * CapacityDotSpacing), dotY);
+                dot.Outer.color = TextColor;
+                dot.Inner.color = i < connectedCount ? TextColor : ownerColor;
+                dot.Inner.CornerRadius = CapacityDotInnerSize * 0.5f;
             }
         }
 
@@ -1545,6 +1685,65 @@ namespace HuanYouYu.MiniGameHall
                 CloseLevelSelectView);
         }
 
+        private void OnMusterClicked()
+        {
+            if (isSettled || musterCooldownRemaining > 0f)
+            {
+                return;
+            }
+
+            isMusterSelecting = !isMusterSelecting;
+            dragSourceIndex = -1;
+            HidePreviewLine();
+            RefreshMusterButton();
+            MiniGameSfxPlayer.Play(MiniGameSfxType.UiTap, 0.9f);
+        }
+
+        private bool TryApplyMuster(int pointIndex)
+        {
+            if (isSettled || musterCooldownRemaining > 0f || !IsValidPointIndex(pointIndex))
+            {
+                return false;
+            }
+
+            var point = points[pointIndex];
+            if (point.Owner != ControlPointOwner.Player)
+            {
+                return false;
+            }
+
+            point.UnitCount += MusterUnitGain;
+            point.ProduceTimer = 0f;
+            isMusterSelecting = false;
+            musterCooldownRemaining = MusterCooldownSeconds;
+            RefreshMusterButton();
+            RefreshPointViews();
+            MiniGameSfxPlayer.Play(MiniGameSfxType.TileSelect, 0.9f);
+            return true;
+        }
+
+        private void RefreshMusterButton()
+        {
+            if (musterButton == null)
+            {
+                return;
+            }
+
+            musterButton.interactable = !isSettled && musterCooldownRemaining <= 0f;
+            if (musterButtonLabel == null)
+            {
+                return;
+            }
+
+            if (musterCooldownRemaining > 0f)
+            {
+                musterButtonLabel.text = UiTextCatalog.Format("control_point.skill.muster.cooldown", Mathf.CeilToInt(musterCooldownRemaining));
+                return;
+            }
+
+            musterButtonLabel.text = UiTextCatalog.Get(isMusterSelecting ? "control_point.skill.muster.selecting" : "control_point.skill.muster");
+        }
+
         private void SelectLevel(int index)
         {
             EnsureLevelProgress();
@@ -1591,8 +1790,18 @@ namespace HuanYouYu.MiniGameHall
                     ChestCount = settlement.ChestCount
                 },
                 delegate { LoadNextLevel(settlement); },
-                delegate { CompleteGame?.Invoke(settlement); },
+                delegate
+                {
+                    SaveNextLevelForReturn();
+                    CompleteGame?.Invoke(settlement);
+                },
                 false);
+        }
+
+        private void SaveNextLevelForReturn()
+        {
+            EnsureLevelProgress();
+            levelProgress.SaveNextAsCurrent();
         }
 
         private void CloseLevelSelectView()
@@ -1755,16 +1964,38 @@ namespace HuanYouYu.MiniGameHall
             return GetPointLevel(unitCount);
         }
 
-        private static float GetProduceInterval(int unitCount)
+        private static float GetIdleProduceInterval(int unitCount)
         {
             switch (GetPointLevel(unitCount))
             {
                 case 3:
-                    return LevelThreeProduceInterval;
+                    return LevelThreeIdleProduceInterval;
                 case 2:
-                    return LevelTwoProduceInterval;
+                    return LevelTwoIdleProduceInterval;
                 default:
-                    return LevelOneProduceInterval;
+                    return LevelOneIdleProduceInterval;
+            }
+        }
+
+        private static float GetTransferInterval(int unitCount, int outgoingConnectionCount)
+        {
+            switch (GetPointLevel(unitCount))
+            {
+                case 3:
+                    if (outgoingConnectionCount >= 3)
+                    {
+                        return LevelThreeThreeLineTransferInterval;
+                    }
+
+                    return outgoingConnectionCount >= 2
+                        ? LevelThreeTwoLineTransferInterval
+                        : LevelThreeOneLineTransferInterval;
+                case 2:
+                    return outgoingConnectionCount >= 2
+                        ? LevelTwoTwoLineTransferInterval
+                        : LevelTwoOneLineTransferInterval;
+                default:
+                    return LevelOneOneLineTransferInterval;
             }
         }
 
@@ -1885,18 +2116,39 @@ namespace HuanYouYu.MiniGameHall
 
         private sealed class ControlPointViewRefs
         {
-            public ControlPointViewRefs(RectTransform root, RoundedRectGraphic background, TextMeshProUGUI unitLabel, TextMeshProUGUI levelLabel)
+            public ControlPointViewRefs(
+                RectTransform root,
+                RoundedRectGraphic background,
+                TextMeshProUGUI unitLabel,
+                TextMeshProUGUI levelLabel,
+                CapacityDotView[] capacityDots)
             {
                 Root = root;
                 Background = background;
                 UnitLabel = unitLabel;
                 LevelLabel = levelLabel;
+                CapacityDots = capacityDots;
             }
 
             public RectTransform Root { get; }
             public RoundedRectGraphic Background { get; }
             public TextMeshProUGUI UnitLabel { get; }
             public TextMeshProUGUI LevelLabel { get; }
+            public CapacityDotView[] CapacityDots { get; }
+        }
+
+        private sealed class CapacityDotView
+        {
+            public CapacityDotView(RectTransform root, RoundedRectGraphic outer, RoundedRectGraphic inner)
+            {
+                Root = root;
+                Outer = outer;
+                Inner = inner;
+            }
+
+            public RectTransform Root { get; }
+            public RoundedRectGraphic Outer { get; }
+            public RoundedRectGraphic Inner { get; }
         }
 
         private sealed class ControlPointConnection

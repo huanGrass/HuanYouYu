@@ -1,0 +1,60 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.blockpuzzle.name",
+      "value": "方块消除"
+    },
+    {
+      "key": "game.blockpuzzle.description",
+      "value": "拖放方块填满行列，完成消除并挑战高分。"
+    },
+    {
+      "key": "blockpuzzle.hud.score",
+      "value": "分数"
+    },
+    {
+      "key": "blockpuzzle.status.ready",
+      "value": "拖动下方方块放入棋盘"
+    },
+    {
+      "key": "blockpuzzle.status.clear",
+      "value": "消除了 {0} 条线"
+    },
+    {
+      "key": "blockpuzzle.status.game_over",
+      "value": "没有可放置方块"
+    },
+    {
+      "key": "blockpuzzle.settlement.game_over_title",
+      "value": "本局结束"
+    },
+    {
+      "key": "blockpuzzle.settlement.score",
+      "value": "本局分数"
+    },
+    {
+      "key": "blockpuzzle.settlement.reason_label",
+      "value": "结束原因"
+    },
+    {
+      "key": "blockpuzzle.settlement.no_moves",
+      "value": "没有可放置方块"
+    },
+    {
+      "key": "blockpuzzle.settlement.exit_label",
+      "value": "结算方式"
+    },
+    {
+      "key": "blockpuzzle.settlement.exit_value",
+      "value": "返回大厅"
+    },
+    {
+      "key": "blockpuzzle.settlement.summary",
+      "value": "本局获得 {0} 分，金币 {1}，宝箱 {2}。"
+    },
+    {
+      "key": "game.blockpuzzle.help",
+      "value": "每轮会出现 3 个方块组。拖动方块放到 10x10 棋盘上，横向或纵向填满一整条线即可消除并得分。3 个方块都放完后会刷新下一轮；当剩余方块都无法放入棋盘时，本局结束。"
+    }
+  ]
+}

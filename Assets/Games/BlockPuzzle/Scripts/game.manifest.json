@@ -1,0 +1,7 @@
+﻿{
+  "gameId": "blockpuzzle",
+  "nameKey": "game.blockpuzzle.name",
+  "descriptionKey": "game.blockpuzzle.description",
+  "isPlayable": true,
+  "statusLabelKey": "status.playable"
+}

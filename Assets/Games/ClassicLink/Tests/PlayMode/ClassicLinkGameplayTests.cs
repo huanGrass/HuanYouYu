@@ -354,8 +354,11 @@ namespace Tests
             var cellSize = boardGridLayout.cellSize.x;
             var spacing = boardGridLayout.spacing;
             var padding = boardGridLayout.padding;
-            var expectedBoardWidth = cellSize * 8 + spacing.x * 7 + padding.left + padding.right;
-            var expectedBoardHeight = cellSize * 10 + spacing.y * 9 + padding.top + padding.bottom;
+            var board = SnapshotBoard(runtime);
+            var layoutColumns = CountOccupiedColumns(board);
+            var layoutRows = CountOccupiedRows(board);
+            var expectedBoardWidth = cellSize * layoutColumns + spacing.x * (layoutColumns - 1) + padding.left + padding.right;
+            var expectedBoardHeight = cellSize * layoutRows + spacing.y * (layoutRows - 1) + padding.top + padding.bottom;
             var expectedCenter = boardArea.InverseTransformPoint(boardGridRect.TransformPoint(boardGridRect.rect.center));
 
             Assert.That(boardShadowRect.rect.width, Is.EqualTo(expectedBoardWidth + 28f).Within(0.1f), "BoardShadow width should follow the actual occupied grid width.");
@@ -364,6 +367,49 @@ namespace Tests
             Assert.That(boardCardRect.rect.height, Is.EqualTo(expectedBoardHeight + 48f).Within(0.1f), "BoardCardFull height should follow the actual occupied grid height.");
             Assert.That(Vector2.Distance(boardCardRect.anchoredPosition, expectedCenter), Is.LessThan(0.1f), "BoardCardFull should stay centered on the actual grid area.");
             Assert.That(expectedBoardWidth, Is.LessThanOrEqualTo(boardGridRect.rect.width + 0.1f), "ClassicLink grid should not overflow its own layout rect on tall screens.");
+        }
+
+        [UnityTest]
+        public IEnumerator NonFullLevelUsesLargerTilesThanFullBoardFit()
+        {
+            PlayerPrefs.DeleteKey(MiniGameSaveStore.PlayerPrefsKey);
+            PlayerPrefs.Save();
+
+            var controller = default(MiniGameAppController);
+            yield return LoadController(result => controller = result);
+
+            controller.EnterGame(TapTreasureGameView.GameIdConstant);
+            yield return null;
+            yield return null;
+
+            var runtime = GetActiveGame(controller);
+            var boardAreaField = typeof(TapTreasureGameView).GetField("boardArea", InstancePrivate);
+            var boardGridLayoutField = typeof(TapTreasureGameView).GetField("boardGridLayout", InstancePrivate);
+            var refreshMethod = typeof(TapTreasureGameView).GetMethod("RefreshBoardLayout", InstancePrivate);
+            Assert.IsNotNull(boardAreaField, "Failed to access boardArea field.");
+            Assert.IsNotNull(boardGridLayoutField, "Failed to access boardGridLayout field.");
+            Assert.IsNotNull(refreshMethod, "Failed to access RefreshBoardLayout.");
+
+            var boardArea = boardAreaField.GetValue(runtime) as RectTransform;
+            var boardGridLayout = boardGridLayoutField.GetValue(runtime) as GridLayoutGroup;
+            Assert.IsNotNull(boardArea, "boardArea should exist.");
+            Assert.IsNotNull(boardGridLayout, "boardGridLayout should exist.");
+
+            boardArea.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 720f);
+            boardArea.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1040f);
+            Canvas.ForceUpdateCanvases();
+            refreshMethod.Invoke(runtime, null);
+            Canvas.ForceUpdateCanvases();
+            yield return null;
+
+            var spacing = boardGridLayout.spacing;
+            var padding = boardGridLayout.padding;
+            var fullBoardFit = Mathf.Floor(Mathf.Min(
+                (boardGridLayout.GetComponent<RectTransform>().rect.width - padding.left - padding.right - spacing.x * 7) / 8,
+                (boardGridLayout.GetComponent<RectTransform>().rect.height - padding.top - padding.bottom - spacing.y * 9) / 10));
+
+            Assert.Greater(boardGridLayout.cellSize.x, fullBoardFit, "Non-full ClassicLink levels should enlarge tiles instead of keeping the full 10x8 fit size.");
+            Assert.GreaterOrEqual(boardGridLayout.cellSize.x, 148f, "Compact ClassicLink levels should use most of the available board space on portrait screens.");
         }
 
         [UnityTest]
@@ -683,6 +729,52 @@ namespace Tests
             }
 
             return count;
+        }
+
+        private static int CountOccupiedRows(int[,] board)
+        {
+            var min = 10;
+            var max = 1;
+            var hasTile = false;
+            for (var row = 1; row <= 10; row++)
+            {
+                for (var column = 1; column <= 8; column++)
+                {
+                    if (board[row, column] == 0)
+                    {
+                        continue;
+                    }
+
+                    hasTile = true;
+                    min = Mathf.Min(min, row);
+                    max = Mathf.Max(max, row);
+                }
+            }
+
+            return hasTile ? max - min + 1 : 10;
+        }
+
+        private static int CountOccupiedColumns(int[,] board)
+        {
+            var min = 8;
+            var max = 1;
+            var hasTile = false;
+            for (var row = 1; row <= 10; row++)
+            {
+                for (var column = 1; column <= 8; column++)
+                {
+                    if (board[row, column] == 0)
+                    {
+                        continue;
+                    }
+
+                    hasTile = true;
+                    min = Mathf.Min(min, column);
+                    max = Mathf.Max(max, column);
+                }
+            }
+
+            return hasTile ? max - min + 1 : 8;
         }
 
         private static Dictionary<string, Vector2> SnapshotTilePositions()

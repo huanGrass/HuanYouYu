@@ -13,12 +13,13 @@ namespace HuanYouYu.MiniGameHall
     public sealed class TapTreasureGameView : MiniGameBase
     {
         public const string GameIdConstant = "classic-link";
-        private const string ContentPrefabResourcePath = "ClassicLinkContent";
         private const int Rows = 10;
         private const int Columns = 8;
         private const int MinimumAvailablePairs = 4;
         private const int TileTypeCount = 14;
         private const string LevelResourcePath = "Levels/classic-link.levels";
+        private const float MinimumTileSize = 40f;
+        private const float MaximumTileSize = 148f;
         private static readonly ClassicLinkLevelDefinition[] LevelDefinitions = LoadLevelDefinitions();
 
         public static int LevelCount
@@ -62,6 +63,10 @@ namespace HuanYouYu.MiniGameHall
         private RectTransform boardShadowRect;
         private RectTransform boardCardRect;
         private GridLayoutGroup boardGridLayout;
+        private int layoutMinRow = 1;
+        private int layoutMaxRow = Rows;
+        private int layoutMinColumn = 1;
+        private int layoutMaxColumn = Columns;
         private TextMeshProUGUI titleText;
         private TextMeshProUGUI scoreText;
         private TileView[] tileViews;
@@ -94,12 +99,12 @@ namespace HuanYouYu.MiniGameHall
         {
         }
 
-        private bool TryBuildFromPrefab()
+        private bool TryBuildRuntimeSections()
         {
             shell = Shell;
             root = shell.Root;
 
-            var contentRoot = LoadRequiredSectionPrefab(ContentPrefabResourcePath, shell.ContentHost, "ClassicLinkContent");
+            var contentRoot = CreateContentSection(shell.ContentHost);
             var bottomContainerRefs = MiniGameShellBottomBarBuilder.CreateBottomContainer(
                 shell.BottomHost,
                 MiniGameShellBottomBarBuilder.CreateDefaultContainerConfig("ClassicLinkBottom"));
@@ -165,17 +170,111 @@ namespace HuanYouYu.MiniGameHall
             return true;
         }
 
-        private static GameObject LoadRequiredSectionPrefab(string resourcePath, Transform parent, string instanceName)
+        private static GameObject CreateContentSection(Transform parent)
         {
-            var prefab = Resources.Load<GameObject>(resourcePath);
-            if (prefab == null)
-            {
-                throw new InvalidOperationException("Section prefab not found at Resources/" + resourcePath);
-            }
+            var root = CreateRectObject("ClassicLinkContent", parent);
+            Stretch(root.GetComponent<RectTransform>(), Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
-            var instance = UnityEngine.Object.Instantiate(prefab, parent, false);
-            instance.name = instanceName;
-            return instance;
+            CreatePanel(
+                root.transform,
+                "BoardShadow",
+                new Vector2(0.04f, 0.04f),
+                new Vector2(0.96f, 0.96f),
+                new Vector2(0f, -5f),
+                new Color(0.31f, 0.42f, 0.26f, 0.08f),
+                28f);
+
+            CreatePanel(
+                root.transform,
+                "BoardCardFull",
+                new Vector2(0.03f, 0.05f),
+                new Vector2(0.97f, 0.97f),
+                Vector2.zero,
+                new Color(1f, 0.97f, 0.90f, 0.68f),
+                30f);
+
+            var boardGrid = CreateRectObject("BoardGrid", root.transform);
+            var boardGridRect = boardGrid.GetComponent<RectTransform>();
+            Stretch(boardGridRect, new Vector2(0.04f, 0.04f), new Vector2(0.96f, 0.96f), Vector2.zero, Vector2.zero);
+            var gridLayout = boardGrid.AddComponent<GridLayoutGroup>();
+            gridLayout.childAlignment = TextAnchor.MiddleCenter;
+            gridLayout.startAxis = GridLayoutGroup.Axis.Horizontal;
+            gridLayout.cellSize = new Vector2(40f, 40f);
+            gridLayout.spacing = new Vector2(4f, 4f);
+            gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+            gridLayout.constraintCount = Columns;
+
+            CreateTileTemplate(boardGrid.transform);
+
+            var lineLayer = CreateRectObject("LineLayer", root.transform);
+            Stretch(lineLayer.GetComponent<RectTransform>(), new Vector2(0.02f, 0.02f), new Vector2(0.98f, 0.98f), Vector2.zero, Vector2.zero);
+
+            return root;
+        }
+
+        private static void CreateTileTemplate(Transform parent)
+        {
+            var tile = new GameObject("TileTemplate", typeof(RectTransform), typeof(CanvasRenderer), typeof(RoundedRectGraphic), typeof(Button));
+            tile.transform.SetParent(parent, false);
+
+            var rect = tile.GetComponent<RectTransform>();
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.zero;
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = Vector2.zero;
+            rect.sizeDelta = Vector2.zero;
+
+            var graphic = tile.GetComponent<RoundedRectGraphic>();
+            graphic.color = NormalTileColor;
+            graphic.CornerRadius = 14f;
+
+            var button = tile.GetComponent<Button>();
+            button.targetGraphic = graphic;
+
+            var icon = new GameObject("Icon", typeof(RectTransform), typeof(RawImage));
+            icon.transform.SetParent(tile.transform, false);
+            Stretch(icon.GetComponent<RectTransform>(), new Vector2(0.15f, 0.15f), new Vector2(0.85f, 0.85f), Vector2.zero, Vector2.zero);
+            var iconImage = icon.GetComponent<RawImage>();
+            iconImage.color = new Color(1f, 1f, 1f, 0.96f);
+            iconImage.raycastTarget = false;
+
+            var label = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));
+            label.transform.SetParent(tile.transform, false);
+            Stretch(label.GetComponent<RectTransform>(), Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            var text = label.GetComponent<TextMeshProUGUI>();
+            text.font = MiniGameFontProvider.DefaultFont;
+            text.color = Color.white;
+            text.alignment = TextAlignmentOptions.Center;
+            text.raycastTarget = false;
+        }
+
+        private static RoundedRectGraphic CreatePanel(Transform parent, string name, Vector2 anchorMin, Vector2 anchorMax, Vector2 anchoredPosition, Color color, float cornerRadius)
+        {
+            var panel = CreateRectObject(name, parent);
+            var graphic = panel.AddComponent<RoundedRectGraphic>();
+            graphic.color = color;
+            graphic.CornerRadius = cornerRadius;
+            graphic.raycastTarget = false;
+            Stretch(panel.GetComponent<RectTransform>(), anchorMin, anchorMax, Vector2.zero, Vector2.zero);
+            panel.GetComponent<RectTransform>().anchoredPosition = anchoredPosition;
+            return graphic;
+        }
+
+        private static GameObject CreateRectObject(string name, Transform parent)
+        {
+            var gameObject = new GameObject(name, typeof(RectTransform));
+            gameObject.transform.SetParent(parent, false);
+            return gameObject;
+        }
+
+        private static void Stretch(RectTransform rect, Vector2 anchorMin, Vector2 anchorMax, Vector2 offsetMin, Vector2 offsetMax)
+        {
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+            rect.offsetMin = offsetMin;
+            rect.offsetMax = offsetMax;
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.localScale = Vector3.one;
         }
 
         private void RefreshStaticTexts()
@@ -205,9 +304,9 @@ namespace HuanYouYu.MiniGameHall
             completeGame = CompleteGame;
             exitToHall = ExitToHall;
 
-            if (!TryBuildFromPrefab())
+            if (!TryBuildRuntimeSections())
             {
-                throw new InvalidOperationException("ClassicLink sections not found or invalid in Resources.");
+                throw new InvalidOperationException("ClassicLink runtime sections not found or invalid.");
             }
         }
 
@@ -246,6 +345,8 @@ namespace HuanYouYu.MiniGameHall
                     board[row, column] = cells[row - 1, column - 1];
                 }
             }
+
+            RefreshInitialLayoutBounds(cells);
         }
 
         private TileView[] BuildTilesFromTemplate(RectTransform template)
@@ -580,8 +681,18 @@ namespace HuanYouYu.MiniGameHall
                     ChestCount = settlement.ChestCount
                 },
                 delegate { LoadNextLevel(settlement); },
-                delegate { completeGame(settlement); },
+                delegate
+                {
+                    SaveNextLevelForReturn();
+                    completeGame(settlement);
+                },
                 false);
+        }
+
+        private void SaveNextLevelForReturn()
+        {
+            EnsureLevelProgress();
+            levelProgress.SaveNextAsCurrent();
         }
 
         private void CloseLevelSelectView()
@@ -843,8 +954,8 @@ namespace HuanYouYu.MiniGameHall
         {
             Canvas.ForceUpdateCanvases();
 
-            var clampedRow = Mathf.Clamp(tile.Row, 1, Rows);
-            var clampedColumn = Mathf.Clamp(tile.Column, 1, Columns);
+            var clampedRow = Mathf.Clamp(tile.Row, layoutMinRow, layoutMaxRow);
+            var clampedColumn = Mathf.Clamp(tile.Column, layoutMinColumn, layoutMaxColumn);
             var anchor = GetTileCenter(clampedRow, clampedColumn);
             var stepX = GetHorizontalStep();
             var stepY = GetVerticalStep();
@@ -892,20 +1003,62 @@ namespace HuanYouYu.MiniGameHall
 
             var spacing = boardGridLayout.spacing;
             var padding = boardGridLayout.padding;
-            var availableWidth = rect.width - padding.left - padding.right - spacing.x * (Columns - 1);
-            var availableHeight = rect.height - padding.top - padding.bottom - spacing.y * (Rows - 1);
+            var layoutColumns = Mathf.Max(1, layoutMaxColumn - layoutMinColumn + 1);
+            var layoutRows = Mathf.Max(1, layoutMaxRow - layoutMinRow + 1);
+            var availableWidth = rect.width - padding.left - padding.right - spacing.x * (layoutColumns - 1);
+            var availableHeight = rect.height - padding.top - padding.bottom - spacing.y * (layoutRows - 1);
             if (availableWidth <= 0f || availableHeight <= 0f)
             {
                 return;
             }
 
-            var cellSize = Mathf.Floor(Mathf.Min(availableWidth / Columns, availableHeight / Rows));
-            cellSize = Mathf.Clamp(cellSize, 40f, 82f);
+            var cellSize = Mathf.Floor(Mathf.Min(availableWidth / layoutColumns, availableHeight / layoutRows));
+            cellSize = Mathf.Clamp(cellSize, MinimumTileSize, MaximumTileSize);
             boardGridLayout.cellSize = new Vector2(cellSize, cellSize);
-            RefreshBoardBackgroundLayout(cellSize);
+            boardGridLayout.enabled = false;
+            ApplyTileLayout(cellSize, layoutRows, layoutColumns, spacing, padding);
+            RefreshBoardBackgroundLayout(cellSize, layoutRows, layoutColumns);
         }
 
-        private void RefreshBoardBackgroundLayout(float cellSize)
+        private void ApplyTileLayout(float cellSize, int layoutRows, int layoutColumns, Vector2 spacing, RectOffset padding)
+        {
+            if (tileViews == null)
+            {
+                return;
+            }
+
+            var boardWidth = cellSize * layoutColumns + spacing.x * (layoutColumns - 1);
+            var boardHeight = cellSize * layoutRows + spacing.y * (layoutRows - 1);
+            var startX = -boardWidth * 0.5f + cellSize * 0.5f;
+            var startY = boardHeight * 0.5f - cellSize * 0.5f;
+            var offsetX = (padding.left - padding.right) * 0.5f;
+            var offsetY = (padding.bottom - padding.top) * 0.5f;
+
+            for (var row = 1; row <= Rows; row++)
+            {
+                for (var column = 1; column <= Columns; column++)
+                {
+                    var tile = tileViews[ToIndex(row, column)];
+                    if (tile == null || tile.Root == null)
+                    {
+                        continue;
+                    }
+
+                    tile.Root.anchorMin = new Vector2(0.5f, 0.5f);
+                    tile.Root.anchorMax = new Vector2(0.5f, 0.5f);
+                    tile.Root.pivot = new Vector2(0.5f, 0.5f);
+                    tile.Root.sizeDelta = new Vector2(cellSize, cellSize);
+
+                    var layoutColumn = column - layoutMinColumn;
+                    var layoutRow = row - layoutMinRow;
+                    tile.Root.anchoredPosition = new Vector2(
+                        startX + layoutColumn * (cellSize + spacing.x) + offsetX,
+                        startY - layoutRow * (cellSize + spacing.y) + offsetY);
+                }
+            }
+        }
+
+        private void RefreshBoardBackgroundLayout(float cellSize, int layoutRows, int layoutColumns)
         {
             if (boardArea == null || boardGridRect == null)
             {
@@ -914,12 +1067,43 @@ namespace HuanYouYu.MiniGameHall
 
             var spacing = boardGridLayout.spacing;
             var padding = boardGridLayout.padding;
-            var boardWidth = cellSize * Columns + spacing.x * (Columns - 1) + padding.left + padding.right;
-            var boardHeight = cellSize * Rows + spacing.y * (Rows - 1) + padding.top + padding.bottom;
+            var boardWidth = cellSize * layoutColumns + spacing.x * (layoutColumns - 1) + padding.left + padding.right;
+            var boardHeight = cellSize * layoutRows + spacing.y * (layoutRows - 1) + padding.top + padding.bottom;
             var boardCenter = boardArea.InverseTransformPoint(boardGridRect.TransformPoint(boardGridRect.rect.center));
 
             ApplyBoardPanelLayout(boardShadowRect, boardCenter, new Vector2(boardWidth + 28f, boardHeight + 28f), new Vector2(0f, -5f));
             ApplyBoardPanelLayout(boardCardRect, boardCenter, new Vector2(boardWidth + 48f, boardHeight + 48f), Vector2.zero);
+        }
+
+        private void RefreshInitialLayoutBounds(int[,] cells)
+        {
+            var minRow = Rows;
+            var maxRow = 1;
+            var minColumn = Columns;
+            var maxColumn = 1;
+            var hasTile = false;
+
+            for (var row = 0; row < Rows; row++)
+            {
+                for (var column = 0; column < Columns; column++)
+                {
+                    if (cells[row, column] == 0)
+                    {
+                        continue;
+                    }
+
+                    hasTile = true;
+                    minRow = Mathf.Min(minRow, row + 1);
+                    maxRow = Mathf.Max(maxRow, row + 1);
+                    minColumn = Mathf.Min(minColumn, column + 1);
+                    maxColumn = Mathf.Max(maxColumn, column + 1);
+                }
+            }
+
+            layoutMinRow = hasTile ? minRow : 1;
+            layoutMaxRow = hasTile ? maxRow : Rows;
+            layoutMinColumn = hasTile ? minColumn : 1;
+            layoutMaxColumn = hasTile ? maxColumn : Columns;
         }
 
         private static void ApplyBoardPanelLayout(RectTransform panel, Vector2 center, Vector2 size, Vector2 offset)

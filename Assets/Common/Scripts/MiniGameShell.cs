@@ -53,8 +53,8 @@ namespace HuanYouYu.MiniGameHall
             pauseButton.onClick.RemoveAllListeners();
             pauseButton.onClick.AddListener(OnPauseClicked);
             MiniGameSfxPlayer.Attach(pauseButton, MiniGameSfxType.UiTap, 0.92f);
-            PopupHost.SetAsLastSibling();
             ApplyLayout(MiniGameShellLayout.Default);
+            BringPauseButtonToFront();
         }
 
         public GameObject Root { get; }
@@ -98,6 +98,10 @@ namespace HuanYouYu.MiniGameHall
                 new Vector2(0f, useBottomSlot ? layout.BottomInset : MiniGameShellLayout.ContentOwnedBottomInset),
                 new Vector2(0f, -layout.TopInset));
             ApplyPauseButtonLayout();
+            if (activePopup == null)
+            {
+                BringPauseButtonToFront();
+            }
         }
 
         public void ConfigureBottomMode(MiniGameShellBottomMode mode, float bottomInset = MiniGameShellLayout.DefaultBottomInset)
@@ -128,7 +132,7 @@ namespace HuanYouYu.MiniGameHall
         public void ShowPausePopup(Action onResume, Action onConfirmExit)
         {
             ClosePopup();
-            PopupHost.SetAsLastSibling();
+            BringPopupHostToFront();
 
             var pausePopup = MiniGamePausePopupView.Create(PopupHost);
             pausePopup.Bind(
@@ -253,6 +257,8 @@ namespace HuanYouYu.MiniGameHall
                 activePopup.Dispose();
                 activePopup = null;
             }
+
+            BringPauseButtonToFront();
         }
 
         public void Dispose()
@@ -277,7 +283,7 @@ namespace HuanYouYu.MiniGameHall
             Action onClose)
         {
             ClosePopup();
-            PopupHost.SetAsLastSibling();
+            BringPopupHostToFront();
             var popupView = MiniGamePopupView.Create(PopupHost);
             popupView.Bind(title, message, confirmLabel, cancelLabel, showCancel, showCloseButton, dismissOnBackdrop, onConfirm, onCancel, onClose);
             activePopup = popupView;
@@ -336,6 +342,22 @@ namespace HuanYouYu.MiniGameHall
             buttonRect.anchorMax = new Vector2(0f, 1f);
             buttonRect.pivot = new Vector2(0f, 1f);
             buttonRect.anchoredPosition = new Vector2(PauseButtonBaseX, PauseButtonBaseY - topInset - PauseButtonTopPadding);
+        }
+
+        private void BringPauseButtonToFront()
+        {
+            if (pauseButton != null && pauseButton.transform != null)
+            {
+                pauseButton.transform.SetAsLastSibling();
+            }
+        }
+
+        private void BringPopupHostToFront()
+        {
+            if (PopupHost != null)
+            {
+                PopupHost.SetAsLastSibling();
+            }
         }
 
         private static void BindButton(Button button, Action action, MiniGameSfxType sfxType, float volumeScale)

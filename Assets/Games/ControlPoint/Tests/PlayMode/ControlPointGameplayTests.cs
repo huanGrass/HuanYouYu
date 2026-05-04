@@ -33,11 +33,11 @@ namespace Tests
             var levels = GetLevelDefinitions();
             Assert.AreEqual(100, levels.Length, "Level definitions should be loaded from resource json.");
 
-            AssertLevelDefinitionPoint(levels[0], 0, "Neutral", 8, new Vector2(0f, 230f));
-            AssertLevelDefinitionPoint(levels[0], 1, "Player", 12, new Vector2(-238f, -214f));
-            AssertLevelDefinitionPoint(levels[0], 2, "Enemy", 12, new Vector2(238f, -214f));
-            AssertLevelDefinitionPoint(levels[0], 5, "EnemyTwo", 12, new Vector2(0f, -282f));
-            AssertLevelDefinitionPoint(levels[0], 6, "EnemyThree", 12, new Vector2(0f, -36f));
+            AssertLevelDefinitionPoint(levels[0], 0, "Neutral", 5, new Vector2(0f, -20f));
+            AssertLevelDefinitionPoint(levels[0], 1, "Player", 18, new Vector2(-220f, -180f));
+            AssertLevelDefinitionPoint(levels[0], 2, "Enemy", 10, new Vector2(220f, -180f));
+            AssertLevelDefinitionPoint(levels[0], 3, "Neutral", 6, new Vector2(-170f, 80f));
+            AssertLevelDefinitionPoint(levels[0], 4, "Neutral", 6, new Vector2(170f, 80f));
         }
 
         [Test]
@@ -126,21 +126,20 @@ namespace Tests
             Assert.IsNotNull(GameObject.Find("ControlPointContent"), "Content should exist.");
             Assert.IsNotNull(GameObject.Find("RestartButton"), "Restart button should exist.");
             Assert.IsNotNull(GameObject.Find("ControlPointLevelSelectButton"), "Level select button should exist.");
+            Assert.IsNotNull(GameObject.Find("ControlPointMusterButton"), "Muster skill button should exist.");
             Assert.IsNotNull(GameObject.Find("ControlPoint_0"), "Top neutral point should exist.");
             Assert.IsNotNull(GameObject.Find("ControlPoint_1"), "Player point should exist.");
             Assert.IsNotNull(GameObject.Find("ControlPoint_2"), "Enemy point should exist.");
-            Assert.IsNotNull(GameObject.Find("ControlPoint_6"), "Additional enemy point should exist.");
-            Assert.AreEqual(7, GetPointCount(game), "First generated level should keep the baseline point count.");
-            AssertPoint(game, 0, "Neutral", 8);
-            AssertPoint(game, 1, "Player", 12);
-            AssertPoint(game, 2, "Enemy", 12);
-            AssertPoint(game, 3, "Neutral", 8);
-            AssertPoint(game, 4, "Neutral", 8);
-            AssertPoint(game, 5, "EnemyTwo", 12);
-            AssertPoint(game, 6, "EnemyThree", 12);
-            AssertPointPosition(0, new Vector2(0f, 230f));
-            AssertPointPosition(1, new Vector2(-238f, -214f));
-            AssertPointPosition(2, new Vector2(238f, -214f));
+            Assert.IsNull(GameObject.Find("ControlPoint_5"), "First level should avoid extra enemy factions.");
+            Assert.AreEqual(5, GetPointCount(game), "First generated level should stay a focused tutorial layout.");
+            AssertPoint(game, 0, "Neutral", 5);
+            AssertPoint(game, 1, "Player", 18);
+            AssertPoint(game, 2, "Enemy", 10);
+            AssertPoint(game, 3, "Neutral", 6);
+            AssertPoint(game, 4, "Neutral", 6);
+            AssertPointPosition(0, new Vector2(0f, -20f));
+            AssertPointPosition(1, new Vector2(-220f, -180f));
+            AssertPointPosition(2, new Vector2(220f, -180f));
 
             for (var i = 0; i < GetPointCount(game); i++)
             {
@@ -150,6 +149,38 @@ namespace Tests
                 AssertLevelLabel(i, "Lv1");
                 AssertPointSize(i, 96f);
             }
+
+            yield return DestroyGameRoot(game, root);
+        }
+
+        [UnityTest]
+        public IEnumerator MusterSkillAddsUnitsToSelectedPlayerPointAndStartsCooldown()
+        {
+            GameControlPointView game;
+            var root = CreateGameRoot(out game);
+            yield return null;
+
+            DisableEnemyAi(game);
+            var musterButton = GameObject.Find("ControlPointMusterButton").GetComponent<Button>();
+            var label = FindTextMeshProComponent(GameObject.Find("ControlPointMusterButton/Label"));
+            Assert.IsNotNull(label, "Muster skill label should exist.");
+            Assert.AreEqual("急征", GetProperty<string>(label, "text"));
+
+            Click("ControlPointMusterButton");
+            Assert.AreEqual("选据点", GetProperty<string>(label, "text"));
+
+            Assert.IsFalse(InvokePrivateReturn<bool>(game, "TryApplyMuster", 2), "Muster should reject enemy points.");
+            AssertPoint(game, 2, "Enemy", 10);
+            Assert.IsTrue(musterButton.interactable, "Muster should stay available after invalid selection.");
+
+            Assert.IsTrue(InvokePrivateReturn<bool>(game, "TryApplyMuster", 1), "Muster should apply to player points.");
+            AssertPoint(game, 1, "Player", 26);
+            Assert.IsFalse(musterButton.interactable, "Muster should enter cooldown after use.");
+            Assert.AreEqual("20秒", GetProperty<string>(label, "text"));
+
+            TickGame(game, 200);
+            Assert.IsTrue(musterButton.interactable, "Muster should be available after cooldown.");
+            Assert.AreEqual("急征", GetProperty<string>(label, "text"));
 
             yield return DestroyGameRoot(game, root);
         }
@@ -182,13 +213,11 @@ namespace Tests
             DisableEnemyAi(game);
             TickGame(game, 11);
 
-            AssertPoint(game, 0, "Neutral", 8);
-            AssertPoint(game, 1, "Player", 13);
-            AssertPoint(game, 2, "Enemy", 13);
-            AssertPoint(game, 3, "Neutral", 8);
-            AssertPoint(game, 4, "Neutral", 8);
-            AssertPoint(game, 5, "EnemyTwo", 13);
-            AssertPoint(game, 6, "EnemyThree", 13);
+            AssertPoint(game, 0, "Neutral", 5);
+            AssertPoint(game, 1, "Player", 18);
+            AssertPoint(game, 2, "Enemy", 10);
+            AssertPoint(game, 3, "Neutral", 6);
+            AssertPoint(game, 4, "Neutral", 6);
 
             yield return DestroyGameRoot(game, root);
         }
@@ -243,11 +272,17 @@ namespace Tests
             game.Tick(0f);
             AssertLevelLabel(1, "Lv1");
             AssertPointSize(1, 96f);
+            AssertCapacityDotVisible(1, 0, true);
+            AssertCapacityDotVisible(1, 1, false);
+            AssertCapacityDotVisible(1, 2, false);
 
             SetField(GetPoint(game, 1), "UnitCount", 20);
             game.Tick(0f);
             AssertLevelLabel(1, "Lv2");
             AssertPointSize(1, 114f);
+            AssertCapacityDotVisible(1, 0, true);
+            AssertCapacityDotVisible(1, 1, true);
+            AssertCapacityDotVisible(1, 2, false);
 
             SetField(GetPoint(game, 1), "UnitCount", 39);
             game.Tick(0f);
@@ -258,6 +293,9 @@ namespace Tests
             game.Tick(0f);
             AssertLevelLabel(1, "Lv3");
             AssertPointSize(1, 132f);
+            AssertCapacityDotVisible(1, 0, true);
+            AssertCapacityDotVisible(1, 1, true);
+            AssertCapacityDotVisible(1, 2, true);
 
             yield return DestroyGameRoot(game, root);
         }
@@ -272,16 +310,16 @@ namespace Tests
             DisableEnemyAi(game);
             SetField(GetPoint(game, 1), "UnitCount", 20);
             SetField(GetPoint(game, 1), "ProduceTimer", 0f);
-            game.Tick(0.7f);
+            game.Tick(1.0f);
             AssertPoint(game, 1, "Player", 20);
             game.Tick(0.1f);
             AssertPoint(game, 1, "Player", 21);
 
             SetField(GetPoint(game, 1), "UnitCount", 40);
             SetField(GetPoint(game, 1), "ProduceTimer", 0f);
-            game.Tick(0.5f);
+            game.Tick(0.8f);
             AssertPoint(game, 1, "Player", 40);
-            game.Tick(0.1f);
+            game.Tick(0.05f);
             AssertPoint(game, 1, "Player", 41);
 
             yield return DestroyGameRoot(game, root);
@@ -304,6 +342,9 @@ namespace Tests
             AssertConnection(game, 0, 1, 0, "Player");
             AssertConnection(game, 1, 1, 2, "Player");
             Assert.IsNull(GameObject.Find("Connection_1_3"), "Third connection should be rejected.");
+            game.Tick(0f);
+            AssertCapacityDotFilled(1, 0, true);
+            AssertCapacityDotFilled(1, 1, true);
 
             yield return DestroyGameRoot(game, root);
         }
@@ -327,6 +368,10 @@ namespace Tests
             AssertConnection(game, 1, 1, 2, "Player");
             AssertConnection(game, 2, 1, 3, "Player");
             Assert.IsNull(GameObject.Find("Connection_1_4"), "Fourth connection should be rejected.");
+            game.Tick(0f);
+            AssertCapacityDotFilled(1, 0, true);
+            AssertCapacityDotFilled(1, 1, true);
+            AssertCapacityDotFilled(1, 2, true);
 
             yield return DestroyGameRoot(game, root);
         }
@@ -339,6 +384,10 @@ namespace Tests
             yield return null;
 
             DisableEnemyAi(game);
+            SetPointPosition(0, new Vector2(0f, 230f));
+            SetPointPosition(1, new Vector2(-238f, -214f));
+            SetPointPosition(2, new Vector2(238f, -214f));
+            SetPointPosition(3, new Vector2(-244f, 32f));
             SetField(GetPoint(game, 1), "UnitCount", 20);
             EstablishConnection(game, 1, 0, "Player");
             EstablishConnection(game, 1, 2, "Player");
@@ -369,7 +418,7 @@ namespace Tests
             SetField(GetPoint(game, 1), "UnitCount", 3);
             SetField(GetPoint(game, 1), "ProduceTimer", -99f);
             EstablishConnection(game, 1, 0, "Player");
-            game.Tick(0.6f);
+            game.Tick(1.1f);
 
             Assert.AreEqual(1, GetListCount(GetPrivateObject<object>(game, "connections")), "Player connection should exist before cutting.");
             Assert.IsNotNull(GameObject.Find("Soldier_1_0"), "Moving unit should exist before cutting.");
@@ -389,7 +438,7 @@ namespace Tests
             Assert.IsNull(GameObject.Find("CutGestureLine"), "Swipe line should disappear after releasing.");
 
             game.Tick(3.0f);
-            AssertPoint(game, 0, "Neutral", 7);
+            AssertPoint(game, 0, "Neutral", 4);
             yield return null;
             Assert.IsNull(GameObject.Find("Soldier_1_0"), "Detached moving unit should be removed after reaching the original target.");
 
@@ -445,34 +494,26 @@ namespace Tests
         }
 
         [UnityTest]
-        public IEnumerator ConnectionTransfersUnitsAndKeepsOneAtSource()
+        public IEnumerator ConnectionSendsGeneratedUnitsWithoutReducingSource()
         {
             GameControlPointView game;
             var root = CreateGameRoot(out game);
             yield return null;
 
             DisableEnemyAi(game);
-            SetField(GetPoint(game, 1), "UnitCount", 2);
+            SetField(GetPoint(game, 1), "UnitCount", 1);
             SetField(GetPoint(game, 1), "ProduceTimer", -99f);
             EstablishConnection(game, 1, 0, "Player");
-            game.Tick(0.6f);
+            game.Tick(1.1f);
 
             AssertPoint(game, 1, "Player", 1);
-            AssertPoint(game, 0, "Neutral", 8);
-            Assert.IsNotNull(GameObject.Find("Soldier_1_0"), "Transferred unit should be visible while travelling.");
+            AssertPoint(game, 0, "Neutral", 5);
+            Assert.IsNotNull(GameObject.Find("Soldier_1_0"), "Generated unit should be visible while travelling.");
 
             game.Tick(2.3f);
-            AssertPoint(game, 0, "Neutral", 7);
+            AssertPoint(game, 0, "Neutral", 4);
             yield return null;
-            Assert.IsNull(GameObject.Find("Soldier_1_0"), "Transferred unit should be removed after arrival.");
-
-            SetField(GetPoint(game, 1), "UnitCount", 1);
-            SetField(GetPoint(game, 1), "ProduceTimer", -1f);
-            SetField(GetPoint(game, 0), "UnitCount", 8);
-            game.Tick(0.6f);
-
-            AssertPoint(game, 1, "Player", 1);
-            AssertPoint(game, 0, "Neutral", 8);
+            Assert.IsNotNull(GameObject.Find("Soldier_1_0"), "Connection should keep sending generated units after the first arrival.");
 
             yield return DestroyGameRoot(game, root);
         }
@@ -488,7 +529,7 @@ namespace Tests
             SetField(GetPoint(game, 1), "UnitCount", 20);
             SetField(GetPoint(game, 0), "UnitCount", 1);
             EstablishConnection(game, 1, 0, "Player");
-            game.Tick(0.6f);
+            game.Tick(0.8f);
             game.Tick(2.3f);
 
             AssertPoint(game, 0, "Player", 1);
@@ -497,8 +538,8 @@ namespace Tests
             SetField(GetPoint(game, 2), "UnitCount", 1);
             SetField(GetPoint(game, 2), "ProduceTimer", -99f);
             EstablishConnection(game, 1, 2, "Player");
-            game.Tick(0.6f);
-            game.Tick(1.8f);
+            game.Tick(1.1f);
+            game.Tick(2.2f);
 
             AssertPoint(game, 2, "Player", 1);
             Assert.GreaterOrEqual(GetPrivateValue<int>(game, "defeatedEnemyUnits"), 1);
@@ -507,7 +548,7 @@ namespace Tests
         }
 
         [UnityTest]
-        public IEnumerator OpposingConnectionsMeetAtMiddleAndConsumeSoldiers()
+        public IEnumerator OpposingConnectionsShowMiddleArrowsAndConsumeMeetingSoldiers()
         {
             GameControlPointView game;
             var root = CreateGameRoot(out game);
@@ -523,27 +564,27 @@ namespace Tests
 
             var playerLine = GameObject.Find("Connection_1_2").GetComponent<RectTransform>();
             var enemyLine = GameObject.Find("Connection_2_1").GetComponent<RectTransform>();
-            Assert.Less(playerLine.sizeDelta.x, 220f, "Player line should stop at the middle during opposing fire.");
-            Assert.Less(enemyLine.sizeDelta.x, 220f, "Enemy line should stop at the middle during opposing fire.");
+            Assert.Less(playerLine.sizeDelta.x, 220f, "Player arrow should stop at the middle during opposing fire.");
+            Assert.Less(enemyLine.sizeDelta.x, 220f, "Enemy arrow should stop at the middle during opposing fire.");
 
-            game.Tick(0.6f);
-            AssertPoint(game, 1, "Player", 1);
-            AssertPoint(game, 2, "Enemy", 1);
-            Assert.IsNotNull(GameObject.Find("Soldier_1_2"), "Player soldier should move toward the middle.");
-            Assert.IsNotNull(GameObject.Find("Soldier_2_1"), "Enemy soldier should move toward the middle.");
+            game.Tick(1.1f);
+            AssertPoint(game, 1, "Player", 2);
+            AssertPoint(game, 2, "Enemy", 2);
+            Assert.IsNotNull(GameObject.Find("Soldier_1_2"), "Player soldier should move toward the enemy point.");
+            Assert.IsNotNull(GameObject.Find("Soldier_2_1"), "Enemy soldier should move toward the player point.");
 
-            game.Tick(1.5f);
-            AssertPoint(game, 1, "Player", 1);
-            AssertPoint(game, 2, "Enemy", 1);
+            game.Tick(0.85f);
+            AssertPoint(game, 1, "Player", 2);
+            AssertPoint(game, 2, "Enemy", 2);
             yield return null;
-            Assert.IsNull(GameObject.Find("Soldier_1_2"), "Player soldier should be consumed at the middle.");
-            Assert.IsNull(GameObject.Find("Soldier_2_1"), "Enemy soldier should be consumed at the middle.");
+            Assert.IsNull(GameObject.Find("Soldier_1_2"), "Player soldier should be consumed after meeting the enemy soldier.");
+            Assert.IsNull(GameObject.Find("Soldier_2_1"), "Enemy soldier should be consumed after meeting the player soldier.");
 
             yield return DestroyGameRoot(game, root);
         }
 
         [UnityTest]
-        public IEnumerator InFlightSoldierRedirectsToMiddleWithoutDisappearing()
+        public IEnumerator InFlightSoldierKeepsEnemyPointDestinationWhenCountered()
         {
             GameControlPointView game;
             var root = CreateGameRoot(out game);
@@ -556,25 +597,25 @@ namespace Tests
             SetField(GetPoint(game, 2), "ProduceTimer", -99f);
             EstablishConnection(game, 2, 1, "Enemy");
 
-            game.Tick(0.6f);
-            game.Tick(0.4f);
+            game.Tick(1.1f);
             Assert.IsNotNull(GameObject.Find("Soldier_2_1"), "Enemy soldier should be travelling before player counters.");
-            var beforeRedirectDistance = Vector2.Distance(
+            var targetPosition = GameObject.Find("ControlPoint_1").GetComponent<RectTransform>().anchoredPosition;
+            var beforeCounterDistance = Vector2.Distance(
                 GameObject.Find("Soldier_2_1").GetComponent<RectTransform>().anchoredPosition,
-                GetMiddlePosition(1, 2));
+                targetPosition);
 
             EstablishConnection(game, 1, 2, "Player");
             game.Tick(0.2f);
-            Assert.IsNotNull(GameObject.Find("Soldier_2_1"), "Enemy soldier should redirect to the middle instead of disappearing.");
+            Assert.IsNotNull(GameObject.Find("Soldier_2_1"), "Enemy soldier should keep travelling after the player counters.");
             Assert.Less(
                 Vector2.Distance(
                     GameObject.Find("Soldier_2_1").GetComponent<RectTransform>().anchoredPosition,
-                    GetMiddlePosition(1, 2)),
-                beforeRedirectDistance,
-                "Redirected enemy soldier should keep moving toward the middle based on remaining distance.");
+                    targetPosition),
+                beforeCounterDistance,
+                "Countered enemy soldier should keep moving toward the original player point.");
 
             game.Tick(0.6f);
-            Assert.IsNotNull(GameObject.Find("Soldier_2_1"), "Enemy soldier should remain visible while moving toward the middle.");
+            Assert.IsNotNull(GameObject.Find("Soldier_2_1"), "Enemy soldier should remain visible while moving toward the original player point.");
 
             yield return DestroyGameRoot(game, root);
         }
@@ -588,10 +629,8 @@ namespace Tests
 
             TickGame(game, 18);
 
-            Assert.AreEqual(3, GetListCount(GetPrivateObject<object>(game, "connections")), "Each enemy AI should create one outgoing connection.");
+            Assert.AreEqual(1, GetListCount(GetPrivateObject<object>(game, "connections")), "First level should open with one enemy AI connection.");
             AssertConnectionSourceAndSide(game, 0, 2, "Enemy");
-            AssertConnectionSourceAndSide(game, 1, 5, "EnemyTwo");
-            AssertConnectionSourceAndSide(game, 2, 6, "EnemyThree");
 
             yield return DestroyGameRoot(game, root);
         }
@@ -605,15 +644,13 @@ namespace Tests
 
             TickGame(game, 26);
 
-            Assert.AreEqual(3, GetListCount(GetPrivateObject<object>(game, "connections")), "Enemy AI should keep existing connections.");
+            Assert.AreEqual(1, GetListCount(GetPrivateObject<object>(game, "connections")), "Enemy AI should keep the existing tutorial connection.");
             AssertConnectionSourceAndSide(game, 0, 2, "Enemy");
-            AssertConnectionSourceAndSide(game, 1, 5, "EnemyTwo");
-            AssertConnectionSourceAndSide(game, 2, 6, "EnemyThree");
             Assert.IsTrue(HasMovingSoldierFromSource(2), "Enemy soldier should still be travelling instead of being cleared by the next AI decision.");
 
             TickGame(game, 10);
 
-            Assert.AreEqual(3, GetListCount(GetPrivateObject<object>(game, "connections")), "Enemy AI should not duplicate an existing route while retargeting.");
+            Assert.AreEqual(1, GetListCount(GetPrivateObject<object>(game, "connections")), "Enemy AI should not duplicate an existing route while retargeting.");
 
             yield return DestroyGameRoot(game, root);
         }
@@ -716,13 +753,11 @@ namespace Tests
             Assert.IsFalse(GetPrivateValue<bool>(game, "isSettled"), "Restart should return to unsettled state.");
             Assert.IsNull(GameObject.Find("ControlPointSettlementPanel"), "Restart should close settlement popup.");
             Assert.AreEqual(0, GetListCount(GetPrivateObject<object>(game, "connections")), "Restart should clear all connections.");
-            AssertPoint(game, 0, "Neutral", 8);
-            AssertPoint(game, 1, "Player", 12);
-            AssertPoint(game, 2, "Enemy", 12);
-            AssertPoint(game, 3, "Neutral", 8);
-            AssertPoint(game, 4, "Neutral", 8);
-            AssertPoint(game, 5, "EnemyTwo", 12);
-            AssertPoint(game, 6, "EnemyThree", 12);
+            AssertPoint(game, 0, "Neutral", 5);
+            AssertPoint(game, 1, "Player", 18);
+            AssertPoint(game, 2, "Enemy", 10);
+            AssertPoint(game, 3, "Neutral", 6);
+            AssertPoint(game, 4, "Neutral", 6);
 
             yield return DestroyGameRoot(game, root);
         }
@@ -911,6 +946,40 @@ namespace Tests
             var rect = point.GetComponent<RectTransform>();
             Assert.AreEqual(expected, rect.sizeDelta.x, 0.01f, "Unexpected point width at " + pointIndex);
             Assert.AreEqual(expected, rect.sizeDelta.y, 0.01f, "Unexpected point height at " + pointIndex);
+        }
+
+        private static void AssertCapacityDotVisible(int pointIndex, int dotIndex, bool expectedVisible)
+        {
+            var dot = GetCapacityDot(pointIndex, dotIndex);
+            Assert.IsNotNull(dot, "Capacity dot should exist.");
+            Assert.AreEqual(expectedVisible, dot.gameObject.activeSelf, "Unexpected capacity dot visibility.");
+        }
+
+        private static void AssertCapacityDotFilled(int pointIndex, int dotIndex, bool expectedFilled)
+        {
+            var dot = GetCapacityDot(pointIndex, dotIndex);
+            Assert.IsNotNull(dot, "Capacity dot should exist.");
+            Assert.IsTrue(dot.gameObject.activeSelf, "Capacity dot should be visible.");
+
+            var outer = dot.GetComponent<RoundedRectGraphic>();
+            var inner = dot.Find("Inner").GetComponent<RoundedRectGraphic>();
+            Assert.IsNotNull(outer, "Capacity dot outer graphic should exist.");
+            Assert.IsNotNull(inner, "Capacity dot inner graphic should exist.");
+            if (expectedFilled)
+            {
+                Assert.AreEqual(outer.color, inner.color, "Filled capacity dot should use one solid color.");
+            }
+            else
+            {
+                Assert.AreNotEqual(outer.color, inner.color, "Hollow capacity dot should keep a contrasting center.");
+            }
+        }
+
+        private static Transform GetCapacityDot(int pointIndex, int dotIndex)
+        {
+            var point = GameObject.Find("ControlPoint_" + pointIndex);
+            Assert.IsNotNull(point, "Point object should exist.");
+            return point.transform.Find("ConnectionCapacityDot_" + dotIndex);
         }
 
         private static void AssertPointPosition(int pointIndex, Vector2 expected)
@@ -1165,6 +1234,13 @@ namespace Tests
             var method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.IsNotNull(method, "Missing private method: " + methodName);
             method.Invoke(target, args);
+        }
+
+        private static T InvokePrivateReturn<T>(object target, string methodName, params object[] args)
+        {
+            var method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.IsNotNull(method, "Missing private method: " + methodName);
+            return (T)method.Invoke(target, args);
         }
 
         private sealed class TestHostBehaviour : MonoBehaviour

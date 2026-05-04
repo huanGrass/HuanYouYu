@@ -25,6 +25,10 @@
     "slidingpuzzle",
     "towerofhanoi",
     "waterpouring",
-    "akari"
+    "akari",
+    "stack-match",
+    "blockpuzzle",
+    "bulls-cows",
+    "arrow-escape"
   ]
 }

@@ -80,6 +80,11 @@ namespace HuanYouYu.MiniGameHall
             viewportRect.pivot = new Vector2(0.5f, 1f);
             viewportRect.sizeDelta = new Vector2(420f, 410f);
             viewportRect.anchoredPosition = new Vector2(0f, -112f);
+            var viewportHitArea = EnsureRoundedRectGraphic(viewportObject, new Color(1f, 1f, 1f, 0f), 0f, true);
+            viewportHitArea.raycastTarget = true;
+            var viewportBlocker = viewportObject.AddComponent<Button>();
+            viewportBlocker.targetGraphic = viewportHitArea;
+            viewportBlocker.transition = Selectable.Transition.None;
             viewportObject.AddComponent<RectMask2D>();
 
             var scrollRect = viewportObject.AddComponent<ScrollRect>();
@@ -128,6 +133,7 @@ namespace HuanYouYu.MiniGameHall
             }
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(gridRect);
+            ApplyInitialScrollPosition(scrollRect, grid, viewportRect, gridRect, currentLevelIndex, buttons.Length);
             return new MiniGameLevelSelectView(root, blocker, close, buttons);
         }
 
@@ -231,6 +237,35 @@ namespace HuanYouYu.MiniGameHall
             colors.colorMultiplier = 1f;
             colors.fadeDuration = 0.08f;
             button.colors = colors;
+        }
+
+        private static void ApplyInitialScrollPosition(
+            ScrollRect scrollRect,
+            GridLayoutGroup grid,
+            RectTransform viewportRect,
+            RectTransform contentRect,
+            int currentLevelIndex,
+            int levelCount)
+        {
+            if (scrollRect == null || grid == null || viewportRect == null || contentRect == null || levelCount <= 0)
+            {
+                return;
+            }
+
+            var overflowHeight = contentRect.rect.height - viewportRect.rect.height;
+            if (overflowHeight <= 0.01f)
+            {
+                scrollRect.verticalNormalizedPosition = 1f;
+                return;
+            }
+
+            var levelIndex = Mathf.Clamp(currentLevelIndex, 0, levelCount - 1);
+            var rowIndex = levelIndex / Mathf.Max(1, grid.constraintCount);
+            var rowStride = grid.cellSize.y + grid.spacing.y;
+            var rowTop = rowIndex * rowStride;
+            var centeredTop = rowTop - ((viewportRect.rect.height - grid.cellSize.y) * 0.5f);
+            var scrollTop = Mathf.Clamp(centeredTop, 0f, overflowHeight);
+            scrollRect.verticalNormalizedPosition = 1f - (scrollTop / overflowHeight);
         }
 
         private static GameObject CreateRectObject(string name, Transform parent)

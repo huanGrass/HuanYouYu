@@ -41,6 +41,18 @@
       "value": "拖动己方据点连线"
     },
     {
+      "key": "control_point.skill.muster",
+      "value": "急征"
+    },
+    {
+      "key": "control_point.skill.muster.selecting",
+      "value": "选据点"
+    },
+    {
+      "key": "control_point.skill.muster.cooldown",
+      "value": "{0}秒"
+    },
+    {
       "key": "control_point.action.restart",
       "value": "重开"
     },

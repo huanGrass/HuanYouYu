@@ -51,6 +51,10 @@
 - 占点攻防（ControlPoint）
 - 数学电灯（LightsOut）
 - 点灯谜题（Akari）
+- 叠牌消消（StackMatch）
+- 方块消除（BlockPuzzle）
+- 猜数字（BullsCows）
+- 箭头迷阵（ArrowEscape）
 - 数字华容道（SlidingPuzzle）
 - 跳一跳（JumpJump）
 - 过河问题（RiverCrossing）

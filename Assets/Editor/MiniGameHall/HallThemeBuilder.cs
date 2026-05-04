@@ -798,7 +798,7 @@ namespace HuanYouYu.MiniGameHall.Editor
             menuPanelRect.anchorMax = new Vector2(0f, 1f);
             menuPanelRect.pivot = new Vector2(0f, 1f);
             menuPanelRect.anchoredPosition = new Vector2(16f, -104f);
-            menuPanelRect.sizeDelta = new Vector2(262f, 186f);
+            menuPanelRect.sizeDelta = new Vector2(262f, 324f);
 
             var menuPanelImage = menuPanel.GetComponent<Image>();
             menuPanelImage.sprite = LoadSprite(MenuPanelAssetPath);
@@ -825,10 +825,12 @@ namespace HuanYouYu.MiniGameHall.Editor
             menuFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
             menuFitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
             menuPanel.GetComponent<LayoutElement>().preferredWidth = 262f;
-            menuPanel.GetComponent<LayoutElement>().preferredHeight = 186f;
+            menuPanel.GetComponent<LayoutElement>().preferredHeight = 324f;
 
             CreateMenuEntryButton(menuPanel.transform, "AboutGameButton", "关于游戏");
             CreateMenuEntryButton(menuPanel.transform, "SettingsButton", "设置");
+            CreateMenuEntryButton(menuPanel.transform, "GameClubButton", "游戏圈");
+            CreateMenuEntryButton(menuPanel.transform, "ShareButton", "分享");
 
             return root;
         }

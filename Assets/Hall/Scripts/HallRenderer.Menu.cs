@@ -11,6 +11,7 @@ namespace HuanYouYu.MiniGameHall
         private const string MenuButtonSpritePath = "HallTheme/menu_button";
         private const string MenuAboutGameKey = "hall.menu.about_game";
         private const string MenuSettingsKey = "hall.menu.settings";
+        private const string MenuGameClubKey = "hall.menu.game_club";
         private const string MenuShareKey = "hall.menu.share";
         private const string ShareTitleKey = "hall.share.title";
         private const string AboutPopupTitleKey = "hall.about.title";
@@ -27,12 +28,13 @@ namespace HuanYouYu.MiniGameHall
         private const float HeaderMenuPanelBaseY = -104f;
         private const float HeaderMenuTopPadding = 12f;
         private const float HeaderMenuPanelWidth = 262f;
-        private const float HeaderMenuPanelHeight = 252f;
+        private const float HeaderMenuPanelHeight = 324f;
 
         private RectTransform headerMenuRoot;
         private RectTransform headerMenuPanelRoot;
         private Button headerMenuButton;
         private Button headerMenuBackdropButton;
+        private WeChatWASM.WXGameClubButton wechatGameClubButton;
         private GameObject activeModalRoot;
         private UiTweenRunner settingsPopupTweenRunner;
         private TextMeshProUGUI settingsMusicValueText;
@@ -101,7 +103,7 @@ namespace HuanYouYu.MiniGameHall
 
             ApplyHeaderMenuLayout();
             EnsureMenuPanelBackground(headerMenuPanelRoot);
-            EnsureMenuPanelShareEntry(headerMenuPanelRoot);
+            EnsureMenuPanelEntries(headerMenuPanelRoot);
 
             if (headerMenuButton != null)
             {
@@ -119,9 +121,11 @@ namespace HuanYouYu.MiniGameHall
 
             var aboutButton = headerMenuPanelRoot != null ? headerMenuPanelRoot.Find("AboutGameButton")?.GetComponent<Button>() : null;
             var settingsButton = headerMenuPanelRoot != null ? headerMenuPanelRoot.Find("SettingsButton")?.GetComponent<Button>() : null;
+            var gameClubButton = headerMenuPanelRoot != null ? headerMenuPanelRoot.Find("GameClubButton")?.GetComponent<Button>() : null;
             var shareButton = headerMenuPanelRoot != null ? headerMenuPanelRoot.Find("ShareButton")?.GetComponent<Button>() : null;
             BindMenuEntryButton(aboutButton, MenuAboutGameKey, ShowAboutGamePopup);
             BindMenuEntryButton(settingsButton, MenuSettingsKey, ShowSettingsPopup);
+            BindMenuEntryButton(gameClubButton, MenuGameClubKey, ShowWechatGameClub);
             BindMenuEntryButton(shareButton, MenuShareKey, ShareGameToWechatFriend);
 
             HideHeaderMenuPanel();
@@ -143,6 +147,8 @@ namespace HuanYouYu.MiniGameHall
             {
                 headerMenuBackdropButton.gameObject.SetActive(false);
             }
+
+            HideWechatGameClubButton();
         }
 
         private void ToggleHeaderMenuPanel()
@@ -172,6 +178,7 @@ namespace HuanYouYu.MiniGameHall
             }
 
             headerMenuRoot?.SetAsLastSibling();
+            ShowWechatGameClubButton();
         }
 
         private void CloseActiveModal()
@@ -222,7 +229,7 @@ namespace HuanYouYu.MiniGameHall
             activeModalRoot = CreateSettingsPopupFromPrefab();
         }
 
-        private void EnsureMenuPanelShareEntry(RectTransform panelRoot)
+        private void EnsureMenuPanelEntries(RectTransform panelRoot)
         {
             if (panelRoot == null)
             {
@@ -241,6 +248,147 @@ namespace HuanYouYu.MiniGameHall
             {
                 CreateMenuEntryButton(panelRoot, "ShareButton", MenuShareKey);
             }
+
+            if (panelRoot.Find("GameClubButton") == null)
+            {
+                CreateMenuEntryButton(panelRoot, "GameClubButton", MenuGameClubKey);
+            }
+
+            var gameClubButton = panelRoot.Find("GameClubButton");
+            var shareButton = panelRoot.Find("ShareButton");
+            if (gameClubButton != null && shareButton != null)
+            {
+                gameClubButton.SetSiblingIndex(Mathf.Max(0, shareButton.GetSiblingIndex()));
+            }
+        }
+
+        private void ShowWechatGameClub()
+        {
+            if (Application.isEditor)
+            {
+                Debug.Log("微信游戏圈仅在微信小游戏环境下可用。");
+                return;
+            }
+
+            ShowWechatGameClubButton();
+        }
+
+        private void ShowWechatGameClubButton()
+        {
+            if (Application.isEditor)
+            {
+                return;
+            }
+
+            var gameClubButtonRect = headerMenuPanelRoot != null ? headerMenuPanelRoot.Find("GameClubButton") as RectTransform : null;
+            if (gameClubButtonRect == null)
+            {
+                return;
+            }
+
+            try
+            {
+                Canvas.ForceUpdateCanvases();
+                var style = CreateWechatGameClubButtonStyle(gameClubButtonRect);
+                DestroyWechatGameClubButton();
+                wechatGameClubButton = WeChatWASM.WXSDKManagerHandler.Instance.CreateGameClubButton(new WeChatWASM.WXCreateGameClubButtonParam
+                {
+                    type = WeChatWASM.GameClubButtonType.text,
+                    text = string.Empty,
+                    style = style,
+                    styleRaw = JsonUtility.ToJson(style),
+                    icon = WeChatWASM.GameClubButtonIcon.green
+                });
+                wechatGameClubButton?.Show();
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning("微信游戏圈按钮创建失败: " + exception.Message);
+            }
+        }
+
+        private void HideWechatGameClubButton()
+        {
+            if (wechatGameClubButton == null)
+            {
+                return;
+            }
+
+            try
+            {
+                wechatGameClubButton.Hide();
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning("微信游戏圈按钮隐藏失败: " + exception.Message);
+            }
+        }
+
+        private void DestroyWechatGameClubButton()
+        {
+            if (wechatGameClubButton == null)
+            {
+                return;
+            }
+
+            try
+            {
+                wechatGameClubButton.Destroy();
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning("微信游戏圈按钮销毁失败: " + exception.Message);
+            }
+            finally
+            {
+                wechatGameClubButton = null;
+            }
+        }
+
+        private static WeChatWASM.GameClubButtonStyle CreateWechatGameClubButtonStyle(RectTransform buttonRect)
+        {
+            var corners = new Vector3[4];
+            buttonRect.GetWorldCorners(corners);
+            var bottomLeft = RectTransformUtility.WorldToScreenPoint(null, corners[0]);
+            var topRight = RectTransformUtility.WorldToScreenPoint(null, corners[2]);
+            var width = Mathf.Max(1f, topRight.x - bottomLeft.x);
+            var height = Mathf.Max(1f, topRight.y - bottomLeft.y);
+            var screenWidth = Mathf.Max(1f, Screen.width);
+            var screenHeight = Mathf.Max(1f, Screen.height);
+
+            try
+            {
+                var windowInfo = WeChatWASM.WXSDKManagerHandler.GetWindowInfo();
+                if (windowInfo != null && windowInfo.windowWidth > 0 && windowInfo.windowHeight > 0)
+                {
+                    var scaleX = (float)(windowInfo.windowWidth / screenWidth);
+                    var scaleY = (float)(windowInfo.windowHeight / screenHeight);
+                    bottomLeft = new Vector2(bottomLeft.x * scaleX, bottomLeft.y * scaleY);
+                    topRight = new Vector2(topRight.x * scaleX, topRight.y * scaleY);
+                    width = Mathf.Max(1f, topRight.x - bottomLeft.x);
+                    height = Mathf.Max(1f, topRight.y - bottomLeft.y);
+                    screenHeight = (float)windowInfo.windowHeight;
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+            return new WeChatWASM.GameClubButtonStyle
+            {
+                left = Mathf.RoundToInt(bottomLeft.x),
+                top = Mathf.RoundToInt(screenHeight - topRight.y),
+                width = Mathf.RoundToInt(width),
+                height = Mathf.RoundToInt(height),
+                backgroundColor = "rgba(255,255,255,0)",
+                borderColor = "rgba(255,255,255,0)",
+                borderWidth = 0,
+                borderRadius = 18,
+                color = "rgba(255,255,255,0)",
+                textAlign = WeChatWASM.GameClubButtonTextAlign.left,
+                fontSize = 1,
+                lineHeight = Mathf.RoundToInt(height)
+            };
         }
 
         private void ShareGameToWechatFriend()
@@ -520,6 +668,7 @@ namespace HuanYouYu.MiniGameHall
 
             CreateMenuEntryButton(panel.transform, "AboutGameButton", MenuAboutGameKey);
             CreateMenuEntryButton(panel.transform, "SettingsButton", MenuSettingsKey);
+            CreateMenuEntryButton(panel.transform, "GameClubButton", MenuGameClubKey);
             CreateMenuEntryButton(panel.transform, "ShareButton", MenuShareKey);
 
             return rootRect;

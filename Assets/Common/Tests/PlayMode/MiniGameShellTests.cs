@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using HuanYouYu.MiniGameHall;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.UI;
@@ -79,6 +80,74 @@ namespace Tests
         }
 
         [Test]
+        public void PauseButtonStaysAboveGameplayHostsWhenNoPopupIsOpen()
+        {
+            var rootObject = new GameObject("MiniGameCanvas", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+            object shell = null;
+
+            try
+            {
+                shell = CreateShell(rootObject.transform);
+                var shellRoot = GetShellRoot(shell);
+                Assert.IsNotNull(shellRoot, "MiniGameShell root should exist.");
+
+                InvokeApplyLayout(shell, new MiniGameShellLayout(MiniGameShellLayout.DefaultTopInset, 430f, MiniGameShellBottomMode.DefaultSlot));
+
+                var pauseButton = shellRoot.transform.Find("PauseButton");
+                var topHost = shellRoot.transform.Find("TopHost");
+                var contentHost = shellRoot.transform.Find("ContentHost");
+                var bottomHost = shellRoot.transform.Find("BottomHost");
+                var popupHost = shellRoot.transform.Find("PopupHost");
+                Assert.IsNotNull(pauseButton, "PauseButton should exist.");
+                Assert.IsNotNull(topHost, "TopHost should exist.");
+                Assert.IsNotNull(contentHost, "ContentHost should exist.");
+                Assert.IsNotNull(bottomHost, "BottomHost should exist.");
+                Assert.IsNotNull(popupHost, "PopupHost should exist.");
+
+                Assert.Greater(pauseButton.GetSiblingIndex(), topHost.GetSiblingIndex(), "PauseButton should sit above the top host.");
+                Assert.Greater(pauseButton.GetSiblingIndex(), contentHost.GetSiblingIndex(), "PauseButton should sit above the content host.");
+                Assert.Greater(pauseButton.GetSiblingIndex(), bottomHost.GetSiblingIndex(), "PauseButton should sit above the bottom host.");
+                Assert.Greater(pauseButton.GetSiblingIndex(), popupHost.GetSiblingIndex(), "PauseButton should sit above the empty popup host.");
+            }
+            finally
+            {
+                DisposeShell(shell);
+                UnityEngine.Object.DestroyImmediate(rootObject);
+            }
+        }
+
+        [Test]
+        public void OpeningPausePopupMovesPopupAbovePauseButton()
+        {
+            var rootObject = new GameObject("MiniGameCanvas", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+            object shell = null;
+
+            try
+            {
+                shell = CreateShell(rootObject.transform);
+                var shellRoot = GetShellRoot(shell);
+                Assert.IsNotNull(shellRoot, "MiniGameShell root should exist.");
+
+                InvokeShowPausePopup(shell);
+
+                var pauseButton = shellRoot.transform.Find("PauseButton");
+                var popupHost = shellRoot.transform.Find("PopupHost");
+                Assert.IsNotNull(pauseButton, "PauseButton should exist.");
+                Assert.IsNotNull(popupHost, "PopupHost should exist.");
+                Assert.Greater(popupHost.GetSiblingIndex(), pauseButton.GetSiblingIndex(), "Active popup host should sit above the pause button.");
+                Assert.IsNotNull(popupHost.Find("MiniGamePausePopup"), "Pause popup should be created after clicking pause.");
+
+                InvokeClosePopup(shell);
+                Assert.Greater(pauseButton.GetSiblingIndex(), popupHost.GetSiblingIndex(), "PauseButton should return above the empty popup host after closing popup.");
+            }
+            finally
+            {
+                DisposeShell(shell);
+                UnityEngine.Object.DestroyImmediate(rootObject);
+            }
+        }
+
+        [Test]
         public void LevelSelectWithManyLevelsUsesMaskedScrollViewport()
         {
             var rootObject = new GameObject("MiniGameCanvas", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
@@ -93,6 +162,14 @@ namespace Tests
                 var viewport = panel.Find("Dialog/LevelViewport");
                 Assert.IsNotNull(viewport, "Level select should create a viewport.");
                 Assert.IsNotNull(viewport.GetComponent<RectMask2D>(), "Level viewport should mask overflowing level buttons.");
+                var viewportHitArea = viewport.GetComponent<Graphic>();
+                Assert.IsNotNull(viewportHitArea, "Level viewport should catch taps between level buttons.");
+                Assert.IsTrue(viewportHitArea.raycastTarget, "Level viewport should block backdrop clicks through button gaps.");
+                Assert.AreEqual(0f, viewportHitArea.color.a, 0.001f, "Level viewport hit area should stay invisible.");
+                var viewportBlocker = viewport.GetComponent<Button>();
+                Assert.IsNotNull(viewportBlocker, "Level viewport should consume click events instead of letting them bubble to the backdrop.");
+                Assert.AreSame(viewportHitArea, viewportBlocker.targetGraphic, "Level viewport click consumer should use the invisible hit area.");
+                Assert.AreEqual(Selectable.Transition.None, viewportBlocker.transition, "Level viewport click consumer should not show button feedback.");
 
                 var scrollRect = viewport.GetComponent<ScrollRect>();
                 Assert.IsNotNull(scrollRect, "Level viewport should be scrollable.");
@@ -108,6 +185,29 @@ namespace Tests
                 Assert.IsNotNull(grid, "Level grid should use a GridLayoutGroup.");
                 Assert.AreEqual(GridLayoutGroup.Constraint.FixedColumnCount, grid.constraint, "Level grid should use a fixed column count.");
                 Assert.AreEqual(5, grid.constraintCount, "Level grid should show five levels per row.");
+            }
+            finally
+            {
+                DisposeDisposable(levelSelect);
+                UnityEngine.Object.DestroyImmediate(rootObject);
+            }
+        }
+
+        [Test]
+        public void LevelSelectOpensScrolledToCurrentLateLevel()
+        {
+            var rootObject = new GameObject("MiniGameCanvas", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+            object levelSelect = null;
+
+            try
+            {
+                levelSelect = CreateLevelSelect(rootObject.transform, 60, 49);
+                var panel = rootObject.transform.Find("LevelSelectTestRoot");
+                Assert.IsNotNull(panel, "Level select root should exist.");
+
+                var scrollRect = panel.Find("Dialog/LevelViewport")?.GetComponent<ScrollRect>();
+                Assert.IsNotNull(scrollRect, "Level select should be scrollable.");
+                Assert.LessOrEqual(scrollRect.verticalNormalizedPosition, 0.05f, "Opening on level 50 should scroll near the bottom so the current level is visible.");
             }
             finally
             {
@@ -372,6 +472,11 @@ namespace Tests
 
         private static object CreateLevelSelect(Transform parent, int levelCount)
         {
+            return CreateLevelSelect(parent, levelCount, 0);
+        }
+
+        private static object CreateLevelSelect(Transform parent, int levelCount, int currentLevelIndex)
+        {
             var levelSelectType = GetLevelSelectType();
             var createMethod = levelSelectType.GetMethod("Create", BindingFlags.Static | BindingFlags.Public);
             Assert.IsNotNull(createMethod, "MiniGameLevelSelectView.Create method was not found.");
@@ -383,7 +488,7 @@ namespace Tests
                     parent,
                     null,
                     levelCount,
-                    0,
+                    currentLevelIndex,
                     levelCount,
                     "LevelSelectTestRoot",
                     "LevelButton_",
@@ -460,6 +565,27 @@ namespace Tests
             var method = target.GetType().GetMethod("Tick", BindingFlags.Instance | BindingFlags.Public);
             Assert.IsNotNull(method, "Tick method was not found.");
             method.Invoke(target, new object[] { deltaTime });
+        }
+
+        private static void InvokeApplyLayout(object shell, MiniGameShellLayout layout)
+        {
+            var method = GetShellType().GetMethod("ApplyLayout", BindingFlags.Instance | BindingFlags.Public);
+            Assert.IsNotNull(method, "ApplyLayout method was not found.");
+            method.Invoke(shell, new object[] { layout });
+        }
+
+        private static void InvokeShowPausePopup(object shell)
+        {
+            var method = GetShellType().GetMethod("ShowPausePopup", BindingFlags.Instance | BindingFlags.Public);
+            Assert.IsNotNull(method, "ShowPausePopup method was not found.");
+            method.Invoke(shell, new object[] { null, null });
+        }
+
+        private static void InvokeClosePopup(object shell)
+        {
+            var method = GetShellType().GetMethod("ClosePopup", BindingFlags.Instance | BindingFlags.Public);
+            Assert.IsNotNull(method, "ClosePopup method was not found.");
+            method.Invoke(shell, null);
         }
 
         private static void DisposeShell(object shell)

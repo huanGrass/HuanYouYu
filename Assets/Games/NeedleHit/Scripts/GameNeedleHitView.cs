@@ -593,8 +593,18 @@ namespace HuanYouYu.MiniGameHall
                     ChestCount = settlement.ChestCount
                 },
                 delegate { LoadNextLevel(settlement); },
-                delegate { CompleteGame?.Invoke(settlement); },
+                delegate
+                {
+                    SaveNextLevelForReturn();
+                    CompleteGame?.Invoke(settlement);
+                },
                 false);
+        }
+
+        private void SaveNextLevelForReturn()
+        {
+            EnsureLevelProgress();
+            levelProgress.SaveNextAsCurrent();
         }
 
         private void CloseLevelSelectView()

@@ -14,7 +14,6 @@ namespace HuanYouYu.MiniGameHall
     public sealed class Match3GameView : MiniGameBase
     {
         public const string GameIdConstant = "match-3";
-        private const string ContentPrefabResourcePath = "Match3Content";
         private const int Rows = 7;
         private const int Columns = 7;
         private const float SwipeThreshold = 28f;
@@ -94,12 +93,12 @@ namespace HuanYouYu.MiniGameHall
         {
         }
 
-        private bool TryBuildFromPrefab()
+        private bool TryBuildRuntimeSections()
         {
             shell = Shell;
             root = shell.Root;
 
-            var contentRoot = LoadRequiredSectionPrefab(ContentPrefabResourcePath, shell.ContentHost, "Match3Content");
+            var contentRoot = CreateContentSection(shell.ContentHost);
             var bottomContainerRefs = MiniGameShellBottomBarBuilder.CreateBottomContainer(
                 shell.BottomHost,
                 MiniGameShellBottomBarBuilder.CreateDefaultContainerConfig("Match3Bottom"));
@@ -163,17 +162,118 @@ namespace HuanYouYu.MiniGameHall
             return true;
         }
 
-        private static GameObject LoadRequiredSectionPrefab(string resourcePath, Transform parent, string instanceName)
+        private static GameObject CreateContentSection(Transform parent)
         {
-            var prefab = Resources.Load<GameObject>(resourcePath);
-            if (prefab == null)
-            {
-                throw new InvalidOperationException("Section prefab not found at Resources/" + resourcePath);
-            }
+            var root = CreateRectObject("Match3Content", parent);
+            Stretch(root.GetComponent<RectTransform>(), Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
-            var instance = UnityEngine.Object.Instantiate(prefab, parent, false);
-            instance.name = instanceName;
-            return instance;
+            CreatePanel(
+                root.transform,
+                "BoardShadow",
+                new Vector2(0.18f, 0.12f),
+                new Vector2(0.82f, 0.88f),
+                new Vector2(0f, -4f),
+                new Color(0.31f, 0.42f, 0.26f, 0.09f),
+                28f);
+
+            CreatePanel(
+                root.transform,
+                "BoardFrameLight",
+                new Vector2(0.16f, 0.10f),
+                new Vector2(0.84f, 0.90f),
+                Vector2.zero,
+                new Color(1f, 0.985f, 0.94f, 0.18f),
+                30f);
+
+            var boardSurface = CreateRectObject("BoardSurface", root.transform);
+            Stretch(boardSurface.GetComponent<RectTransform>(), new Vector2(0.05f, 0.04f), new Vector2(0.95f, 0.96f), Vector2.zero, Vector2.zero);
+            var boardSurfaceGraphic = boardSurface.AddComponent<RoundedRectGraphic>();
+            boardSurfaceGraphic.color = new Color(0f, 0f, 0f, 0f);
+            boardSurfaceGraphic.CornerRadius = 0f;
+            boardSurfaceGraphic.raycastTarget = false;
+
+            var boardGrid = CreateRectObject("BoardGrid", boardSurface.transform);
+            Stretch(boardGrid.GetComponent<RectTransform>(), Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            var gridLayout = boardGrid.AddComponent<GridLayoutGroup>();
+            gridLayout.childAlignment = TextAnchor.MiddleCenter;
+            gridLayout.startAxis = GridLayoutGroup.Axis.Horizontal;
+            gridLayout.cellSize = new Vector2(44f, 44f);
+            gridLayout.spacing = new Vector2(10f, 10f);
+            gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+            gridLayout.constraintCount = Columns;
+
+            CreateTileTemplate(boardGrid.transform);
+
+            var animationLayer = CreateRectObject("AnimationLayer", boardSurface.transform);
+            Stretch(animationLayer.GetComponent<RectTransform>(), Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            animationLayer.transform.SetAsLastSibling();
+
+            return root;
+        }
+
+        private static void CreateTileTemplate(Transform parent)
+        {
+            var tile = new GameObject("TileTemplate", typeof(RectTransform), typeof(CanvasRenderer), typeof(RoundedRectGraphic), typeof(Button), typeof(CanvasGroup));
+            tile.transform.SetParent(parent, false);
+
+            var rect = tile.GetComponent<RectTransform>();
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.zero;
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = Vector2.zero;
+            rect.sizeDelta = Vector2.zero;
+
+            var graphic = tile.GetComponent<RoundedRectGraphic>();
+            graphic.color = new Color(0f, 0f, 0f, 0f);
+            graphic.CornerRadius = 0f;
+
+            var button = tile.GetComponent<Button>();
+            button.targetGraphic = graphic;
+
+            var icon = new GameObject("Icon", typeof(RectTransform), typeof(CanvasRenderer), typeof(RawImage));
+            icon.transform.SetParent(tile.transform, false);
+            Stretch(icon.GetComponent<RectTransform>(), new Vector2(0.02f, 0.02f), new Vector2(0.98f, 0.98f), Vector2.zero, Vector2.zero);
+            var iconImage = icon.GetComponent<RawImage>();
+            iconImage.color = Color.white;
+            iconImage.raycastTarget = false;
+
+            var label = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));
+            label.transform.SetParent(tile.transform, false);
+            Stretch(label.GetComponent<RectTransform>(), Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            var text = label.GetComponent<TextMeshProUGUI>();
+            text.font = MiniGameFontProvider.DefaultFont;
+            text.color = Color.white;
+            text.alignment = TextAlignmentOptions.Center;
+            text.raycastTarget = false;
+        }
+
+        private static RoundedRectGraphic CreatePanel(Transform parent, string name, Vector2 anchorMin, Vector2 anchorMax, Vector2 anchoredPosition, Color color, float cornerRadius)
+        {
+            var panel = CreateRectObject(name, parent);
+            var graphic = panel.AddComponent<RoundedRectGraphic>();
+            graphic.color = color;
+            graphic.CornerRadius = cornerRadius;
+            graphic.raycastTarget = false;
+            Stretch(panel.GetComponent<RectTransform>(), anchorMin, anchorMax, Vector2.zero, Vector2.zero);
+            panel.GetComponent<RectTransform>().anchoredPosition = anchoredPosition;
+            return graphic;
+        }
+
+        private static GameObject CreateRectObject(string name, Transform parent)
+        {
+            var gameObject = new GameObject(name, typeof(RectTransform));
+            gameObject.transform.SetParent(parent, false);
+            return gameObject;
+        }
+
+        private static void Stretch(RectTransform rect, Vector2 anchorMin, Vector2 anchorMax, Vector2 offsetMin, Vector2 offsetMax)
+        {
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+            rect.offsetMin = offsetMin;
+            rect.offsetMax = offsetMax;
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.localScale = Vector3.one;
         }
 
         private void RefreshStaticTexts()
@@ -204,9 +304,9 @@ namespace HuanYouYu.MiniGameHall
             completeGame = CompleteGame;
             exitToHall = ExitToHall;
 
-            if (!TryBuildFromPrefab())
+            if (!TryBuildRuntimeSections())
             {
-                throw new InvalidOperationException("Match3 split prefabs not found or invalid in Resources.");
+                throw new InvalidOperationException("Match3 runtime sections not found or invalid.");
             }
         }
 

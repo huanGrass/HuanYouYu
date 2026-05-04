@@ -728,10 +728,19 @@ namespace HuanYouYu.MiniGameHall
                 },
                 delegate
                 {
+                    SaveNextLevelForReturn();
                     GrantSettlementReward(settlement);
                     CompleteGame?.Invoke(settlement);
                 },
                 true);
+        }
+
+        private void SaveNextLevelForReturn()
+        {
+            if (levelProgress != null)
+            {
+                levelProgress.SaveNextAsCurrent();
+            }
         }
 
         private void StopCompletionSettlementRoutine()

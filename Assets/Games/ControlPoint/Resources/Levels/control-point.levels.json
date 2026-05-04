@@ -4,45 +4,33 @@
       "points": [
         {
           "owner": "Neutral",
-          "units": 8,
+          "units": 5,
           "x": 0,
-          "y": 230
+          "y": -20
         },
         {
           "owner": "Player",
-          "units": 12,
-          "x": -238,
-          "y": -214
+          "units": 18,
+          "x": -220,
+          "y": -180
         },
         {
           "owner": "Enemy",
-          "units": 12,
-          "x": 238,
-          "y": -214
+          "units": 10,
+          "x": 220,
+          "y": -180
         },
         {
           "owner": "Neutral",
-          "units": 8,
-          "x": -244,
-          "y": 32
+          "units": 6,
+          "x": -170,
+          "y": 80
         },
         {
           "owner": "Neutral",
-          "units": 8,
-          "x": 244,
-          "y": 32
-        },
-        {
-          "owner": "EnemyTwo",
-          "units": 12,
-          "x": 0,
-          "y": -282
-        },
-        {
-          "owner": "EnemyThree",
-          "units": 12,
-          "x": 0,
-          "y": -36
+          "units": 6,
+          "x": 170,
+          "y": 80
         }
       ]
     },

@@ -70,6 +70,8 @@ namespace Tests
             AssertCardIconTextureName("towerofhanoi_Card", "towerofhanoi");
             AssertCardIconTextureName("waterpouring_Card", "waterpouring");
             AssertCardIconTextureName("control-point_Card", "control-point");
+            AssertCardIconTextureName("bulls-cows_Card", "bulls-cows");
+            AssertCardIconTextureName("arrow-escape_Card", "arrow-escape");
             AssertCardIconTextureName("more-games-in-progress_Card", "more_games_in_progress");
             Assert.IsNull(GameObject.Find("point-defense_Card"), "Point Defense card should no longer exist in all games.");
             Assert.IsNull(GameObject.Find("star-farm_Card"), "Star Farm card should no longer exist in all games.");
@@ -115,6 +117,29 @@ namespace Tests
             Assert.AreEqual("分享", textProperty.GetValue(shareLabel, null) as string, "Hall share button should use the shared Chinese label.");
 
             shareButton.onClick.Invoke();
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator HallMenuContainsGameClubButtonAndCanInvokeIt()
+        {
+            ResetProgress();
+
+            MiniGameAppController controller = null;
+            yield return LoadController(value => controller = value);
+
+            Assert.IsNotNull(controller, "Hall controller should load before checking the game club button.");
+
+            var gameClubButton = GameObject.Find("HallView")?.transform.Find("Shell/HeaderMenu/MenuPanel/GameClubButton")?.GetComponent<Button>();
+            Assert.IsNotNull(gameClubButton, "Hall game club button should exist.");
+
+            var gameClubLabel = gameClubButton.transform.Find("Label")?.GetComponent("TextMeshProUGUI");
+            Assert.IsNotNull(gameClubLabel, "Hall game club button should expose a TMP label.");
+            var textProperty = gameClubLabel.GetType().GetProperty("text");
+            Assert.IsNotNull(textProperty, "Hall game club button label should expose a text property.");
+            Assert.AreEqual("游戏圈", textProperty.GetValue(gameClubLabel, null) as string, "Hall game club button should use the shared Chinese label.");
+
+            gameClubButton.onClick.Invoke();
             yield return null;
         }
 
