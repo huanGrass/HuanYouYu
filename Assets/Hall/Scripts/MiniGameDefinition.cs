@@ -10,5 +10,6 @@ namespace HuanYouYu.MiniGameHall
         public string Description;
         public bool IsPlayable;
         public string StatusLabel;
+        public string Category;
     }
 }

@@ -3,5 +3,6 @@
   "nameKey": "game.arrow-escape.name",
   "descriptionKey": "game.arrow-escape.description",
   "isPlayable": true,
-  "statusLabelKey": "status.playable"
+  "statusLabelKey": "status.playable",
+  "category": "puzzle"
 }

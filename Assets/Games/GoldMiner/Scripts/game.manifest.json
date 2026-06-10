@@ -3,5 +3,6 @@
   "nameKey": "game.goldminer.name",
   "descriptionKey": "game.goldminer.description",
   "isPlayable": true,
-  "statusLabelKey": "status.playable"
+  "statusLabelKey": "status.playable",
+  "category": "action"
 }

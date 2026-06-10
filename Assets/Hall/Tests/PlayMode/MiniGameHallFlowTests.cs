@@ -11,6 +11,12 @@ namespace Tests
 {
     public class MiniGameHallFlowTests
     {
+        [TearDown]
+        public void TearDown()
+        {
+            ResetProgress();
+        }
+
         [UnityTest]
         public IEnumerator FirstLaunchSeedsDefaultFavorites()
         {
@@ -98,6 +104,33 @@ namespace Tests
         }
 
         [UnityTest]
+        public IEnumerator HallDoesNotShowTutorialOverlay()
+        {
+            ResetProgress();
+
+            MiniGameAppController controller = null;
+            yield return LoadController(value => controller = value);
+
+            Assert.IsNotNull(controller, "Hall controller should load before checking tutorial absence.");
+            Assert.IsNull(GameObject.Find("MiniGameTutorialOverlay"), "Hall should not show a tutorial overlay.");
+        }
+
+        [UnityTest]
+        public IEnumerator Game2048DoesNotShowTutorialOverlay()
+        {
+            ResetProgress();
+
+            MiniGameAppController controller = null;
+            yield return LoadController(value => controller = value);
+            Assert.IsNotNull(controller, "Hall controller should load before entering 2048.");
+
+            controller.EnterGame(Game2048View.GameIdConstant);
+            yield return null;
+
+            Assert.IsNull(GameObject.Find("MiniGameTutorialOverlay"), "2048 should not show a tutorial overlay.");
+        }
+
+        [UnityTest]
         public IEnumerator HallMenuContainsShareButtonAndCanInvokeIt()
         {
             ResetProgress();
@@ -141,6 +174,148 @@ namespace Tests
 
             gameClubButton.onClick.Invoke();
             yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator AboutMenuOpensAnnouncementPopupAndCloseButtonDismissesIt()
+        {
+            ResetProgress();
+
+            MiniGameAppController controller = null;
+            yield return LoadController(value => controller = value);
+
+            Assert.IsNotNull(controller, "Hall controller should load before opening the announcement popup.");
+
+            var aboutButton = GameObject.Find("HallView")?.transform.Find("Shell/HeaderMenu/MenuPanel/AboutGameButton")?.GetComponent<Button>();
+            Assert.IsNotNull(aboutButton, "Hall about button should exist.");
+            AssertMenuButtonLabel(aboutButton.transform, "公告");
+
+            aboutButton.onClick.Invoke();
+            yield return null;
+
+            var overlay = GameObject.Find("HallOverlay");
+            Assert.IsNotNull(overlay, "Hall overlay should exist for announcement rendering.");
+
+            var popup = overlay.transform.Find("AnnouncementPopup");
+            Assert.IsNotNull(popup, "About menu should open the generated announcement popup.");
+
+            Assert.IsNotNull(popup.Find("Dialog/Sidebar/Tab_RecentUpdates"), "Announcement popup should include the recent updates tab.");
+            Assert.IsNotNull(popup.Find("Dialog/Sidebar/Tab_AboutGame"), "Announcement popup should include the about game tab.");
+            Assert.IsNotNull(popup.Find("Dialog/Sidebar/Tab_Credits"), "Announcement popup should include the credits tab.");
+            Assert.IsNull(popup.Find("Dialog/Sidebar/Tab_Feedback"), "Announcement popup should not include the feedback tab.");
+            Assert.IsNull(popup.Find("Dialog/Sidebar/Tab_Preview"), "Announcement popup should not include the preview tab.");
+            Assert.IsNull(popup.Find("Dialog/Sidebar/Tab_Events"), "Announcement popup should not include the events tab.");
+            var latestUpdateCard = popup.Find("Dialog/ContentFrame/Viewport/Content/VersionCard_20260610");
+            var mayUpdateCard = popup.Find("Dialog/ContentFrame/Viewport/Content/VersionCard_20260505");
+            var firstUpdateCard = popup.Find("Dialog/ContentFrame/Viewport/Content/VersionCard_20260501");
+            Assert.IsNotNull(latestUpdateCard, "Announcement popup should render the latest update card by default.");
+            Assert.IsNotNull(mayUpdateCard, "Announcement popup should render the 2026-05-05 update card.");
+            Assert.IsNotNull(firstUpdateCard, "Announcement popup should render the 2026-05-01 update card.");
+            AssertAnnouncementText(popup.Find("Dialog/ContentFrame/Viewport/Content/TitleRow/Title"), "最近更新");
+            AssertAnnouncementText(latestUpdateCard.Find("VersionBadge/Label"), "2026-06-10");
+            AssertAnnouncementText(latestUpdateCard.Find("Body"), "优化大厅体验");
+            AssertAnnouncementText(latestUpdateCard.Find("Body"), "连连看新增首局提示");
+            AssertAnnouncementText(mayUpdateCard.Find("VersionBadge/Label"), "2026-05-05");
+            AssertAnnouncementText(mayUpdateCard.Find("Body"), "叠牌消消");
+            AssertAnnouncementText(mayUpdateCard.Find("Body"), "游戏圈");
+            AssertAnnouncementText(firstUpdateCard.Find("VersionBadge/Label"), "2026-05-01");
+            AssertAnnouncementText(firstUpdateCard.Find("Body"), "点灯谜题");
+            Assert.IsNotNull(popup.Find("Dialog/ContentFrame")?.GetComponent<ScrollRect>(), "Announcement content should be scrollable for multiple versions.");
+            Assert.IsTrue(popup.Find("Dialog/ContentFrame/Viewport")?.GetComponent<Image>()?.raycastTarget, "Announcement viewport should receive drag events for scrolling.");
+            Assert.IsNotNull(popup.Find("Dialog/ContentFrame/Viewport")?.GetComponent<RectMask2D>(), "Announcement viewport should clip scrolled content inside the popup.");
+            Assert.IsNull(popup.Find("Dialog/ContentFrame/Viewport/Content/Footer"), "Announcement footer should stay outside clipped scroll content.");
+            var fixedFooter = popup.Find("Dialog/Footer") as RectTransform;
+            Assert.IsNotNull(fixedFooter, "Announcement footer should stay fixed inside the popup.");
+            AssertAnnouncementText(fixedFooter.Find("Label"), "小游戏还在持续更新中");
+            AssertFooterPosition(fixedFooter);
+            AssertFooterLeafAnchored(fixedFooter, "FooterLeafLeft", false);
+            AssertFooterLeafAnchored(fixedFooter, "FooterLeafRight", true);
+
+            var aboutTab = popup.Find("Dialog/Sidebar/Tab_AboutGame")?.GetComponent<Button>();
+            Assert.IsNotNull(aboutTab, "Announcement about game tab should be clickable.");
+            aboutTab.onClick.Invoke();
+            yield return null;
+            Assert.IsNull(popup.Find("Dialog/Footer"), "Announcement fixed footer should only appear on recent updates.");
+            AssertAnnouncementText(popup.Find("Dialog/ContentFrame/Viewport/Content/TitleRow/Title"), "关于游戏");
+            var aboutTextBlock = popup.Find("Dialog/ContentFrame/Viewport/Content/PlainTextBlock") as RectTransform;
+            AssertAnnouncementText(aboutTextBlock, "轻量玩法合集");
+            AssertAnnouncementText(aboutTextBlock, "欢迎加入游戏圈反馈问题、分享建议");
+            Assert.Greater(aboutTextBlock?.rect.height ?? 0f, 320f, "About game content should fill the announcement content area.");
+            Assert.Greater(aboutTextBlock?.rect.width ?? 0f, 260f, "About game content should use the same broad text area as recent updates.");
+            var announcementGameClubButton = popup.Find("Dialog/ContentFrame/Viewport/Content/GameClubButton")?.GetComponent<Button>();
+            Assert.IsNotNull(announcementGameClubButton, "Announcement about game tab should include a game club button.");
+            AssertAnnouncementText(announcementGameClubButton.transform.Find("Label"), "进入游戏圈");
+            announcementGameClubButton.onClick.Invoke();
+            yield return null;
+
+            var creditsTab = popup.Find("Dialog/Sidebar/Tab_Credits")?.GetComponent<Button>();
+            Assert.IsNotNull(creditsTab, "Announcement credits tab should be clickable.");
+            creditsTab.onClick.Invoke();
+            yield return null;
+            AssertAnnouncementText(popup.Find("Dialog/ContentFrame/Viewport/Content/TitleRow/Title"), "共创名单");
+            var creditsTextBlock = popup.Find("Dialog/ContentFrame/Viewport/Content/PlainTextBlock") as RectTransform;
+            AssertAnnouncementText(creditsTextBlock, "幻之小草");
+            Assert.Greater(creditsTextBlock?.rect.height ?? 0f, 320f, "Credits content should fill the announcement content area.");
+            Assert.Greater(creditsTextBlock?.rect.width ?? 0f, 260f, "Credits content should use the same broad text area as recent updates.");
+            AssertAnnouncementText(popup.Find("Dialog/ContentFrame/Viewport/Content/CreditsNote/Label"), "注：如需加入名单");
+
+            Assert.IsNotNull(popup.Find("Dialog/CloseButton/Inner"), "Announcement close button should use a circular inner fill.");
+            Assert.IsNotNull(popup.Find("Dialog/CloseButton/StrokeA"), "Announcement close button should use straight X strokes.");
+            Assert.IsNotNull(popup.Find("Dialog/CloseButton/StrokeB"), "Announcement close button should use straight X strokes.");
+
+            var closeButton = popup.Find("Dialog/CloseButton")?.GetComponent<Button>();
+            Assert.IsNotNull(closeButton, "Announcement popup should expose a close button.");
+
+            closeButton.onClick.Invoke();
+            yield return null;
+
+            Assert.IsNull(overlay.transform.Find("AnnouncementPopup"), "Close button should dismiss the announcement popup.");
+        }
+
+        [UnityTest]
+        public IEnumerator AnnouncementPopupFitsNarrowWideCanvas()
+        {
+            ResetProgress();
+
+            MiniGameAppController controller = null;
+            yield return LoadController(value => controller = value);
+
+            var canvas = GameObject.Find("MiniGameCanvas");
+            Assert.IsNotNull(canvas, "Hall canvas should exist.");
+
+            var canvasRect = canvas.GetComponent<RectTransform>();
+            Assert.IsNotNull(canvasRect, "Hall canvas should expose a RectTransform.");
+            canvasRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 430f);
+            canvasRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 900f);
+            Canvas.ForceUpdateCanvases();
+
+            var aboutButton = GameObject.Find("HallView")?.transform.Find("Shell/HeaderMenu/MenuPanel/AboutGameButton")?.GetComponent<Button>();
+            Assert.IsNotNull(aboutButton, "Hall about button should exist.");
+            aboutButton.onClick.Invoke();
+            yield return null;
+            Canvas.ForceUpdateCanvases();
+
+            var overlay = GameObject.Find("HallOverlay");
+            Assert.IsNotNull(overlay, "Hall overlay should exist for announcement rendering.");
+
+            var popup = overlay.transform.Find("AnnouncementPopup");
+            Assert.IsNotNull(popup, "About menu should open the generated announcement popup.");
+
+            var dialog = popup.Find("Dialog") as RectTransform;
+            var contentFrame = popup.Find("Dialog/ContentFrame") as RectTransform;
+            var updateCard = popup.Find("Dialog/ContentFrame/Viewport/Content/VersionCard_20260610") as RectTransform;
+            var fixedFooter = popup.Find("Dialog/Footer") as RectTransform;
+            Assert.IsNotNull(dialog, "Announcement dialog should exist.");
+            Assert.IsNotNull(contentFrame, "Announcement content frame should exist.");
+            Assert.IsNotNull(updateCard, "Announcement latest update card should be visible.");
+            Assert.IsNotNull(fixedFooter, "Announcement footer should remain visible outside the clipped scroll area.");
+            Assert.LessOrEqual(dialog.rect.width, 430f - 52f - 20f + 0.1f, "Announcement dialog should clamp to narrow canvas width.");
+            Assert.Greater(contentFrame.rect.width, 120f, "Announcement content area should keep enough width on narrow canvas.");
+            Assert.Greater(updateCard.rect.width, 100f, "Announcement update card should remain measurable on narrow canvas.");
+            Assert.Greater(fixedFooter.rect.height, 40f, "Announcement fixed footer should keep enough vertical space on narrow canvas.");
+            AssertAnnouncementText(updateCard.Find("Body"), "优化大厅体验");
+            AssertAnnouncementText(fixedFooter.Find("Label"), "小游戏还在持续更新中");
+            AssertFooterPosition(fixedFooter);
         }
 
         [UnityTest]
@@ -188,19 +363,34 @@ namespace Tests
             Assert.IsNotNull(textProperty, "Chest badge count label should expose a text property.");
             Assert.AreEqual("2", textProperty.GetValue(chestCountText, null) as string, "Chest badge should show the accumulated chest count.");
 
-            var headerStats = GameObject.Find("HeaderStats");
-            Assert.IsNotNull(headerStats, "Hall should expose a header stats strip above the card list.");
-            var headerChestCountText = headerStats.transform.Find("ChestStat/CountText")?.GetComponent("TextMeshProUGUI");
-            Assert.IsNotNull(headerChestCountText, "Header stats strip should expose a chest count label.");
-            var headerTextProperty = headerChestCountText.GetType().GetProperty("text");
-            Assert.IsNotNull(headerTextProperty, "Header chest count label should expose a text property.");
-            Assert.AreEqual("2", headerTextProperty.GetValue(headerChestCountText, null) as string, "Header stats strip should show the total chest count.");
+            AssertHeaderStatsVisible();
 
-            var headerCoinCountText = headerStats.transform.Find("CoinStat/CountText")?.GetComponent("TextMeshProUGUI");
-            Assert.IsNotNull(headerCoinCountText, "Header stats strip should expose a coin count label.");
-            var headerCoinTextProperty = headerCoinCountText.GetType().GetProperty("text");
-            Assert.IsNotNull(headerCoinTextProperty, "Header coin count label should expose a text property.");
-            Assert.AreEqual("0", headerCoinTextProperty.GetValue(headerCoinCountText, null) as string, "Header stats strip should show zero coins when no game awards them yet.");
+            var allGamesTab = GameObject.Find("AllGamesTab");
+            Assert.IsNotNull(allGamesTab, "All games tab was not found.");
+            allGamesTab.GetComponent<Button>().onClick.Invoke();
+            yield return null;
+
+            Assert.IsNull(GameObject.Find("HeaderStats"), "All games page should hide the header chest and coin strip.");
+            AssertHeaderTagBarVisible();
+
+            var tagBar = GameObject.Find("HeaderTagBar");
+            var allTagGraphic = tagBar.transform.Find("Tag_0")?.GetComponent<RoundedRectGraphic>();
+            var eliminateTagButton = tagBar.transform.Find("Tag_1")?.GetComponent<Button>();
+            var eliminateTagGraphic = tagBar.transform.Find("Tag_1")?.GetComponent<RoundedRectGraphic>();
+            Assert.IsNotNull(allTagGraphic, "All tag should expose a graphic.");
+            Assert.IsNotNull(eliminateTagButton, "Eliminate tag should expose a clickable button.");
+            Assert.IsNotNull(eliminateTagGraphic, "Eliminate tag should expose a graphic.");
+
+            var allTagSelectedColor = allTagGraphic.color;
+            var eliminateTagUnselectedColor = eliminateTagGraphic.color;
+            eliminateTagButton.onClick.Invoke();
+            yield return null;
+
+            Assert.AreEqual(eliminateTagUnselectedColor, allTagGraphic.color, "Clicking a tag should unselect the previous tag.");
+            Assert.AreEqual(allTagSelectedColor, eliminateTagGraphic.color, "Clicking a tag should select the clicked tag.");
+            Assert.IsNotNull(GameObject.Find("classic-link_Card"), "Eliminate tag should keep eliminate games visible.");
+            Assert.IsNull(GameObject.Find("sudoku_Card"), "Eliminate tag should hide number games.");
+            Assert.IsNull(GameObject.Find("snake_Card"), "Eliminate tag should hide action games.");
         }
 
         [UnityTest]
@@ -424,7 +614,7 @@ namespace Tests
         }
 
         [UnityTest]
-        public IEnumerator HeaderStatIconsKeepStillWhileUsingSweep()
+        public IEnumerator AllGamesPageShowsHeaderTagBarInsteadOfResourceStats()
         {
             ResetProgress();
 
@@ -440,76 +630,19 @@ namespace Tests
             });
             yield return null;
 
-            var headerStats = GameObject.Find("HeaderStats")?.GetComponent<RectTransform>();
-            Assert.IsNotNull(headerStats, "Hall should expose the header stats strip.");
+            AssertHeaderStatsVisible();
 
-            var chestIcon = headerStats.Find("ChestStat/ChestIcon") as RectTransform;
-            var coinIcon = headerStats.Find("CoinStat/CoinIcon") as RectTransform;
-            var chestCountText = headerStats.Find("ChestStat/CountText") as RectTransform;
-            var coinCountText = headerStats.Find("CoinStat/CountText") as RectTransform;
-            Assert.IsNotNull(chestIcon, "Header chest icon should exist.");
-            Assert.IsNotNull(coinIcon, "Header coin icon should exist.");
-            Assert.IsNotNull(chestCountText, "Header chest count text should exist.");
-            Assert.IsNotNull(coinCountText, "Header coin count text should exist.");
+            var headerTagBar = GameObject.Find("HallView")?.transform.Find("Shell/HeaderTagBar")?.gameObject;
+            Assert.IsNotNull(headerTagBar, "Hall should create the all-games tag bar.");
+            Assert.IsFalse(headerTagBar.activeInHierarchy, "Tag bar should stay hidden before entering all games.");
 
-            var chestSweep = headerStats.Find("ChestStat/ChestIcon/IconSweepRoot/SweepShine")?.GetComponent<Image>();
-            var coinSweep = headerStats.Find("CoinStat/CoinIcon/IconSweepRoot/SweepShine")?.GetComponent<Image>();
-            Assert.IsNotNull(chestSweep, "Header chest icon should expose a sweep shine image.");
-            Assert.IsNotNull(coinSweep, "Header coin icon should expose a sweep shine image.");
-            Assert.That(chestSweep.color.a, Is.EqualTo(0f).Within(0.001f), "Chest sweep should start hidden.");
-            Assert.That(coinSweep.color.a, Is.EqualTo(0f).Within(0.001f), "Coin sweep should start hidden.");
+            var allGamesTab = GameObject.Find("AllGamesTab");
+            Assert.IsNotNull(allGamesTab, "All games tab was not found.");
+            allGamesTab.GetComponent<Button>().onClick.Invoke();
+            yield return null;
 
-            var headerBasePosition = headerStats.anchoredPosition;
-            var chestIconBasePosition = chestIcon.anchoredPosition;
-            var coinIconBasePosition = coinIcon.anchoredPosition;
-            var chestTextBasePosition = chestCountText.anchoredPosition;
-            var coinTextBasePosition = coinCountText.anchoredPosition;
-
-            yield return new WaitForSecondsRealtime(1.1f);
-
-            Assert.That(headerStats.anchoredPosition, Is.EqualTo(headerBasePosition), "Header stats strip should stay fixed.");
-            Assert.That(chestIcon.anchoredPosition, Is.EqualTo(chestIconBasePosition), "Chest icon should stay fixed.");
-            Assert.That(coinIcon.anchoredPosition, Is.EqualTo(coinIconBasePosition), "Coin icon should stay fixed.");
-            Assert.That(chestCountText.anchoredPosition, Is.EqualTo(chestTextBasePosition), "Chest count text should stay fixed.");
-            Assert.That(coinCountText.anchoredPosition, Is.EqualTo(coinTextBasePosition), "Coin count text should stay fixed.");
-
-            var sweepDetected = false;
-            var deadline = Time.realtimeSinceStartup + 8.8f;
-            while (Time.realtimeSinceStartup < deadline)
-            {
-                if (chestSweep.color.a > 0.01f || coinSweep.color.a > 0.01f)
-                {
-                    sweepDetected = true;
-                    break;
-                }
-
-                yield return null;
-            }
-
-            Assert.IsTrue(sweepDetected, "At least one header stat icon should trigger a sweep within the configured interval.");
-            if (chestSweep.color.a > 0.01f)
-            {
-                Assert.Greater(chestSweep.rectTransform.anchoredPosition.x, -43f, "Chest sweep should move across the icon while active.");
-            }
-
-            if (coinSweep.color.a > 0.01f)
-            {
-                Assert.Greater(coinSweep.rectTransform.anchoredPosition.x, -43f, "Coin sweep should move across the icon while active.");
-            }
-
-            var fadeDeadline = Time.realtimeSinceStartup + 2.4f;
-            while (Time.realtimeSinceStartup < fadeDeadline && (chestSweep.color.a > 0.02f || coinSweep.color.a > 0.02f))
-            {
-                yield return null;
-            }
-
-            Assert.That(chestSweep.color.a, Is.EqualTo(0f).Within(0.02f), "Chest sweep should fade out after one pass.");
-            Assert.That(coinSweep.color.a, Is.EqualTo(0f).Within(0.02f), "Coin sweep should fade out after one pass.");
-            Assert.That(headerStats.anchoredPosition, Is.EqualTo(headerBasePosition), "Header stats strip should remain fixed after sweep.");
-            Assert.That(chestIcon.anchoredPosition, Is.EqualTo(chestIconBasePosition), "Chest icon should remain fixed after sweep.");
-            Assert.That(coinIcon.anchoredPosition, Is.EqualTo(coinIconBasePosition), "Coin icon should remain fixed after sweep.");
-            Assert.That(chestCountText.anchoredPosition, Is.EqualTo(chestTextBasePosition), "Chest count text should remain fixed after sweep.");
-            Assert.That(coinCountText.anchoredPosition, Is.EqualTo(coinTextBasePosition), "Coin count text should remain fixed after sweep.");
+            Assert.IsNull(GameObject.Find("HeaderStats"), "All games page should hide the header stats strip.");
+            AssertHeaderTagBarVisible();
         }
 
         [UnityTest]
@@ -608,6 +741,31 @@ namespace Tests
         }
 
         [UnityTest]
+        public IEnumerator ClickingActiveAllGamesTabShouldNotRebuildCard()
+        {
+            ResetProgress();
+
+            MiniGameAppController controller = null;
+            yield return LoadController(value => controller = value);
+
+            var allGamesTab = GameObject.Find("AllGamesTab");
+            Assert.IsNotNull(allGamesTab, "All games tab was not found.");
+            allGamesTab.GetComponent<Button>().onClick.Invoke();
+            yield return null;
+
+            var cardObject = GameObject.Find("nonogram_Card");
+            Assert.IsNotNull(cardObject, "Nonogram card was not found in all games tab.");
+            var originalInstanceId = cardObject.GetInstanceID();
+
+            allGamesTab.GetComponent<Button>().onClick.Invoke();
+            yield return null;
+
+            var updatedCardObject = GameObject.Find("nonogram_Card");
+            Assert.IsNotNull(updatedCardObject, "Nonogram card should still exist after clicking the active all games tab.");
+            Assert.AreEqual(originalInstanceId, updatedCardObject.GetInstanceID(), "Clicking the active all games tab should not rebuild existing cards.");
+        }
+
+        [UnityTest]
         public IEnumerator AllGamesTabUsesAtLeastThreeColumnsInDefaultScene()
         {
             ResetProgress();
@@ -695,13 +853,15 @@ namespace Tests
             Assert.AreEqual(5, progress.TotalChestCount);
             Assert.AreEqual(0, progress.TotalCoinCount, "Legacy save data without coin field should default to zero coins.");
 
-            var headerStats = GameObject.Find("HeaderStats");
-            Assert.IsNotNull(headerStats, "Hall should expose a header stats strip after loading legacy save data.");
-            var headerCoinCountText = headerStats.transform.Find("CoinStat/CountText")?.GetComponent("TextMeshProUGUI");
-            Assert.IsNotNull(headerCoinCountText, "Header stats strip should expose a coin count label.");
-            var textProperty = headerCoinCountText.GetType().GetProperty("text");
-            Assert.IsNotNull(textProperty, "Header coin count label should expose a text property.");
-            Assert.AreEqual("0", textProperty.GetValue(headerCoinCountText, null) as string, "Legacy save data should still render zero coins in the header.");
+            AssertHeaderStatsVisible();
+
+            var allGamesTab = GameObject.Find("AllGamesTab");
+            Assert.IsNotNull(allGamesTab, "All games tab was not found.");
+            allGamesTab.GetComponent<Button>().onClick.Invoke();
+            yield return null;
+
+            Assert.IsNull(GameObject.Find("HeaderStats"), "All games page should hide the header stats strip.");
+            AssertHeaderTagBarVisible();
         }
 
         [UnityTest]
@@ -756,6 +916,43 @@ namespace Tests
             Assert.IsNull(GameObject.Find("EditorLevelProgressPanel"), "Editor level progress controls should not be injected into the PlayMode hall.");
             Assert.IsNull(GameObject.Find("EditorOpenAllLevelsButton"), "Open-all-levels editor control should stay out of the game UI.");
             Assert.IsNull(GameObject.Find("EditorClearAllLevelsButton"), "Clear-all-levels editor control should stay out of the game UI.");
+        }
+
+        [UnityTest]
+        public IEnumerator ClearSaveDataResetsHallProgressAndClassicLinkTutorialState()
+        {
+            ResetProgress();
+
+            MiniGameAppController controller = null;
+            yield return LoadController(value => controller = value);
+
+            Assert.IsNotNull(controller, "Hall controller should load before clearing save data.");
+
+            controller.GrantSettlementReward(
+                "classic-link",
+                new MiniGameSettlement
+                {
+                    Score = 120,
+                    ChestCount = 2,
+                    CoinCount = 30
+                });
+            controller.SetLevelProgress("classic-link", 3, 6);
+            controller.SetGameTutorialSeenVersion("classic-link", 1);
+            controller.ToggleFavorite("classic-link");
+            PlayerPrefs.Save();
+
+            controller.ClearSaveData();
+            yield return null;
+
+            var progress = controller.GetProgress("classic-link");
+            Assert.AreEqual(0, progress.PlayCount);
+            Assert.AreEqual(0, progress.BestScore);
+            Assert.AreEqual(0, progress.TotalChestCount);
+            Assert.AreEqual(0, progress.TotalCoinCount);
+            Assert.AreEqual(0, progress.CurrentLevelIndex);
+            Assert.AreEqual(1, progress.UnlockedLevelCount);
+            Assert.AreEqual(0, controller.GetGameTutorialSeenVersion("classic-link"));
+            Assert.IsTrue(controller.IsFavorite("classic-link"), "Cleared save data should return the hall to first-launch default favorites.");
         }
 
         [UnityTest]
@@ -828,6 +1025,82 @@ namespace Tests
             Assert.IsNull(promptCard.transform.Find("ChestBadge"), "Prompt card should not keep a chest badge node.");
             Assert.IsNull(promptCard.transform.Find("CostText"), "Prompt card should not keep a cost text node.");
             Assert.IsNull(promptCard.transform.Find("Background"), "Prompt card should not keep the card background node.");
+        }
+
+        private static void AssertHeaderTagBarVisible()
+        {
+            var tagBar = GameObject.Find("HeaderTagBar");
+            Assert.IsNotNull(tagBar, "All games page should expose a header tag bar.");
+            Assert.IsTrue(tagBar.activeInHierarchy, "Header tag bar should be visible on all games page.");
+            Assert.IsNull(tagBar.transform.Find("ChestStat"), "Header tag bar should not contain the old chest stat node.");
+            Assert.IsNull(tagBar.transform.Find("CoinStat"), "Header tag bar should not contain the old coin stat node.");
+
+            AssertHeaderTagLabel(tagBar.transform, "Tag_0", UiTextCatalog.Get("hall.tag.all"));
+            AssertHeaderTagLabel(tagBar.transform, "Tag_1", UiTextCatalog.Get("hall.tag.eliminate"));
+            AssertHeaderTagLabel(tagBar.transform, "Tag_2", UiTextCatalog.Get("hall.tag.puzzle"));
+            AssertHeaderTagLabel(tagBar.transform, "Tag_3", UiTextCatalog.Get("hall.tag.number"));
+            AssertHeaderTagLabel(tagBar.transform, "Tag_4", UiTextCatalog.Get("hall.tag.action"));
+            AssertHeaderTagLabel(tagBar.transform, "Tag_5", UiTextCatalog.Get("hall.tag.simulation"));
+            AssertHeaderTagLabel(tagBar.transform, "Tag_6", UiTextCatalog.Get("hall.tag.merge"));
+            Assert.IsNull(tagBar.transform.Find("Tag_7"), "Header tag bar should not include extra tags.");
+        }
+
+        private static void AssertHeaderStatsVisible()
+        {
+            var headerStats = GameObject.Find("HeaderStats");
+            Assert.IsNotNull(headerStats, "Favorites page should expose the header chest and coin strip.");
+            Assert.IsTrue(headerStats.activeInHierarchy, "Header chest and coin strip should be visible on favorites page.");
+            Assert.IsNotNull(headerStats.transform.Find("ChestStat"), "Header stats should contain the chest stat node.");
+            Assert.IsNotNull(headerStats.transform.Find("CoinStat"), "Header stats should contain the coin stat node.");
+        }
+
+        private static void AssertHeaderTagLabel(Transform tagBar, string tagName, string expectedText)
+        {
+            var label = tagBar.Find(tagName + "/Label")?.GetComponent("TextMeshProUGUI");
+            Assert.IsNotNull(label, "Header tag should expose a TMP label: " + tagName);
+            var textProperty = label.GetType().GetProperty("text");
+            Assert.IsNotNull(textProperty, "Header tag label should expose a text property: " + tagName);
+            Assert.AreEqual(expectedText, textProperty.GetValue(label, null) as string, "Header tag label should match.");
+        }
+
+        private static void AssertAnnouncementText(Transform target, string expectedContains)
+        {
+            Assert.IsNotNull(target, "Announcement text target should exist.");
+            var textComponent = target.GetComponent("TextMeshProUGUI");
+            Assert.IsNotNull(textComponent, "Announcement text target should expose a TMP label.");
+            var textProperty = textComponent.GetType().GetProperty("text");
+            Assert.IsNotNull(textProperty, "Announcement TMP label should expose a text property.");
+            var value = textProperty.GetValue(textComponent, null) as string;
+            StringAssert.Contains(expectedContains, value, "Announcement text should be populated.");
+        }
+
+        private static void AssertMenuButtonLabel(Transform button, string expected)
+        {
+            var label = button.Find("Label")?.GetComponent("TextMeshProUGUI");
+            Assert.IsNotNull(label, "Menu button should expose a TMP label.");
+            var textProperty = label.GetType().GetProperty("text");
+            Assert.IsNotNull(textProperty, "Menu button label should expose a text property.");
+            Assert.AreEqual(expected, textProperty.GetValue(label, null) as string, "Menu button should use the shared Chinese label.");
+        }
+
+        private static void AssertFooterLeafAnchored(Transform footer, string leafName, bool right)
+        {
+            var leaf = footer.Find(leafName) as RectTransform;
+            Assert.IsNotNull(leaf, "Announcement fixed footer should keep decorative leaf: " + leafName);
+            Assert.That(leaf.anchorMin.x, Is.EqualTo(right ? 1f : 0f).Within(0.001f), "Footer leaf should be anchored to its side.");
+            Assert.That(leaf.anchorMax.x, Is.EqualTo(right ? 1f : 0f).Within(0.001f), "Footer leaf should be anchored to its side.");
+            Assert.That(leaf.anchoredPosition.x, Is.EqualTo(0f).Within(0.001f), "Footer leaf X offset should stay on the footer edge.");
+            Assert.That(leaf.anchoredPosition.y, Is.EqualTo(0f).Within(0.001f), "Footer leaf should share the footer vertical center.");
+        }
+
+        private static void AssertFooterPosition(RectTransform footer)
+        {
+            Assert.That(footer.offsetMin.y, Is.EqualTo(54f).Within(0.001f), "Footer should move up as a whole.");
+            Assert.That(footer.offsetMax.y, Is.EqualTo(104f).Within(0.001f), "Footer should move up as a whole.");
+            var label = footer.Find("Label") as RectTransform;
+            Assert.IsNotNull(label, "Announcement fixed footer should expose a label.");
+            Assert.That(label.offsetMin.y, Is.EqualTo(0f).Within(0.001f), "Footer label should not move independently from footer.");
+            Assert.That(label.offsetMax.y, Is.EqualTo(0f).Within(0.001f), "Footer label should not move independently from footer.");
         }
 
         private static IEnumerator LoadController(Action<MiniGameAppController> assign)

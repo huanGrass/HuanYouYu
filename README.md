@@ -22,6 +22,8 @@
 
 作者B站视频，游戏上线时刻：[https://www.bilibili.com/video/BV1F3QjBrEYY](https://www.bilibili.com/video/BV1F3QjBrEYY)
 
+版本更新公告见：[CHANGELOG.md](./CHANGELOG.md)
+
 ## 开发环境
 
 - 编辑器：团结引擎 1.8.3

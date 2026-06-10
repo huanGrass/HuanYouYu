@@ -3,5 +3,6 @@
   "nameKey": "game.water_sort.name",
   "descriptionKey": "game.water_sort.description",
   "isPlayable": true,
-  "statusLabelKey": "status.playable"
+  "statusLabelKey": "status.playable",
+  "category": "eliminate"
 }

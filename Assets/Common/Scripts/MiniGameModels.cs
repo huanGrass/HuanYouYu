@@ -12,6 +12,7 @@ namespace HuanYouYu.MiniGameHall
         public int TotalCoinCount;
         public int CurrentLevelIndex;
         public int UnlockedLevelCount;
+        public int TutorialSeenVersion;
     }
 
     public sealed class MiniGameSettlement
@@ -25,5 +26,12 @@ namespace HuanYouYu.MiniGameHall
     internal interface IMiniGameRewardSink
     {
         void GrantSettlementReward(string gameId, MiniGameSettlement settlement);
+    }
+
+    public interface IMiniGameTutorialStore
+    {
+        int GetGameTutorialSeenVersion(string gameId);
+
+        void SetGameTutorialSeenVersion(string gameId, int version);
     }
 }

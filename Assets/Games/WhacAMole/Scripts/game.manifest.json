@@ -3,5 +3,6 @@
   "nameKey": "game.whacamole.name",
   "descriptionKey": "game.whacamole.description",
   "isPlayable": true,
-  "statusLabelKey": "status.playable"
+  "statusLabelKey": "status.playable",
+  "category": "action"
 }

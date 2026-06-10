@@ -220,7 +220,7 @@ namespace HuanYouYu.MiniGameHall
         private void ShowAboutGamePopup()
         {
             CloseActiveModal();
-            activeModalRoot = CreateAboutPopupFromPrefab();
+            activeModalRoot = CreateAnnouncementPopup();
         }
 
         private void ShowSettingsPopup()

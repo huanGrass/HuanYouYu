@@ -3,5 +3,6 @@
   "nameKey": "game.gomoku.name",
   "descriptionKey": "game.gomoku.description",
   "isPlayable": true,
-  "statusLabelKey": "status.playable"
+  "statusLabelKey": "status.playable",
+  "category": "puzzle"
 }

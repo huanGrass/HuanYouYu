@@ -8,7 +8,7 @@ namespace HuanYouYu.MiniGameHall
     /// <summary>
     /// 大厅主控制器：负责大厅与小游戏切换、进度存档、音频与基础 UI 环境初始化。
     /// </summary>
-    public sealed partial class MiniGameAppController : MonoBehaviour, IMiniGameLevelProgressStore, IMiniGameRewardSink
+    public sealed partial class MiniGameAppController : MonoBehaviour, IMiniGameLevelProgressStore, IMiniGameRewardSink, IMiniGameTutorialStore
     {
         public const float ReferenceWidth = 750f;
         public const float ReferenceHeight = 1334f;
@@ -186,6 +186,68 @@ private static readonly string[] DefaultFavoriteGameIds =
             return MiniGameSaveStore.CreateEmpty(gameId);
         }
 
+        public int GetTotalCoinCount()
+        {
+            var totalCoinCount = 0;
+            foreach (var pair in progressLookup)
+            {
+                var progress = pair.Value;
+                if (progress == null)
+                {
+                    continue;
+                }
+
+                totalCoinCount += Mathf.Max(0, progress.TotalCoinCount);
+            }
+
+            return totalCoinCount;
+        }
+
+        public int GetTotalChestCount()
+        {
+            var totalChestCount = 0;
+            foreach (var pair in progressLookup)
+            {
+                var progress = pair.Value;
+                if (progress == null)
+                {
+                    continue;
+                }
+
+                totalChestCount += Mathf.Max(0, progress.TotalChestCount);
+            }
+
+            return totalChestCount;
+        }
+
+        public int GetHallGrowthLevel()
+        {
+            var totalExp = 0;
+            foreach (var pair in progressLookup)
+            {
+                var progress = pair.Value;
+                if (progress == null)
+                {
+                    continue;
+                }
+
+                totalExp += Mathf.Max(0, progress.TotalChestCount) * 35;
+                totalExp += Mathf.Max(0, progress.TotalCoinCount) / 50;
+            }
+
+            var level = 1;
+            var expPool = Mathf.Max(0, totalExp);
+            var required = GetHallLevelUpRequiredExp(level);
+            while (expPool >= required && level < 99)
+            {
+                expPool -= required;
+                level += 1;
+                required = GetHallLevelUpRequiredExp(level);
+            }
+
+            return level;
+        }
+
         public void SetLevelProgress(string gameId, int currentLevelIndex, int unlockedLevelCount)
         {
             if (string.IsNullOrWhiteSpace(gameId))
@@ -210,6 +272,45 @@ private static readonly string[] DefaultFavoriteGameIds =
             SaveHallState();
         }
 
+        private static int GetHallLevelUpRequiredExp(int level)
+        {
+            return 100 + Mathf.Max(0, level - 1) * 60;
+        }
+
+        public int GetGameTutorialSeenVersion(string gameId)
+        {
+            if (string.IsNullOrWhiteSpace(gameId))
+            {
+                return 0;
+            }
+
+            MiniGameProgressData progress;
+            if (!progressLookup.TryGetValue(gameId, out progress) || progress == null)
+            {
+                return 0;
+            }
+
+            return Mathf.Max(0, progress.TutorialSeenVersion);
+        }
+
+        public void SetGameTutorialSeenVersion(string gameId, int version)
+        {
+            if (string.IsNullOrWhiteSpace(gameId))
+            {
+                return;
+            }
+
+            MiniGameProgressData progress;
+            if (!progressLookup.TryGetValue(gameId, out progress))
+            {
+                progress = MiniGameSaveStore.CreateEmpty(gameId);
+                progressLookup[gameId] = progress;
+            }
+
+            progress.TutorialSeenVersion = Mathf.Max(progress.TutorialSeenVersion, version);
+            SaveHallState();
+        }
+
         public void RefreshHallView()
         {
             if (hallView == null)
@@ -217,6 +318,26 @@ private static readonly string[] DefaultFavoriteGameIds =
                 return;
             }
 
+            RefreshHall();
+        }
+
+        public void ClearSaveData()
+        {
+            DisposeActiveGame();
+            progressLookup.Clear();
+            favoriteGameIds.Clear();
+
+            for (var i = 0; i < definitions.Count; i++)
+            {
+                var definition = definitions[i];
+                if (definition != null && !string.IsNullOrWhiteSpace(definition.Id))
+                {
+                    progressLookup[definition.Id] = MiniGameSaveStore.CreateEmpty(definition.Id);
+                }
+            }
+
+            MiniGameSaveStore.ClearPersistedState();
+            EnsureDefaultFavorites(false);
             RefreshHall();
         }
 

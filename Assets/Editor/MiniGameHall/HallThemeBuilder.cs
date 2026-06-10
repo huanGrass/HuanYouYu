@@ -23,6 +23,16 @@ namespace HuanYouYu.MiniGameHall.Editor
         private const string TabUnselectedAssetPath = ThemeFolder + "/hall_tab_unselected.png";
         private const string ChestIconAssetPath = "Assets/Common/Resources/GameIcons/chest.png";
         private const string FavoriteStarIconAssetPath = "Assets/Common/Resources/GameIcons/star.png";
+        private static readonly string[] HeaderTagTextKeys =
+        {
+            "hall.tag.all",
+            "hall.tag.eliminate",
+            "hall.tag.puzzle",
+            "hall.tag.number",
+            "hall.tag.action",
+            "hall.tag.simulation",
+            "hall.tag.merge"
+        };
 
         [MenuItem("Tools/小游戏大厅/应用新参考主题")]
         public static void ApplyNewReferenceTheme()
@@ -152,14 +162,14 @@ namespace HuanYouYu.MiniGameHall.Editor
             titleLayout.preferredWidth = 430f;
             titleLayout.preferredHeight = 104f;
 
-            var headerStats = CreateHeaderStats("HeaderStats");
-            headerStats.transform.SetParent(shell.transform, false);
-            var headerStatsRect = headerStats.GetComponent<RectTransform>();
-            headerStatsRect.anchorMin = new Vector2(0.5f, 1f);
-            headerStatsRect.anchorMax = new Vector2(0.5f, 1f);
-            headerStatsRect.pivot = new Vector2(0.5f, 0.5f);
-            headerStatsRect.anchoredPosition = new Vector2(0f, -194f);
-            headerStatsRect.sizeDelta = new Vector2(306f, 42f);
+            var headerTagBar = CreateHeaderTagBar("HeaderTagBar");
+            headerTagBar.transform.SetParent(shell.transform, false);
+            var headerTagBarRect = headerTagBar.GetComponent<RectTransform>();
+            headerTagBarRect.anchorMin = new Vector2(0.5f, 1f);
+            headerTagBarRect.anchorMax = new Vector2(0.5f, 1f);
+            headerTagBarRect.pivot = new Vector2(0.5f, 0.5f);
+            headerTagBarRect.anchoredPosition = new Vector2(0f, -194f);
+            headerTagBarRect.sizeDelta = new Vector2(620f, 54f);
 
             var scrollFrame = new GameObject(
                 "ScrollFrame",
@@ -915,6 +925,72 @@ namespace HuanYouYu.MiniGameHall.Editor
             countTextRect.sizeDelta = new Vector2(92f, 34f);
 
             return root;
+        }
+
+        private static GameObject CreateHeaderTagBar(string name)
+        {
+            var root = new GameObject(
+                name,
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(RoundedRectGraphic));
+
+            var background = root.GetComponent<RoundedRectGraphic>();
+            background.color = new Color(1f, 0.98f, 0.88f, 0.88f);
+            background.CornerRadius = 22f;
+            background.raycastTarget = false;
+
+            var layout = root.AddComponent<HorizontalLayoutGroup>();
+            layout.padding = new RectOffset(10, 10, 7, 7);
+            layout.spacing = 8f;
+            layout.childAlignment = TextAnchor.MiddleCenter;
+            layout.childControlWidth = false;
+            layout.childControlHeight = false;
+            layout.childForceExpandWidth = false;
+            layout.childForceExpandHeight = false;
+
+            for (var i = 0; i < HeaderTagTextKeys.Length; i++)
+            {
+                CreateHeaderTagButton(root.transform, i, UiTextCatalog.Get(HeaderTagTextKeys[i]), i == 0);
+            }
+
+            return root;
+        }
+
+        private static void CreateHeaderTagButton(Transform parent, int index, string label, bool selected)
+        {
+            var buttonRoot = new GameObject(
+                "Tag_" + index,
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(RoundedRectGraphic),
+                typeof(Button),
+                typeof(LayoutElement));
+            buttonRoot.transform.SetParent(parent, false);
+
+            var buttonRect = buttonRoot.GetComponent<RectTransform>();
+            buttonRect.sizeDelta = new Vector2(selected ? 90f : 76f, 40f);
+
+            var layoutElement = buttonRoot.GetComponent<LayoutElement>();
+            layoutElement.preferredWidth = buttonRect.sizeDelta.x;
+            layoutElement.preferredHeight = buttonRect.sizeDelta.y;
+
+            var graphic = buttonRoot.GetComponent<RoundedRectGraphic>();
+            graphic.color = selected ? new Color(1f, 0.62f, 0.14f, 1f) : new Color(1f, 1f, 0.96f, 0.95f);
+            graphic.CornerRadius = 18f;
+            graphic.raycastTarget = true;
+
+            var button = buttonRoot.GetComponent<Button>();
+            button.transition = Selectable.Transition.None;
+            button.targetGraphic = graphic;
+            button.interactable = false;
+
+            var text = CreateText("Label", label, 22, FontStyles.Bold, TextAlignmentOptions.Center);
+            text.transform.SetParent(buttonRoot.transform, false);
+            Stretch(text.rectTransform, Vector2.zero, Vector2.one, new Vector2(6f, 0f), new Vector2(-6f, 0f));
+            text.color = selected ? Color.white : new Color(0.32f, 0.42f, 0.19f, 1f);
+            text.raycastTarget = false;
+            text.enableWordWrapping = false;
         }
 
         private static void CreateHeaderStatsBackground(Transform parent)

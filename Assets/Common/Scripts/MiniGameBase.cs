@@ -13,6 +13,7 @@ namespace HuanYouYu.MiniGameHall
         private string pauseHelpText;
         private MiniGameShell shell;
         private MiniGameWinSettlementView rewardSettlementView;
+        private MiniGameTutorialOverlay tutorialOverlay;
         private bool isDisposed;
 
         protected MiniGameBase(
@@ -152,6 +153,41 @@ namespace HuanYouYu.MiniGameHall
             }
         }
 
+        protected void TryStartTutorial(int version, MiniGameTutorialStep[] steps)
+        {
+            if (version <= 0 || steps == null || steps.Length == 0 || shell == null)
+            {
+                return;
+            }
+
+            var tutorialStore = hostBehaviour as IMiniGameTutorialStore;
+            if (tutorialStore == null || tutorialStore.GetGameTutorialSeenVersion(GameId) >= version || tutorialOverlay != null)
+            {
+                return;
+            }
+
+            shell.ClosePopup();
+            tutorialOverlay = MiniGameTutorialOverlay.Show(
+                shell.PopupHost,
+                steps,
+                delegate
+                {
+                    tutorialOverlay = null;
+                    tutorialStore.SetGameTutorialSeenVersion(GameId, version);
+                });
+        }
+
+        protected void CloseTutorial()
+        {
+            if (tutorialOverlay == null)
+            {
+                return;
+            }
+
+            tutorialOverlay.Dispose();
+            tutorialOverlay = null;
+        }
+
         /// <summary>
         /// 弹出结算框并在确认后回到大厅，供“退出即结算”的场景复用。
         /// </summary>
@@ -194,6 +230,7 @@ namespace HuanYouYu.MiniGameHall
 
             isDisposed = true;
             OnBeforeDispose();
+            CloseTutorial();
             CloseRewardSettlementPanel();
 
             if (shell != null)
@@ -254,10 +291,7 @@ namespace HuanYouYu.MiniGameHall
                 builder,
                 UiTextCatalog.Get("popup.help.section_gameplay"),
                 gameplay);
-            AppendHelpSection(
-                builder,
-                UiTextCatalog.Get("popup.help.section_credits"),
-                credits);
+            AppendHelpCreditLine(builder, credits);
             return builder.ToString();
         }
 
@@ -287,6 +321,22 @@ namespace HuanYouYu.MiniGameHall
 
             builder.AppendLine(title.Trim());
             builder.Append(content);
+        }
+
+        private static void AppendHelpCreditLine(StringBuilder builder, string content)
+        {
+            if (builder == null || string.IsNullOrWhiteSpace(content))
+            {
+                return;
+            }
+
+            if (builder.Length > 0)
+            {
+                builder.AppendLine();
+                builder.AppendLine();
+            }
+
+            builder.Append(content.Trim());
         }
 
         protected abstract void BuildOrBindSections();

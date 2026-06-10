@@ -7,7 +7,10 @@ namespace HuanYouYu.Editor.MiniGameHall
 {
     internal static class HallEditorLevelProgressUtility
     {
-        private const string MenuRoot = "幻游鱼/关卡进度/";
+        private const string MenuRoot = "幻游域/关卡进度/";
+        private const string ResourceMenuRoot = "幻游域/资源/";
+        private const int DebugCoinGrant = 999999;
+        private const int DebugChestGrant = 9999;
 
         [MenuItem(MenuRoot + "开放所有关卡进度")]
         public static void OpenAllLevelProgress()
@@ -85,6 +88,60 @@ namespace HuanYouYu.Editor.MiniGameHall
             SaveAndRefresh(loaded, changed, "已清除所有关卡进度。");
         }
 
+        [MenuItem(MenuRoot + "清空存档")]
+        public static void ClearAllSaveData()
+        {
+            MiniGameAppController controller;
+            if (TryGetRunningController(out controller))
+            {
+                controller.ClearSaveData();
+                Debug.Log("已清空存档。");
+                return;
+            }
+
+            MiniGameSaveStore.ClearPersistedState();
+            Debug.Log("已清空存档。");
+        }
+
+        [MenuItem(ResourceMenuRoot + "增加大量金币和宝箱")]
+        public static void GrantLotsOfCoinsAndChests()
+        {
+            string gameId;
+            if (!TryGetResourceGrantGameId(out gameId))
+            {
+                Debug.LogWarning("未找到可写入资源的玩法进度。");
+                return;
+            }
+
+            var settlement = new MiniGameSettlement
+            {
+                CoinCount = DebugCoinGrant,
+                ChestCount = DebugChestGrant,
+                Summary = "编辑器工具增加资源"
+            };
+
+            MiniGameAppController controller;
+            if (TryGetRunningController(out controller))
+            {
+                controller.GrantSettlementReward(gameId, settlement);
+                controller.RefreshHallView();
+                Debug.Log("已增加金币 " + DebugCoinGrant + "、宝箱 " + DebugChestGrant + "。");
+                return;
+            }
+
+            var loaded = LoadState();
+            MiniGameProgressData progress;
+            if (!loaded.ProgressLookup.TryGetValue(gameId, out progress))
+            {
+                progress = MiniGameSaveStore.CreateEmpty(gameId);
+                loaded.ProgressLookup[gameId] = progress;
+            }
+
+            progress.TotalCoinCount += DebugCoinGrant;
+            progress.TotalChestCount += DebugChestGrant;
+            SaveAndRefresh(loaded, true, "已增加金币 " + DebugCoinGrant + "、宝箱 " + DebugChestGrant + "。");
+        }
+
         private static void OpenAllLevelProgress(MiniGameAppController controller)
         {
             var entries = MiniGameLevelCatalog.GetEntries();
@@ -141,6 +198,25 @@ namespace HuanYouYu.Editor.MiniGameHall
         {
             var store = new MiniGameSaveStore();
             return store.Load(MiniGameCatalog.GetDefinitions());
+        }
+
+        private static bool TryGetResourceGrantGameId(out string gameId)
+        {
+            gameId = string.Empty;
+            var definitions = MiniGameCatalog.GetDefinitions();
+            for (var i = 0; i < definitions.Count; i++)
+            {
+                var definition = definitions[i];
+                if (definition == null || string.IsNullOrWhiteSpace(definition.Id))
+                {
+                    continue;
+                }
+
+                gameId = definition.Id;
+                return true;
+            }
+
+            return false;
         }
 
         private static bool ResetLevelProgress(

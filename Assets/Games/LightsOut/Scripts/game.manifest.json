@@ -3,5 +3,6 @@
   "nameKey": "game.lightsout.name",
   "descriptionKey": "game.lightsout.description",
   "isPlayable": true,
-  "statusLabelKey": "status.playable"
+  "statusLabelKey": "status.playable",
+  "category": "number"
 }

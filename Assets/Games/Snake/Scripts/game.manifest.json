@@ -3,5 +3,6 @@
   "nameKey": "game.snake.name",
   "descriptionKey": "game.snake.description",
   "isPlayable": true,
-  "statusLabelKey": "status.playable"
+  "statusLabelKey": "status.playable",
+  "category": "action"
 }

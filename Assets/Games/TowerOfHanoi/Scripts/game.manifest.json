@@ -3,5 +3,6 @@
   "nameKey": "game.towerofhanoi.name",
   "descriptionKey": "game.towerofhanoi.description",
   "isPlayable": true,
-  "statusLabelKey": "status.playable"
+  "statusLabelKey": "status.playable",
+  "category": "puzzle"
 }

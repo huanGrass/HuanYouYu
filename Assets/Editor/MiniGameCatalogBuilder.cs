@@ -24,6 +24,7 @@ namespace HuanYouYu.MiniGameHall.EditorTools
             public string descriptionKey;
             public bool isPlayable;
             public string statusLabelKey;
+            public string category;
         }
 
         [Serializable]
@@ -414,6 +415,7 @@ namespace HuanYouYu.MiniGameHall.EditorTools
                 ValidateTextKey(payload.nameKey, "nameKey", manifest.ManifestPath, textByKey, errors);
                 ValidateTextKey(payload.descriptionKey, "descriptionKey", manifest.ManifestPath, textByKey, errors);
                 ValidateTextKey(payload.statusLabelKey, "statusLabelKey", manifest.ManifestPath, textByKey, errors);
+                ValidateCategory(payload.category, manifest.ManifestPath, errors);
 
                 if (payload.isPlayable)
                 {
@@ -454,6 +456,26 @@ namespace HuanYouYu.MiniGameHall.EditorTools
             }
         }
 
+        private static void ValidateCategory(string category, string manifestPath, List<string> errors)
+        {
+            if (string.IsNullOrWhiteSpace(category))
+            {
+                errors.Add("manifest 缺少 category: " + manifestPath);
+                return;
+            }
+
+            var trimmedCategory = category.Trim();
+            if (trimmedCategory != "eliminate"
+                && trimmedCategory != "merge"
+                && trimmedCategory != "number"
+                && trimmedCategory != "puzzle"
+                && trimmedCategory != "action"
+                && trimmedCategory != "simulation")
+            {
+                errors.Add("manifest category 无效: " + trimmedCategory + " in " + manifestPath);
+            }
+        }
+
         private static void WriteCatalogAsset(List<ManifestFile> manifests, Dictionary<string, string> textByKey)
         {
             var config = AssetDatabase.LoadAssetAtPath<MiniGameCatalogConfig>(OutputCatalogAssetPath);
@@ -477,7 +499,8 @@ namespace HuanYouYu.MiniGameHall.EditorTools
                     Description = textByKey[payload.descriptionKey.Trim()],
                     IsPlayable = payload.isPlayable,
                     StatusLabelKey = payload.statusLabelKey.Trim(),
-                    StatusLabel = textByKey[payload.statusLabelKey.Trim()]
+                    StatusLabel = textByKey[payload.statusLabelKey.Trim()],
+                    Category = payload.category.Trim()
                 });
             }
 

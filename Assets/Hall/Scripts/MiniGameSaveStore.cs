@@ -33,13 +33,14 @@ namespace HuanYouYu.MiniGameHall
             var loadedLookup = new Dictionary<string, MiniGameProgressData>();
             var favoriteGameIds = new List<string>();
             var favoriteIdLookup = new HashSet<string>();
+            MiniGameSaveData saveData = null;
             var hasPersistedState = PlayerPrefs.HasKey(PlayerPrefsKey);
             if (hasPersistedState)
             {
                 var rawJson = PlayerPrefs.GetString(PlayerPrefsKey, string.Empty);
                 if (!string.IsNullOrWhiteSpace(rawJson))
                 {
-                    var saveData = JsonUtility.FromJson<MiniGameSaveData>(rawJson);
+                    saveData = JsonUtility.FromJson<MiniGameSaveData>(rawJson);
                     if (saveData != null && saveData.Entries != null)
                     {
                         for (var i = 0; i < saveData.Entries.Count; i++)
@@ -112,7 +113,8 @@ namespace HuanYouYu.MiniGameHall
                     TotalChestCount = pair.Value.TotalChestCount,
                     TotalCoinCount = pair.Value.TotalCoinCount,
                     CurrentLevelIndex = Mathf.Max(0, pair.Value.CurrentLevelIndex),
-                    UnlockedLevelCount = Mathf.Max(1, pair.Value.UnlockedLevelCount)
+                    UnlockedLevelCount = Mathf.Max(1, pair.Value.UnlockedLevelCount),
+                    TutorialSeenVersion = Mathf.Max(0, pair.Value.TutorialSeenVersion)
                 });
             }
 
@@ -132,6 +134,12 @@ namespace HuanYouYu.MiniGameHall
             PlayerPrefs.Save();
         }
 
+        public static void ClearPersistedState()
+        {
+            PlayerPrefs.DeleteKey(PlayerPrefsKey);
+            PlayerPrefs.Save();
+        }
+
         /// <summary>
         /// 创建指定游戏 ID 的空白进度数据。
         /// </summary>
@@ -145,7 +153,8 @@ namespace HuanYouYu.MiniGameHall
                 TotalChestCount = 0,
                 TotalCoinCount = 0,
                 CurrentLevelIndex = 0,
-                UnlockedLevelCount = 1
+                UnlockedLevelCount = 1,
+                TutorialSeenVersion = 0
             };
         }
 

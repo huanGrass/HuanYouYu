@@ -1449,6 +1449,8 @@ namespace HuanYouYu.MiniGameHall
             boardLayout.flexibleHeight = 1f;
             EnsureRoundedRectGraphic(boardPanel.gameObject, BoardColor, 0f, true);
             boardPanel.gameObject.AddComponent<RectMask2D>();
+            var resizeWatcher = boardPanel.gameObject.AddComponent<ArrowEscapeBoardPanelResizeWatcher>();
+            resizeWatcher.Initialize(OnBoardPanelDimensionsChanged);
             var dragHandler = boardPanel.gameObject.AddComponent<ArrowEscapeBoardDragHandler>();
             dragHandler.OnDragDelta = OnBoardDragged;
 
@@ -1577,6 +1579,16 @@ namespace HuanYouYu.MiniGameHall
             UpdateBoardZoomLimits(true);
             RebuildPieceVisuals();
             RefreshBoard();
+        }
+
+        private void OnBoardPanelDimensionsChanged()
+        {
+            if (boardRoot == null || boardPanel == null || currentPuzzle.Layout == null)
+            {
+                return;
+            }
+
+            UpdateBoardZoomLimits(true);
         }
 
         private void SyncPieceLayerToBoard()
@@ -3186,6 +3198,37 @@ namespace HuanYouYu.MiniGameHall
         public void OnDrag(PointerEventData eventData)
         {
             OnDragDelta?.Invoke(eventData.delta);
+        }
+    }
+
+    public sealed class ArrowEscapeBoardPanelResizeWatcher : MonoBehaviour
+    {
+        private Action onDimensionsChanged;
+        private Vector2 lastSize;
+
+        public void Initialize(Action callback)
+        {
+            onDimensionsChanged = callback;
+            var rectTransform = transform as RectTransform;
+            lastSize = rectTransform != null ? rectTransform.rect.size : Vector2.zero;
+        }
+
+        private void OnRectTransformDimensionsChange()
+        {
+            var rectTransform = transform as RectTransform;
+            if (rectTransform == null)
+            {
+                return;
+            }
+
+            var currentSize = rectTransform.rect.size;
+            if (Vector2.SqrMagnitude(currentSize - lastSize) < 0.25f)
+            {
+                return;
+            }
+
+            lastSize = currentSize;
+            onDimensionsChanged?.Invoke();
         }
     }
 }

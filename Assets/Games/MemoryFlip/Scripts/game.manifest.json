@@ -3,5 +3,6 @@
   "nameKey": "game.memory_flip.name",
   "descriptionKey": "game.memory_flip.description",
   "isPlayable": true,
-  "statusLabelKey": "status.playable"
+  "statusLabelKey": "status.playable",
+  "category": "puzzle"
 }

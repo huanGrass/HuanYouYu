@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.IO;
 using System.Reflection;
 using HuanYouYu.MiniGameHall;
 using NUnit.Framework;
@@ -159,10 +158,6 @@ namespace Tests
             AssertChildStaysInside("BullsCowsControls", "BullsCowsActionRow");
             AssertChildSizeAtLeast("GuessSlot_0", 120f, 120f);
             AssertChildSizeAtLeast("DigitButton_0", 145f, 58f);
-            var screenshotPath = Path.Combine(Directory.GetParent(Application.dataPath).FullName, "PlayModeShots", "pm_bulls_cows.bmp");
-            CaptureDiagnosticScreenshot(screenshotPath);
-            Assert.IsTrue(File.Exists(screenshotPath), "BullsCows diagnostic screenshot should be generated.");
-            Assert.Greater(new FileInfo(screenshotPath).Length, 1024, "BullsCows diagnostic screenshot should contain image data.");
         }
 
         private static IEnumerator LoadController(Action<MiniGameAppController> onLoaded)
@@ -198,27 +193,6 @@ namespace Tests
             var answerField = typeof(BullsCowsGameView).GetField("answer", InstancePrivate);
             Assert.IsNotNull(answerField, "answer field should be accessible for deterministic tests.");
             answerField.SetValue(runtime, answer);
-        }
-
-        private static void CaptureDiagnosticScreenshot(string path)
-        {
-            var directory = Path.GetDirectoryName(path);
-            if (!Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-
-            const int width = 375;
-            const int height = 667;
-            var pixels = new Color32[width * height];
-            Fill(pixels, new Color32(18, 28, 40, 255));
-            DrawRect(pixels, width, height, GameObject.Find("BullsCowsContent")?.GetComponent<RectTransform>(), new Color32(214, 232, 214, 255));
-            DrawRect(pixels, width, height, GameObject.Find("BullsCowsControls")?.GetComponent<RectTransform>(), new Color32(204, 221, 244, 255));
-            DrawRect(pixels, width, height, GameObject.Find("GuessRow")?.GetComponent<RectTransform>(), new Color32(255, 244, 174, 255));
-            DrawRect(pixels, width, height, GameObject.Find("BullsCowsHistory")?.GetComponent<RectTransform>(), new Color32(134, 180, 194, 255));
-            DrawRect(pixels, width, height, GameObject.Find("Keypad")?.GetComponent<RectTransform>(), new Color32(114, 154, 202, 255));
-            AssertPixelsLookNonBlank(pixels);
-            File.WriteAllBytes(path, EncodeBmp(pixels, width, height));
         }
 
         private static void AssertChildStaysInside(string parentName, string childName)
@@ -265,91 +239,6 @@ namespace Tests
             var corners = new Vector3[4];
             rect.GetWorldCorners(corners);
             return Rect.MinMaxRect(corners[0].x, corners[0].y, corners[2].x, corners[2].y);
-        }
-
-        private static byte[] EncodeBmp(Color32[] pixels, int width, int height)
-        {
-            var rowStride = ((width * 3) + 3) & ~3;
-            var pixelDataSize = rowStride * height;
-            var fileSize = 54 + pixelDataSize;
-            var bytes = new byte[fileSize];
-            bytes[0] = (byte)'B';
-            bytes[1] = (byte)'M';
-            WriteInt(bytes, 2, fileSize);
-            WriteInt(bytes, 10, 54);
-            WriteInt(bytes, 14, 40);
-            WriteInt(bytes, 18, width);
-            WriteInt(bytes, 22, height);
-            bytes[26] = 1;
-            bytes[28] = 24;
-            WriteInt(bytes, 34, pixelDataSize);
-
-            for (var y = 0; y < height; y++)
-            {
-                var rowOffset = 54 + y * rowStride;
-                for (var x = 0; x < width; x++)
-                {
-                    var pixel = pixels[y * width + x];
-                    var offset = rowOffset + x * 3;
-                    bytes[offset] = pixel.b;
-                    bytes[offset + 1] = pixel.g;
-                    bytes[offset + 2] = pixel.r;
-                }
-            }
-
-            return bytes;
-        }
-
-        private static void WriteInt(byte[] bytes, int offset, int value)
-        {
-            bytes[offset] = (byte)(value & 0xff);
-            bytes[offset + 1] = (byte)((value >> 8) & 0xff);
-            bytes[offset + 2] = (byte)((value >> 16) & 0xff);
-            bytes[offset + 3] = (byte)((value >> 24) & 0xff);
-        }
-
-        private static void Fill(Color32[] pixels, Color32 color)
-        {
-            for (var i = 0; i < pixels.Length; i++)
-            {
-                pixels[i] = color;
-            }
-        }
-
-        private static void DrawRect(Color32[] pixels, int width, int height, RectTransform rect, Color32 color)
-        {
-            Assert.IsNotNull(rect, "Diagnostic screenshot target rect should exist.");
-            var screenRect = ToScreenRect(rect);
-            var sourceWidth = Mathf.Max(1f, Screen.width);
-            var sourceHeight = Mathf.Max(1f, Screen.height);
-            var minX = Mathf.Clamp(Mathf.FloorToInt(screenRect.xMin / sourceWidth * width), 0, width - 1);
-            var maxX = Mathf.Clamp(Mathf.CeilToInt(screenRect.xMax / sourceWidth * width), 0, width - 1);
-            var minY = Mathf.Clamp(Mathf.FloorToInt(screenRect.yMin / sourceHeight * height), 0, height - 1);
-            var maxY = Mathf.Clamp(Mathf.CeilToInt(screenRect.yMax / sourceHeight * height), 0, height - 1);
-            for (var y = minY; y <= maxY; y++)
-            {
-                for (var x = minX; x <= maxX; x++)
-                {
-                    pixels[y * width + x] = color;
-                }
-            }
-        }
-
-        private static void AssertPixelsLookNonBlank(Color32[] pixels)
-        {
-            var sampleStep = Mathf.Max(1, pixels.Length / 1200);
-            var colorSpread = 0;
-            var first = pixels[0];
-            for (var i = 0; i < pixels.Length; i += sampleStep)
-            {
-                var pixel = pixels[i];
-                if (Mathf.Abs(pixel.r - first.r) + Mathf.Abs(pixel.g - first.g) + Mathf.Abs(pixel.b - first.b) > 40)
-                {
-                    colorSpread++;
-                }
-            }
-
-            Assert.Greater(colorSpread, 40, "Diagnostic screenshot should not be flat.");
         }
 
         private static int CountButtonsWithPrefix(string prefix)

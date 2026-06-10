@@ -19,6 +19,7 @@ public static class TMPStaticSubsetFontBuilder
     private const string TmpSettingsPath = "Assets/TextMesh Pro/Resources/TMP Settings.asset";
     private const string LiberationFontAssetPath = "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset";
     private const string SharedUiTextSourcePath = "Assets/Common/Resources/Text/ui_texts.shared.zh-CN.json";
+    private const string HallRootPath = "Assets/Hall";
     private const string GamesRootPath = "Assets/Games";
     private const string CharacterSetHashRecordPath = "Library/TMPSubsetFontBuildState/character-set.sha256";
 
@@ -343,15 +344,38 @@ public static class TMPStaticSubsetFontBuilder
             files.Add(sharedFullPath);
         }
 
-        var gamesRootFullPath = GetAbsolutePath(GamesRootPath);
-        if (Directory.Exists(gamesRootFullPath))
-        {
-            var gameFiles = Directory.GetFiles(gamesRootFullPath, "*.ui_texts.zh-CN.json", SearchOption.AllDirectories);
-            Array.Sort(gameFiles, StringComparer.OrdinalIgnoreCase);
-            files.AddRange(gameFiles);
-        }
+        AddUiTextSourceFiles(files, HallRootPath);
+        AddJsonTextSourceFiles(files, "Assets/Hall/Resources/Announcements", "*.zh-CN.json");
+        AddUiTextSourceFiles(files, GamesRootPath);
+        AddJsonTextSourceFiles(files, GamesRootPath, "*content_graph*.json");
 
         return files;
+    }
+
+    private static void AddUiTextSourceFiles(List<string> files, string assetRelativeRootPath)
+    {
+        var rootFullPath = GetAbsolutePath(assetRelativeRootPath);
+        if (!Directory.Exists(rootFullPath))
+        {
+            return;
+        }
+
+        var uiTextFiles = Directory.GetFiles(rootFullPath, "*.ui_texts.zh-CN.json", SearchOption.AllDirectories);
+        Array.Sort(uiTextFiles, StringComparer.OrdinalIgnoreCase);
+        files.AddRange(uiTextFiles);
+    }
+
+    private static void AddJsonTextSourceFiles(List<string> files, string assetRelativeRootPath, string searchPattern)
+    {
+        var rootFullPath = GetAbsolutePath(assetRelativeRootPath);
+        if (!Directory.Exists(rootFullPath))
+        {
+            return;
+        }
+
+        var jsonFiles = Directory.GetFiles(rootFullPath, searchPattern, SearchOption.AllDirectories);
+        Array.Sort(jsonFiles, StringComparer.OrdinalIgnoreCase);
+        files.AddRange(jsonFiles);
     }
 }
 

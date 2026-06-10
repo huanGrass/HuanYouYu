@@ -71,6 +71,22 @@
     {
       "key": "game.classic_link.help",
       "value": "选中两个相同图案的方块，如果它们能在不超过三条直线的路径内连通，就能成功消除。清空全部方块即可完成本局，无解时可借助重排继续。"
+    },
+    {
+      "key": "classic_link.tutorial.first_tile.title",
+      "value": "先点这块"
+    },
+    {
+      "key": "classic_link.tutorial.first_tile",
+      "value": "这是一块可以消除的方块，先点它选中。"
+    },
+    {
+      "key": "classic_link.tutorial.second_tile.title",
+      "value": "再点这块"
+    },
+    {
+      "key": "classic_link.tutorial.second_tile",
+      "value": "这块和刚才选中的方块图案相同，而且可以连通，点它完成消除。"
     }
   ]
 }

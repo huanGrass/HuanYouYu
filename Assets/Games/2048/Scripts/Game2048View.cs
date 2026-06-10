@@ -149,17 +149,23 @@ namespace HuanYouYu.MiniGameHall
 
         private void HandleSwipe(Game2048MoveDirection direction)
         {
+            TryApplyMove(direction, HandleMoveCompleted, out _);
+        }
+
+        private bool TryApplyMove(Game2048MoveDirection direction, Action<Game2048MoveResult> onCompleted, out Game2048MoveResult result)
+        {
             if (board == null || board.State != Game2048GameState.Playing)
             {
-                return;
+                result = default(Game2048MoveResult);
+                return false;
             }
 
             var previousBoard = board.Snapshot();
-            var result = board.TryMove(direction);
+            result = board.TryMove(direction);
             if (!result.BoardChanged)
             {
                 MiniGameSfxPlayer.Play(MiniGameSfxType.MatchFail, 0.8f);
-                return;
+                return false;
             }
 
             if (result.ScoreGained > 0)
@@ -174,7 +180,9 @@ namespace HuanYouYu.MiniGameHall
 
             RefreshScoreLabels();
             boardView.SetInputEnabled(false);
-            boardView.PlayMoveAnimation(previousBoard, result, board, delegate { HandleMoveCompleted(result); });
+            var completedResult = result;
+            boardView.PlayMoveAnimation(previousBoard, completedResult, board, delegate { onCompleted?.Invoke(completedResult); });
+            return true;
         }
 
         private void HandleMoveCompleted(Game2048MoveResult result)
@@ -391,5 +399,6 @@ namespace HuanYouYu.MiniGameHall
             var inverse = 1f - value;
             return 1f - (inverse * inverse * inverse);
         }
+
     }
 }

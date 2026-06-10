@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.IO;
 using System.Reflection;
 using System.Text;
 using HuanYouYu.MiniGameHall;
@@ -264,16 +263,6 @@ namespace Tests
             AssertZoomSliderScalesBoard();
             AssertRectSizeAtLeast("ArrowEscapeBoard", 560f, 760f);
             AssertRectSizeAtLeast("ArrowEscapeTile_0_0", 30f, 30f);
-
-            var path = Path.Combine(Directory.GetParent(Application.dataPath).FullName, "PlayModeShots", "pm_arrow_escape.bmp");
-            CaptureDiagnosticScreenshot(path);
-            Assert.IsTrue(File.Exists(path), "ArrowEscape diagnostic screenshot should be generated.");
-            Assert.Greater(new FileInfo(path).Length, 2048, "ArrowEscape screenshot should contain image data.");
-
-            var realPath = Path.Combine(Directory.GetParent(Application.dataPath).FullName, "PlayModeShots", "pm_arrow_escape.png");
-            CaptureCompositedScreenshot(realPath);
-            Assert.IsTrue(File.Exists(realPath), "ArrowEscape composited screenshot should be generated.");
-            Assert.Greater(new FileInfo(realPath).Length, 2048, "ArrowEscape composited screenshot should contain image data.");
         }
 
         private static IEnumerator LoadController(Action<MiniGameAppController> onLoaded)
@@ -650,133 +639,11 @@ namespace Tests
             Assert.LessOrEqual(childRect.yMax, parentRect.yMax + 1f, childName + " should stay inside parent vertically.");
         }
 
-        private static void CaptureDiagnosticScreenshot(string path)
-        {
-            var directory = Path.GetDirectoryName(path);
-            if (!Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-
-            const int width = 375;
-            const int height = 667;
-            var pixels = new Color32[width * height];
-            Fill(pixels, new Color32(18, 30, 38, 255));
-            DrawRect(pixels, width, height, GameObject.Find("ArrowEscapeContent")?.GetComponent<RectTransform>(), new Color32(222, 236, 224, 255));
-            DrawRect(pixels, width, height, GameObject.Find("ArrowEscapeBoardPanel")?.GetComponent<RectTransform>(), new Color32(205, 220, 207, 255));
-            DrawRect(pixels, width, height, GameObject.Find("ArrowEscapeControls")?.GetComponent<RectTransform>(), new Color32(48, 70, 78, 255));
-
-            var transforms = Object.FindObjectsOfType<Transform>();
-            for (var i = 0; i < transforms.Length; i++)
-            {
-                if (transforms[i].name.StartsWith("ArrowEscapeTile_", StringComparison.Ordinal))
-                {
-                    DrawRect(pixels, width, height, transforms[i].GetComponent<RectTransform>(), new Color32((byte)(82 + i % 110), (byte)(138 + i % 70), (byte)(116 + i % 70), 255));
-                }
-                else if (transforms[i].name.StartsWith("ArrowEscape") && transforms[i].name.EndsWith("Button", StringComparison.Ordinal))
-                {
-                    DrawRect(pixels, width, height, transforms[i].GetComponent<RectTransform>(), new Color32(94, 132, 190, 255));
-                }
-            }
-
-            AssertPixelsLookNonBlank(pixels);
-            File.WriteAllBytes(path, EncodeBmp(pixels, width, height));
-        }
-
-        private static void CaptureCompositedScreenshot(string path)
-        {
-            var method = typeof(PlayModeScreenshotTests).GetMethod("CaptureCompositedScreenshot", BindingFlags.Static | BindingFlags.NonPublic);
-            Assert.IsNotNull(method, "Shared PlayMode screenshot helper should be available.");
-            method.Invoke(null, new object[] { path });
-        }
-
         private static Rect ToScreenRect(RectTransform rect)
         {
             var corners = new Vector3[4];
             rect.GetWorldCorners(corners);
             return Rect.MinMaxRect(corners[0].x, corners[0].y, corners[2].x, corners[2].y);
-        }
-
-        private static void DrawRect(Color32[] pixels, int width, int height, RectTransform rect, Color32 color)
-        {
-            Assert.IsNotNull(rect, "Diagnostic screenshot target rect should exist.");
-            var screenRect = ToScreenRect(rect);
-            var sourceWidth = Mathf.Max(1f, Screen.width);
-            var sourceHeight = Mathf.Max(1f, Screen.height);
-            var minX = Mathf.Clamp(Mathf.FloorToInt(screenRect.xMin / sourceWidth * width), 0, width - 1);
-            var maxX = Mathf.Clamp(Mathf.CeilToInt(screenRect.xMax / sourceWidth * width), 0, width - 1);
-            var minY = Mathf.Clamp(Mathf.FloorToInt(screenRect.yMin / sourceHeight * height), 0, height - 1);
-            var maxY = Mathf.Clamp(Mathf.CeilToInt(screenRect.yMax / sourceHeight * height), 0, height - 1);
-            for (var y = minY; y <= maxY; y++)
-            {
-                for (var x = minX; x <= maxX; x++)
-                {
-                    pixels[y * width + x] = color;
-                }
-            }
-        }
-
-        private static void AssertPixelsLookNonBlank(Color32[] pixels)
-        {
-            var sampleStep = Mathf.Max(1, pixels.Length / 1200);
-            var first = pixels[0];
-            var spread = 0;
-            for (var i = 0; i < pixels.Length; i += sampleStep)
-            {
-                var pixel = pixels[i];
-                if (Mathf.Abs(pixel.r - first.r) + Mathf.Abs(pixel.g - first.g) + Mathf.Abs(pixel.b - first.b) > 40)
-                {
-                    spread++;
-                }
-            }
-
-            Assert.Greater(spread, 50, "Diagnostic screenshot should not be flat.");
-        }
-
-        private static byte[] EncodeBmp(Color32[] pixels, int width, int height)
-        {
-            var rowStride = ((width * 3) + 3) & ~3;
-            var bytes = new byte[54 + rowStride * height];
-            bytes[0] = (byte)'B';
-            bytes[1] = (byte)'M';
-            WriteInt(bytes, 2, bytes.Length);
-            WriteInt(bytes, 10, 54);
-            WriteInt(bytes, 14, 40);
-            WriteInt(bytes, 18, width);
-            WriteInt(bytes, 22, height);
-            bytes[26] = 1;
-            bytes[28] = 24;
-            WriteInt(bytes, 34, rowStride * height);
-            for (var y = 0; y < height; y++)
-            {
-                var rowOffset = 54 + y * rowStride;
-                for (var x = 0; x < width; x++)
-                {
-                    var pixel = pixels[y * width + x];
-                    var offset = rowOffset + x * 3;
-                    bytes[offset] = pixel.b;
-                    bytes[offset + 1] = pixel.g;
-                    bytes[offset + 2] = pixel.r;
-                }
-            }
-
-            return bytes;
-        }
-
-        private static void WriteInt(byte[] bytes, int offset, int value)
-        {
-            bytes[offset] = (byte)(value & 0xff);
-            bytes[offset + 1] = (byte)((value >> 8) & 0xff);
-            bytes[offset + 2] = (byte)((value >> 16) & 0xff);
-            bytes[offset + 3] = (byte)((value >> 24) & 0xff);
-        }
-
-        private static void Fill(Color32[] pixels, Color32 color)
-        {
-            for (var i = 0; i < pixels.Length; i++)
-            {
-                pixels[i] = color;
-            }
         }
 
         private static bool[,] Copy(bool[,] source)

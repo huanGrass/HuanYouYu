@@ -24,12 +24,11 @@ namespace Tests
             var composeMethod = typeof(MiniGameBase).GetMethod("BuildPauseHelpText", StaticPrivate);
             Assert.IsNotNull(composeMethod, "BuildPauseHelpText was not found.");
 
-            var helpText = composeMethod.Invoke(null, new object[] { "详细玩法", "程序：测试成员\n参与方式：联调与验收" }) as string;
+            var helpText = composeMethod.Invoke(null, new object[] { "详细玩法", "参与制作：测试成员" }) as string;
             Assert.IsNotNull(helpText, "Composed pause help text should not be null.");
             StringAssert.Contains("玩法说明", helpText);
             StringAssert.Contains("详细玩法", helpText);
-            StringAssert.Contains("参与制作", helpText);
-            StringAssert.Contains("参与方式：联调与验收", helpText);
+            StringAssert.Contains("参与制作：测试成员", helpText);
         }
 
         [UnityTest]
@@ -286,8 +285,7 @@ namespace Tests
             var helpText = helpMessage.GetType().GetProperty("text", BindingFlags.Instance | BindingFlags.Public)?.GetValue(helpMessage) as string;
             Assert.IsNotNull(helpText, "Pause popup help message text property was not found.");
             StringAssert.Contains("控制小蛇吃掉食物", helpText);
-            StringAssert.Contains("参与制作", helpText);
-            StringAssert.Contains("视频下方留言", helpText);
+            StringAssert.Contains("参与制作：幻之小草", helpText);
 
             var helpConfirmButton = helpOverlay.Find("Dialog/ConfirmButton")?.GetComponent<Button>();
             Assert.IsNotNull(helpConfirmButton, "Pause popup help confirm button was not found.");

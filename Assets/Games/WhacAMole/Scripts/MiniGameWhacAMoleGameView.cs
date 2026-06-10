@@ -101,7 +101,7 @@ namespace HuanYouYu.MiniGameHall
 
         protected override (string helpKey, string creditsKey)? GetPauseHelpKeys()
         {
-            return ("game.whacamole.help", "game.whacamole.credits");
+            return ("game.whacamole.help", null);
         }
 
         public override void Tick(float deltaTime)

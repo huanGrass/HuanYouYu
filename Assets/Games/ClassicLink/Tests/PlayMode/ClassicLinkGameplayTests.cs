@@ -80,6 +80,36 @@ namespace Tests
         }
 
         [UnityTest]
+        public IEnumerator FirstEntryTutorialGuidesOnePlayableMatch()
+        {
+            PlayerPrefs.DeleteKey(MiniGameSaveStore.PlayerPrefsKey);
+            PlayerPrefs.Save();
+
+            var controller = default(MiniGameAppController);
+            yield return LoadController(result => controller = result);
+
+            controller.EnterGame(TapTreasureGameView.GameIdConstant);
+            yield return null;
+            yield return null;
+
+            var runtime = GetActiveGame(controller);
+            var initialRemainingCount = CountRemainingTiles(runtime);
+            Assert.IsNotNull(GameObject.Find("MiniGameTutorialOverlay"), "ClassicLink should show the tutorial overlay on first entry.");
+
+            ClickButton("TargetClick");
+            yield return null;
+
+            Assert.IsTrue(GetNullableTileCoord(runtime, "selectedTile").HasValue, "First tutorial click should select the guided tile.");
+
+            ClickButton("TargetClick");
+            yield return new WaitForSeconds(0.25f);
+            yield return null;
+
+            Assert.IsNull(GameObject.Find("MiniGameTutorialOverlay"), "ClassicLink tutorial should finish after the guided pair is clicked.");
+            Assert.AreEqual(initialRemainingCount - 2, CountRemainingTiles(runtime), "Guided tutorial clicks should remove one playable pair.");
+        }
+
+        [UnityTest]
         public IEnumerator CanContinuePlayingAfterOneSuccessfulMatch()
         {
             PlayerPrefs.DeleteKey(MiniGameSaveStore.PlayerPrefsKey);

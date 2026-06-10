@@ -3,5 +3,6 @@
   "nameKey": "game.stardewai.name",
   "descriptionKey": "game.stardewai.description",
   "isPlayable": true,
-  "statusLabelKey": "status.playable"
+  "statusLabelKey": "status.playable",
+  "category": "simulation"
 }

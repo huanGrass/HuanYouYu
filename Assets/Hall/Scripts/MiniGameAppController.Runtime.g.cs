@@ -73,7 +73,6 @@ namespace HuanYouYu.MiniGameHall
                     return new BullsCowsGameView(this, rootCanvas.transform, CompleteCurrentGame, ExitCurrentGameToHall);
                 case ArrowEscapeGameView.GameIdConstant:
                     return new ArrowEscapeGameView(this, rootCanvas.transform, CompleteCurrentGame, ExitCurrentGameToHall);
-
                 default:
                     Debug.LogWarning("未注册小游戏运行时: " + gameId);
                     return null;

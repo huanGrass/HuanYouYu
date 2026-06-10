@@ -3,5 +3,6 @@
   "nameKey": "game.slidingpuzzle.name",
   "descriptionKey": "game.slidingpuzzle.description",
   "isPlayable": true,
-  "statusLabelKey": "status.playable"
+  "statusLabelKey": "status.playable",
+  "category": "number"
 }

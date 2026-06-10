@@ -3,5 +3,6 @@
   "nameKey": "game.match3.name",
   "descriptionKey": "game.match3.description",
   "isPlayable": true,
-  "statusLabelKey": "status.playable"
+  "statusLabelKey": "status.playable",
+  "category": "eliminate"
 }

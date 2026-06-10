@@ -3,5 +3,6 @@
   "nameKey": "game.blockpuzzle.name",
   "descriptionKey": "game.blockpuzzle.description",
   "isPlayable": true,
-  "statusLabelKey": "status.playable"
+  "statusLabelKey": "status.playable",
+  "category": "eliminate"
 }

@@ -17,6 +17,7 @@ namespace HuanYouYu.MiniGameHall
         private const int Columns = 8;
         private const int MinimumAvailablePairs = 4;
         private const int TileTypeCount = 14;
+        private const int TutorialVersion = 1;
         private const string LevelResourcePath = "Levels/classic-link.levels";
         private const float MinimumTileSize = 40f;
         private const float MaximumTileSize = 148f;
@@ -128,23 +129,23 @@ namespace HuanYouYu.MiniGameHall
             boardGridRect = boardGrid;
             boardGridLayout = boardGrid != null ? boardGrid.GetComponent<GridLayoutGroup>() : null;
 
-            var shuffleButton = MiniGameShellBottomBarBuilder.CreateShuffleButton(bottomContainerRefs.ActionBar);
-            var hintButton = MiniGameShellBottomBarBuilder.CreateHintButton(bottomContainerRefs.ActionBar);
-            var levelButton = MiniGameShellBottomBarBuilder.CreateLevelSelectButton(bottomContainerRefs.ActionBar);
+            var shuffleButtonRefs = MiniGameShellBottomBarBuilder.CreateShuffleButton(bottomContainerRefs.ActionBar);
+            var hintButtonRefs = MiniGameShellBottomBarBuilder.CreateHintButton(bottomContainerRefs.ActionBar);
+            var levelButtonRefs = MiniGameShellBottomBarBuilder.CreateLevelSelectButton(bottomContainerRefs.ActionBar);
 
-            if (titleText == null || scoreText == null || boardArea == null || boardGrid == null || lineLayer == null || boardGridLayout == null || shuffleButton.Button == null || hintButton.Button == null || levelButton.Button == null || shuffleButton.Icon == null || hintButton.Icon == null)
+            if (titleText == null || scoreText == null || boardArea == null || boardGrid == null || lineLayer == null || boardGridLayout == null || shuffleButtonRefs.Button == null || hintButtonRefs.Button == null || levelButtonRefs.Button == null || shuffleButtonRefs.Icon == null || hintButtonRefs.Icon == null)
             {
                 UnityEngine.Object.Destroy(root);
                 root = null;
                 return false;
             }
 
-            shuffleButton.Button.onClick.RemoveAllListeners();
-            shuffleButton.Button.onClick.AddListener(ShuffleBoardByPlayer);
-            hintButton.Button.onClick.RemoveAllListeners();
-            hintButton.Button.onClick.AddListener(ShowHintByPlayer);
-            levelButton.Button.onClick.RemoveAllListeners();
-            levelButton.Button.onClick.AddListener(OnLevelSelectClicked);
+            shuffleButtonRefs.Button.onClick.RemoveAllListeners();
+            shuffleButtonRefs.Button.onClick.AddListener(ShuffleBoardByPlayer);
+            hintButtonRefs.Button.onClick.RemoveAllListeners();
+            hintButtonRefs.Button.onClick.AddListener(ShowHintByPlayer);
+            levelButtonRefs.Button.onClick.RemoveAllListeners();
+            levelButtonRefs.Button.onClick.AddListener(OnLevelSelectClicked);
             RefreshStaticTexts();
 
             var template = boardGrid.Find("TileTemplate") as RectTransform;
@@ -327,11 +328,64 @@ namespace HuanYouYu.MiniGameHall
             RefreshBoardLayout();
             RefreshAllTiles();
             RefreshHud(UiTextCatalog.Get("classic_link.hud.initial"));
+            TryStartTutorial(TutorialVersion, CreateTutorialSteps());
         }
 
         protected override (string helpKey, string creditsKey)? GetPauseHelpKeys()
         {
             return ("game.classic_link.help", null);
+        }
+
+        private MiniGameTutorialStep[] CreateTutorialSteps()
+        {
+            return new[]
+            {
+                new MiniGameTutorialStep
+                {
+                    ResolveTarget = delegate { return ResolveTutorialTileTarget(0); },
+                    TitleKey = "classic_link.tutorial.first_tile.title",
+                    MessageKey = "classic_link.tutorial.first_tile",
+                    RequireTargetClick = true,
+                    OnTargetClick = delegate { ClickTutorialTile(0); },
+                    Padding = new Vector2(16f, 16f)
+                },
+                new MiniGameTutorialStep
+                {
+                    ResolveTarget = delegate { return ResolveTutorialTileTarget(1); },
+                    TitleKey = "classic_link.tutorial.second_tile.title",
+                    MessageKey = "classic_link.tutorial.second_tile",
+                    RequireTargetClick = true,
+                    OnTargetClick = delegate { ClickTutorialTile(1); },
+                    Padding = new Vector2(16f, 16f)
+                }
+            };
+        }
+
+        private RectTransform ResolveTutorialTileTarget(int pairIndex)
+        {
+            TileCoord first;
+            TileCoord second;
+            if (!TryGetHintPair(out first, out second))
+            {
+                return boardGridRect;
+            }
+
+            var coord = pairIndex == 0 ? first : second;
+            var tile = tileViews != null ? tileViews[ToIndex(coord.Row, coord.Column)] : null;
+            return tile != null ? tile.Root : boardGridRect;
+        }
+
+        private void ClickTutorialTile(int pairIndex)
+        {
+            TileCoord first;
+            TileCoord second;
+            if (!TryGetHintPair(out first, out second))
+            {
+                return;
+            }
+
+            var coord = pairIndex == 0 ? first : second;
+            HandleTileClick(coord.Row, coord.Column);
         }
 
         private void BuildBoard()

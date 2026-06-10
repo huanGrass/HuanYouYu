@@ -14,7 +14,10 @@ namespace HuanYouYu.MiniGameHall
         /// <summary>
         /// 创建大厅视图并完成首屏渲染器绑定。
         /// </summary>
-        public MiniGameHallView(Transform parent, Action<string> enterGameAction, Action<string> toggleFavoriteAction)
+        public MiniGameHallView(
+            Transform parent,
+            Action<string> enterGameAction,
+            Action<string> toggleFavoriteAction)
         {
             renderer = new HallRenderer(
                 parent,

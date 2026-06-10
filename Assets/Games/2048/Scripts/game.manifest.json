@@ -3,5 +3,6 @@
   "nameKey": "game.2048.name",
   "descriptionKey": "game.2048.description",
   "isPlayable": true,
-  "statusLabelKey": "status.playable"
+  "statusLabelKey": "status.playable",
+  "category": "number"
 }

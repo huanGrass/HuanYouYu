@@ -35,6 +35,26 @@ namespace HuanYouYu.MiniGameHall
         private const float HeaderTitlePulseBaseScale = 1f;
         private const float HeaderTitlePulsePeakScale = 1.03f;
         private const float HeaderTitlePulseCycleSeconds = 3f;
+        private static readonly string[] AllGamesTagTextKeys =
+        {
+            "hall.tag.all",
+            "hall.tag.eliminate",
+            "hall.tag.puzzle",
+            "hall.tag.number",
+            "hall.tag.action",
+            "hall.tag.simulation",
+            "hall.tag.merge"
+        };
+        private static readonly string[] AllGamesTagCategories =
+        {
+            string.Empty,
+            "eliminate",
+            "puzzle",
+            "number",
+            "action",
+            "simulation",
+            "merge"
+        };
         private const string StartButtonHighlightRootName = "StartButtonHighlight";
         private const string StartButtonBreathGlowName = "BreathGlow";
         private const string StartButtonSweepShineName = "SweepShine";
@@ -63,6 +83,15 @@ namespace HuanYouYu.MiniGameHall
             public Image BackgroundImage;
         }
 
+        private sealed class HeaderTagBinding
+        {
+            public int Index;
+            public RoundedRectGraphic Graphic;
+            public TextMeshProUGUI Label;
+            public LayoutElement LayoutElement;
+            public RectTransform RectTransform;
+        }
+
         /// <summary>
         /// 成长页显示用的经验快照。
         /// </summary>
@@ -81,6 +110,7 @@ namespace HuanYouYu.MiniGameHall
         private RectTransform allGamesContentRoot;
         private RectTransform profileContentRoot;
         private RectTransform headerStatsRoot;
+        private RectTransform headerTagBarRoot;
         private RectTransform headerTitleBarRoot;
         private RectTransform bottomNavRoot;
         private ScrollRect scrollRect;
@@ -99,8 +129,10 @@ namespace HuanYouYu.MiniGameHall
         private Texture2D moreGamesInProgressTexture;
         private Canvas rootCanvas;
         private readonly List<NavButtonBinding> navButtons = new List<NavButtonBinding>();
+        private readonly List<HeaderTagBinding> headerTagButtons = new List<HeaderTagBinding>();
         private readonly List<MiniGameCardViewModel> cachedCards = new List<MiniGameCardViewModel>();
         private HallTab currentTab = HallTab.Favorites;
+        private int selectedHeaderTagIndex;
         private ToastRunner toastRunner;
 
         /// <summary>
@@ -121,7 +153,7 @@ namespace HuanYouYu.MiniGameHall
 
             Canvas.ForceUpdateCanvases();
             ApplyResponsiveLayout();
-            SetCurrentTab(HallTab.Favorites);
+            SetCurrentTab(HallTab.Favorites, true);
         }
 
         /// <summary>
@@ -149,6 +181,7 @@ namespace HuanYouYu.MiniGameHall
             allGamesContentRoot = root.transform.Find("Shell/ScrollFrame/AllGamesContent") as RectTransform;
             profileContentRoot = root.transform.Find("Shell/ScrollFrame/ProfileContent") as RectTransform;
             headerStatsRoot = shell != null ? shell.Find("HeaderStats") as RectTransform : null;
+            headerTagBarRoot = shell != null ? shell.Find("HeaderTagBar") as RectTransform : null;
             headerTitleBarRoot = shell != null ? shell.Find("HeaderTitleBar") as RectTransform : null;
             bottomNavRoot = root.transform.Find("Shell/BottomNavButtons") as RectTransform;
             var scrollFrame = root.transform.Find("Shell/ScrollFrame") as RectTransform;
@@ -197,6 +230,7 @@ namespace HuanYouYu.MiniGameHall
             overlayRoot = EnsureOverlayRoot();
             toastRunner = root.AddComponent<ToastRunner>();
             EnsureHeaderStats(shell, scrollFrame);
+            EnsureHeaderTagBar(shell, scrollFrame);
             EnsureHeaderTitlePulse();
             EnsureHeaderMenu(shell);
 
@@ -232,6 +266,29 @@ namespace HuanYouYu.MiniGameHall
             EnsureHeaderStatIconEffects();
         }
 
+        private void EnsureHeaderTagBar(Transform shell, RectTransform scrollFrame)
+        {
+            if (shell == null)
+            {
+                headerTagBarRoot = null;
+                return;
+            }
+
+            if (headerTagBarRoot == null)
+            {
+                headerTagBarRoot = CreateHeaderTagBar(shell);
+            }
+
+            if (headerTagBarRoot != null && scrollFrame != null)
+            {
+                headerTagBarRoot.SetSiblingIndex(scrollFrame.GetSiblingIndex());
+            }
+
+            BindHeaderTagButtons();
+            UpdateHeaderTagBarVisibility();
+            UpdateHeaderTagSelection();
+        }
+
         private bool BindNavButton(HallTab tab, string buttonName)
         {
             var buttonTransform = root.transform.Find("Shell/BottomNavButtons/" + buttonName);
@@ -247,7 +304,7 @@ namespace HuanYouYu.MiniGameHall
 
             label.text = GetTabTitle(tab);
             button.onClick.RemoveAllListeners();
-            button.onClick.AddListener(delegate { SetCurrentTab(tab); });
+            button.onClick.AddListener(delegate { SetCurrentTab(tab, false); });
             MiniGameSfxPlayer.Attach(button, MiniGameSfxType.UiTap, 0.68f);
 
             navButtons.Add(new NavButtonBinding
@@ -404,7 +461,7 @@ namespace HuanYouYu.MiniGameHall
             {
                 for (var i = 0; i < cachedCards.Count; i++)
                 {
-                    if (cachedCards[i] != null && cachedCards[i].Definition != null && cachedCards[i].Definition.IsPlayable)
+                    if (ShouldShowAllGamesCard(cachedCards[i]))
                     {
                         CreateAllGamesCard(cachedCards[i], allGamesContentRoot);
                     }
@@ -420,6 +477,21 @@ namespace HuanYouYu.MiniGameHall
 
             Canvas.ForceUpdateCanvases();
             scrollRect.verticalNormalizedPosition = 1f;
+        }
+
+        private bool ShouldShowAllGamesCard(MiniGameCardViewModel card)
+        {
+            if (card == null || card.Definition == null || !card.Definition.IsPlayable)
+            {
+                return false;
+            }
+
+            if (selectedHeaderTagIndex <= 0 || selectedHeaderTagIndex >= AllGamesTagCategories.Length)
+            {
+                return true;
+            }
+
+            return string.Equals(card.Definition.Category, AllGamesTagCategories[selectedHeaderTagIndex], StringComparison.Ordinal);
         }
 
         private static int CompareFavoriteCards(MiniGameCardViewModel left, MiniGameCardViewModel right)
@@ -703,6 +775,11 @@ namespace HuanYouYu.MiniGameHall
         /// </summary>
         private void UpdateHeaderStats()
         {
+            if (headerStatsRoot == null)
+            {
+                return;
+            }
+
             if (headerChestCountText != null)
             {
                 headerChestCountText.text = GetTotalChestCount().ToString();
@@ -802,14 +879,52 @@ namespace HuanYouYu.MiniGameHall
         /// <summary>
         /// 切换页签并触发重建。
         /// </summary>
-        private void SetCurrentTab(HallTab tab)
+        private void SetCurrentTab(HallTab tab, bool forceRebuild)
         {
+            if (!forceRebuild && currentTab == tab)
+            {
+                HideHeaderMenuPanel();
+                return;
+            }
+
             currentTab = tab;
             favoritesContentRoot.gameObject.SetActive(tab == HallTab.Favorites);
             allGamesContentRoot.gameObject.SetActive(tab == HallTab.AllGames);
             profileContentRoot.gameObject.SetActive(tab == HallTab.Profile);
+            UpdateHeaderTagBarVisibility();
             HideHeaderMenuPanel();
             RebuildCurrentTab();
+        }
+
+        private void UpdateHeaderTagBarVisibility()
+        {
+            if (headerStatsRoot != null)
+            {
+                headerStatsRoot.gameObject.SetActive(currentTab != HallTab.AllGames);
+            }
+
+            if (headerTagBarRoot != null)
+            {
+                headerTagBarRoot.gameObject.SetActive(currentTab == HallTab.AllGames);
+            }
+        }
+
+        private void SelectHeaderTag(int index)
+        {
+            var clampedIndex = Mathf.Clamp(index, 0, Mathf.Max(0, AllGamesTagTextKeys.Length - 1));
+            if (selectedHeaderTagIndex == clampedIndex)
+            {
+                HideHeaderMenuPanel();
+                return;
+            }
+
+            selectedHeaderTagIndex = clampedIndex;
+            HideHeaderMenuPanel();
+            UpdateHeaderTagSelection();
+            if (currentTab == HallTab.AllGames)
+            {
+                RebuildCurrentTab();
+            }
         }
 
         private void ApplyResponsiveLayout()
@@ -1897,6 +2012,178 @@ namespace HuanYouYu.MiniGameHall
             CreateHeaderStat(headerObject.transform, "CoinStat", "CoinIcon", coinIconSprite, new Vector2(102f, 0f));
 
             return headerRect;
+        }
+
+        private RectTransform CreateHeaderTagBar(Transform shell)
+        {
+            var tagBarObject = new GameObject(
+                "HeaderTagBar",
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(RoundedRectGraphic));
+            tagBarObject.transform.SetParent(shell, false);
+
+            var tagBarRect = tagBarObject.GetComponent<RectTransform>();
+            tagBarRect.anchorMin = new Vector2(0.5f, 1f);
+            tagBarRect.anchorMax = new Vector2(0.5f, 1f);
+            tagBarRect.pivot = new Vector2(0.5f, 0.5f);
+            tagBarRect.anchoredPosition = new Vector2(0f, -194f);
+            tagBarRect.sizeDelta = new Vector2(620f, 54f);
+
+            var background = tagBarObject.GetComponent<RoundedRectGraphic>();
+            background.color = new Color(1f, 0.98f, 0.88f, 0.88f);
+            background.CornerRadius = 22f;
+            background.raycastTarget = false;
+
+            var layout = tagBarObject.AddComponent<HorizontalLayoutGroup>();
+            layout.padding = new RectOffset(10, 10, 7, 7);
+            layout.spacing = 8f;
+            layout.childAlignment = TextAnchor.MiddleCenter;
+            layout.childControlWidth = false;
+            layout.childControlHeight = false;
+            layout.childForceExpandWidth = false;
+            layout.childForceExpandHeight = false;
+
+            for (var i = 0; i < AllGamesTagTextKeys.Length; i++)
+            {
+                CreateHeaderTagButton(tagBarObject.transform, i);
+            }
+
+            return tagBarRect;
+        }
+
+        private void BindHeaderTagButtons()
+        {
+            headerTagButtons.Clear();
+            if (headerTagBarRoot == null)
+            {
+                return;
+            }
+
+            for (var i = 0; i < AllGamesTagTextKeys.Length; i++)
+            {
+                var tag = headerTagBarRoot.Find("Tag_" + i);
+                if (tag == null)
+                {
+                    continue;
+                }
+
+                var binding = BindHeaderTagButton(tag, i);
+                if (binding != null)
+                {
+                    headerTagButtons.Add(binding);
+                }
+            }
+        }
+
+        private HeaderTagBinding BindHeaderTagButton(Transform tag, int index)
+        {
+            var button = tag.GetComponent<Button>();
+            var graphic = tag.GetComponent<RoundedRectGraphic>();
+            var label = tag.Find("Label")?.GetComponent<TextMeshProUGUI>();
+            var layoutElement = tag.GetComponent<LayoutElement>();
+            var rectTransform = tag as RectTransform;
+            if (button == null || graphic == null || label == null || layoutElement == null || rectTransform == null)
+            {
+                return null;
+            }
+
+            label.text = UiTextCatalog.Get(AllGamesTagTextKeys[index]);
+            button.interactable = true;
+            button.transition = Selectable.Transition.None;
+            button.targetGraphic = graphic;
+            button.onClick.RemoveAllListeners();
+            button.onClick.AddListener(delegate { SelectHeaderTag(index); });
+            MiniGameSfxPlayer.Attach(button, MiniGameSfxType.UiTap, 0.68f);
+
+            return new HeaderTagBinding
+            {
+                Index = index,
+                Graphic = graphic,
+                Label = label,
+                LayoutElement = layoutElement,
+                RectTransform = rectTransform
+            };
+        }
+
+        private void UpdateHeaderTagSelection()
+        {
+            for (var i = 0; i < headerTagButtons.Count; i++)
+            {
+                var binding = headerTagButtons[i];
+                var selected = binding.Index == selectedHeaderTagIndex;
+                if (binding.Graphic != null)
+                {
+                    binding.Graphic.color = selected ? new Color(1f, 0.62f, 0.14f, 1f) : new Color(1f, 1f, 0.96f, 0.95f);
+                }
+
+                if (binding.Label != null)
+                {
+                    binding.Label.color = selected ? Color.white : new Color(0.32f, 0.42f, 0.19f, 1f);
+                }
+
+                var width = selected ? 90f : 76f;
+                if (binding.LayoutElement != null)
+                {
+                    binding.LayoutElement.preferredWidth = width;
+                }
+
+                if (binding.RectTransform != null)
+                {
+                    binding.RectTransform.sizeDelta = new Vector2(width, 40f);
+                }
+            }
+        }
+
+        private void CreateHeaderTagButton(Transform parent, int index)
+        {
+            var buttonObject = new GameObject(
+                "Tag_" + index,
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(RoundedRectGraphic),
+                typeof(Button),
+                typeof(LayoutElement));
+            buttonObject.transform.SetParent(parent, false);
+
+            var selected = index == selectedHeaderTagIndex;
+            var buttonRect = buttonObject.GetComponent<RectTransform>();
+            buttonRect.sizeDelta = new Vector2(selected ? 90f : 76f, 40f);
+
+            var layoutElement = buttonObject.GetComponent<LayoutElement>();
+            layoutElement.preferredWidth = buttonRect.sizeDelta.x;
+            layoutElement.preferredHeight = buttonRect.sizeDelta.y;
+
+            var graphic = buttonObject.GetComponent<RoundedRectGraphic>();
+            graphic.color = selected ? new Color(1f, 0.62f, 0.14f, 1f) : new Color(1f, 1f, 0.96f, 0.95f);
+            graphic.CornerRadius = 18f;
+            graphic.raycastTarget = true;
+
+            var button = buttonObject.GetComponent<Button>();
+            button.transition = Selectable.Transition.None;
+            button.targetGraphic = graphic;
+            button.interactable = true;
+            button.onClick.AddListener(delegate { SelectHeaderTag(index); });
+            MiniGameSfxPlayer.Attach(button, MiniGameSfxType.UiTap, 0.68f);
+
+            var labelObject = new GameObject(
+                "Label",
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(TextMeshProUGUI));
+            labelObject.transform.SetParent(buttonObject.transform, false);
+            var labelRect = labelObject.GetComponent<RectTransform>();
+            Stretch(labelRect, Vector2.zero, Vector2.one, new Vector2(6f, 0f), new Vector2(-6f, 0f));
+
+            var label = labelObject.GetComponent<TextMeshProUGUI>();
+            label.font = TMP_Settings.defaultFontAsset;
+            label.text = UiTextCatalog.Get(AllGamesTagTextKeys[index]);
+            label.fontSize = 22f;
+            label.fontStyle = FontStyles.Bold;
+            label.alignment = TextAlignmentOptions.Center;
+            label.enableWordWrapping = false;
+            label.color = selected ? Color.white : new Color(0.32f, 0.42f, 0.19f, 1f);
+            label.raycastTarget = false;
         }
 
         private void CreateHeaderStatsBackground(Transform parent)

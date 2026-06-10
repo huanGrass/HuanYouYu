@@ -19,6 +19,7 @@ namespace Tests
             Assert.IsNotNull(Resources.Load<Texture2D>("GameIcons/game_logo"), "Game logo icon should exist.");
             var textAssets = Resources.LoadAll<TextAsset>("Text");
             Assert.IsTrue(textAssets.Any(asset => asset != null && asset.name == "ui_texts.shared.zh-CN"), "Shared text catalog should exist.");
+            Assert.IsTrue(textAssets.Any(asset => asset != null && asset.name == "hall.ui_texts.zh-CN"), "Hall text catalog should exist.");
             Assert.IsTrue(textAssets.Any(asset => asset != null && asset.name.EndsWith(".ui_texts.zh-CN")), "Per-game text catalogs should exist.");
         }
     }
