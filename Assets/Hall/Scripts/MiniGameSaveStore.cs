@@ -15,6 +15,7 @@ namespace HuanYouYu.MiniGameHall
         {
             public Dictionary<string, MiniGameProgressData> ProgressLookup = new Dictionary<string, MiniGameProgressData>();
             public List<string> FavoriteGameIds = new List<string>();
+            public int HallRewardChestCount;
             public bool HasPersistedState;
         }
 
@@ -23,6 +24,7 @@ namespace HuanYouYu.MiniGameHall
         {
             public List<MiniGameProgressData> Entries = new List<MiniGameProgressData>();
             public List<string> FavoriteGameIds = new List<string>();
+            public int HallRewardChestCount;
         }
 
         /// <summary>
@@ -93,6 +95,7 @@ namespace HuanYouYu.MiniGameHall
             }
 
             result.FavoriteGameIds = favoriteGameIds;
+            result.HallRewardChestCount = saveData != null ? Mathf.Max(0, saveData.HallRewardChestCount) : 0;
             result.HasPersistedState = hasPersistedState;
             return result;
         }
@@ -100,9 +103,15 @@ namespace HuanYouYu.MiniGameHall
         /// <summary>
         /// 将当前进度字典序列化后写入 PlayerPrefs。
         /// </summary>
-        public void Save(Dictionary<string, MiniGameProgressData> progressLookup, IList<string> favoriteGameIds)
+        public void Save(
+            Dictionary<string, MiniGameProgressData> progressLookup,
+            IList<string> favoriteGameIds,
+            int hallRewardChestCount)
         {
-            var saveData = new MiniGameSaveData();
+            var saveData = new MiniGameSaveData
+            {
+                HallRewardChestCount = Mathf.Max(0, hallRewardChestCount)
+            };
             foreach (var pair in progressLookup)
             {
                 saveData.Entries.Add(new MiniGameProgressData

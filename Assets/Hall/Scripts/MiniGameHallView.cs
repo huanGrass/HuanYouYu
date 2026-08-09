@@ -17,12 +17,14 @@ namespace HuanYouYu.MiniGameHall
         public MiniGameHallView(
             Transform parent,
             Action<string> enterGameAction,
-            Action<string> toggleFavoriteAction)
+            Action<string> toggleFavoriteAction,
+            Action<int> grantHallRewardChestAction)
         {
             renderer = new HallRenderer(
                 parent,
                 enterGameAction,
-                toggleFavoriteAction);
+                toggleFavoriteAction,
+                grantHallRewardChestAction);
         }
 
         public bool IsVisible
@@ -57,9 +59,9 @@ namespace HuanYouYu.MiniGameHall
         /// <summary>
         /// 使用最新卡片数据刷新当前页签内容。
         /// </summary>
-        public void Refresh(IList<MiniGameCardViewModel> cards)
+        public void Refresh(IList<MiniGameCardViewModel> cards, int hallRewardChestCount)
         {
-            renderer.Refresh(cards);
+            renderer.Refresh(cards, hallRewardChestCount);
         }
 
         /// <summary>

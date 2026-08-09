@@ -11,6 +11,7 @@ namespace HuanYouYu.MiniGameHall
         private const string MenuButtonSpritePath = "HallTheme/menu_button";
         private const string MenuAboutGameKey = "hall.menu.about_game";
         private const string MenuSettingsKey = "hall.menu.settings";
+        private const string MenuSupportAuthorKey = "hall.menu.support_author";
         private const string MenuGameClubKey = "hall.menu.game_club";
         private const string MenuShareKey = "hall.menu.share";
         private const string ShareTitleKey = "hall.share.title";
@@ -28,7 +29,7 @@ namespace HuanYouYu.MiniGameHall
         private const float HeaderMenuPanelBaseY = -104f;
         private const float HeaderMenuTopPadding = 12f;
         private const float HeaderMenuPanelWidth = 262f;
-        private const float HeaderMenuPanelHeight = 324f;
+        private const float HeaderMenuPanelHeight = 396f;
 
         private RectTransform headerMenuRoot;
         private RectTransform headerMenuPanelRoot;
@@ -123,8 +124,10 @@ namespace HuanYouYu.MiniGameHall
             var settingsButton = headerMenuPanelRoot != null ? headerMenuPanelRoot.Find("SettingsButton")?.GetComponent<Button>() : null;
             var gameClubButton = headerMenuPanelRoot != null ? headerMenuPanelRoot.Find("GameClubButton")?.GetComponent<Button>() : null;
             var shareButton = headerMenuPanelRoot != null ? headerMenuPanelRoot.Find("ShareButton")?.GetComponent<Button>() : null;
+            var supportAuthorButton = headerMenuPanelRoot != null ? headerMenuPanelRoot.Find("SupportAuthorButton")?.GetComponent<Button>() : null;
             BindMenuEntryButton(aboutButton, MenuAboutGameKey, ShowAboutGamePopup);
             BindMenuEntryButton(settingsButton, MenuSettingsKey, ShowSettingsPopup);
+            BindMenuEntryButton(supportAuthorButton, MenuSupportAuthorKey, ShowSupportAuthorPopup);
             BindMenuEntryButton(gameClubButton, MenuGameClubKey, ShowWechatGameClub);
             BindMenuEntryButton(shareButton, MenuShareKey, ShareGameToWechatFriend);
 
@@ -183,6 +186,7 @@ namespace HuanYouYu.MiniGameHall
 
         private void CloseActiveModal()
         {
+            PrepareSupportModalClose();
             if (activeModalRoot != null)
             {
                 UnityEngine.Object.Destroy(activeModalRoot);
@@ -254,8 +258,20 @@ namespace HuanYouYu.MiniGameHall
                 CreateMenuEntryButton(panelRoot, "GameClubButton", MenuGameClubKey);
             }
 
+            if (panelRoot.Find("SupportAuthorButton") == null)
+            {
+                CreateMenuEntryButton(panelRoot, "SupportAuthorButton", MenuSupportAuthorKey);
+            }
+
+            var settingsButton = panelRoot.Find("SettingsButton");
+            var supportAuthorButton = panelRoot.Find("SupportAuthorButton");
             var gameClubButton = panelRoot.Find("GameClubButton");
             var shareButton = panelRoot.Find("ShareButton");
+            if (settingsButton != null && supportAuthorButton != null)
+            {
+                supportAuthorButton.SetSiblingIndex(settingsButton.GetSiblingIndex() + 1);
+            }
+
             if (gameClubButton != null && shareButton != null)
             {
                 gameClubButton.SetSiblingIndex(Mathf.Max(0, shareButton.GetSiblingIndex()));
@@ -668,6 +684,7 @@ namespace HuanYouYu.MiniGameHall
 
             CreateMenuEntryButton(panel.transform, "AboutGameButton", MenuAboutGameKey);
             CreateMenuEntryButton(panel.transform, "SettingsButton", MenuSettingsKey);
+            CreateMenuEntryButton(panel.transform, "SupportAuthorButton", MenuSupportAuthorKey);
             CreateMenuEntryButton(panel.transform, "GameClubButton", MenuGameClubKey);
             CreateMenuEntryButton(panel.transform, "ShareButton", MenuShareKey);
 

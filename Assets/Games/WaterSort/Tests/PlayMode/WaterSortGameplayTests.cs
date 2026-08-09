@@ -51,7 +51,7 @@ namespace Tests
 
             progress.CurrentLevelIndex = 3;
             progress.UnlockedLevelCount = 4;
-            store.Save(loaded.ProgressLookup, loaded.FavoriteGameIds);
+            store.Save(loaded.ProgressLookup, loaded.FavoriteGameIds, loaded.HallRewardChestCount);
 
             loaded = store.Load(definitions);
             progress = loaded.ProgressLookup[WaterSortGameView.GameIdConstant];

@@ -31,6 +31,7 @@ private static readonly string[] DefaultFavoriteGameIds =
         private IReadOnlyList<MiniGameDefinition> definitions;
         private MiniGameBase activeGame;
         private string activeGameId;
+        private int hallRewardChestCount;
 
         public bool IsHallVisible
         {
@@ -64,6 +65,8 @@ private static readonly string[] DefaultFavoriteGameIds =
                 progressLookup[pair.Key] = pair.Value;
             }
 
+            hallRewardChestCount = Mathf.Max(0, loaded.HallRewardChestCount);
+
             foreach (var favoriteGameId in loaded.FavoriteGameIds)
             {
                 if (!favoriteGameIds.Contains(favoriteGameId))
@@ -74,7 +77,7 @@ private static readonly string[] DefaultFavoriteGameIds =
 
             EnsureDefaultFavorites(loaded.HasPersistedState);
 
-            hallView = new MiniGameHallView(rootCanvas.transform, EnterGame, ToggleFavorite);
+            hallView = new MiniGameHallView(rootCanvas.transform, EnterGame, ToggleFavorite, GrantHallRewardChest);
             RefreshHall();
         }
 
@@ -205,7 +208,7 @@ private static readonly string[] DefaultFavoriteGameIds =
 
         public int GetTotalChestCount()
         {
-            var totalChestCount = 0;
+            var totalChestCount = Mathf.Max(0, hallRewardChestCount);
             foreach (var pair in progressLookup)
             {
                 var progress = pair.Value;
@@ -222,7 +225,7 @@ private static readonly string[] DefaultFavoriteGameIds =
 
         public int GetHallGrowthLevel()
         {
-            var totalExp = 0;
+            var totalExp = Mathf.Max(0, hallRewardChestCount) * 35;
             foreach (var pair in progressLookup)
             {
                 var progress = pair.Value;
@@ -326,6 +329,7 @@ private static readonly string[] DefaultFavoriteGameIds =
             DisposeActiveGame();
             progressLookup.Clear();
             favoriteGameIds.Clear();
+            hallRewardChestCount = 0;
 
             for (var i = 0; i < definitions.Count; i++)
             {
@@ -400,12 +404,25 @@ private static readonly string[] DefaultFavoriteGameIds =
                 });
             }
 
-            hallView.Refresh(cards);
+            hallView.Refresh(cards, hallRewardChestCount);
         }
 
         private void SaveHallState()
         {
-            saveStore.Save(progressLookup, favoriteGameIds);
+            saveStore.Save(progressLookup, favoriteGameIds, hallRewardChestCount);
+        }
+
+        private void GrantHallRewardChest(int count)
+        {
+            var safeCount = Mathf.Max(0, count);
+            if (safeCount <= 0)
+            {
+                return;
+            }
+
+            hallRewardChestCount += safeCount;
+            SaveHallState();
+            RefreshHall();
         }
 
         private void EnsureDefaultFavorites(bool hasPersistedState)

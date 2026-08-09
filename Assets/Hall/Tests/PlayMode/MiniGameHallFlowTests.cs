@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Reflection;
 using HuanYouYu.MiniGameHall;
 using NUnit.Framework;
 using UnityEngine;
@@ -177,6 +178,120 @@ namespace Tests
         }
 
         [UnityTest]
+        public IEnumerator SupportAuthorMenuOpensConfiguredThreeTabAdPopupInEditorSafeMode()
+        {
+            ResetProgress();
+
+            MiniGameAppController controller = null;
+            yield return LoadController(value => controller = value);
+            Assert.IsNotNull(controller, "Hall controller should load before checking support-author UI.");
+
+            var supportButton = GameObject.Find("HallView")?.transform.Find("Shell/HeaderMenu/MenuPanel/SupportAuthorButton")?.GetComponent<Button>();
+            Assert.IsNotNull(supportButton, "Hall menu should contain the support-author button.");
+            AssertMenuButtonLabel(supportButton.transform, "支持作者");
+
+            supportButton.onClick.Invoke();
+            yield return null;
+
+            var popup = GameObject.Find("HallOverlay")?.transform.Find("SupportAuthorPopup");
+            Assert.IsNotNull(popup, "Support-author menu should open its popup.");
+            var dialog = popup.Find("Dialog");
+            var tabBar = popup.Find("Dialog/TabBar");
+            var rewardedTab = popup.Find("Dialog/TabBar/Tab_RewardedVideo");
+            var nativeTemplateTabTransform = popup.Find("Dialog/TabBar/Tab_NativeTemplate");
+            Assert.IsNotNull(dialog?.Find("InnerPanel"), "Support popup should use the layered green-and-cream panel style shared by other hall dialogs.");
+            Assert.IsNotNull(tabBar?.GetComponent<RoundedRectGraphic>(), "Support popup tab bar should use the rounded container from the all-games header tags.");
+            Assert.AreEqual(new Color(1f, 0.98f, 0.88f, 0.88f), tabBar.GetComponent<RoundedRectGraphic>().color, "Support popup tab bar should use the all-games header tag background.");
+            Assert.AreEqual(54f, (tabBar as RectTransform).sizeDelta.y, 0.01f, "Support popup tab bar should use the compact all-games header tag height.");
+            Assert.AreEqual(40f, (rewardedTab as RectTransform).sizeDelta.y, 0.01f, "Support popup tabs should use the compact all-games tag height.");
+            Assert.AreEqual(new Color(1f, 0.62f, 0.14f, 1f), rewardedTab.GetComponent<RoundedRectGraphic>().color, "Selected support tab should use the all-games selected orange.");
+            Assert.AreEqual(Color.white, rewardedTab.Find("Label").GetComponent<Graphic>().color, "Selected support tab label should use the all-games selected text color.");
+            Assert.AreEqual(new Color(1f, 1f, 0.96f, 0.95f), nativeTemplateTabTransform.GetComponent<RoundedRectGraphic>().color, "Unselected support tabs should use the all-games unselected background.");
+            Assert.AreEqual(new Color(0.32f, 0.42f, 0.19f, 1f), nativeTemplateTabTransform.Find("Label").GetComponent<Graphic>().color, "Unselected support tab labels should use the all-games green text.");
+            Assert.IsNotNull(popup.Find("Dialog/TabBar/Tab_NativeTemplate"), "Support popup should contain the native-template tab.");
+            Assert.IsNotNull(popup.Find("Dialog/TabBar/Tab_Interstitial"), "Support popup should contain the interstitial tab.");
+            AssertAnnouncementText(popup.Find("Dialog/Content/Description"), "完整观看一段激励视频");
+
+            var actionButton = popup.Find("Dialog/Content/ActionButton")?.GetComponent<Button>();
+            Assert.IsNotNull(actionButton, "Support popup should contain an ad action button.");
+            Assert.IsFalse(actionButton.interactable, "Editor safe mode should disable the configured rewarded-video action button.");
+            AssertAnnouncementText(popup.Find("Dialog/Content/Status"), "微信小游戏环境");
+
+            var nativeTemplateTab = popup.Find("Dialog/TabBar/Tab_NativeTemplate")?.GetComponent<Button>();
+            nativeTemplateTab.onClick.Invoke();
+            yield return null;
+            Assert.AreEqual(new Color(1f, 1f, 0.96f, 0.95f), rewardedTab.GetComponent<RoundedRectGraphic>().color, "Switching support tabs should restore the all-games unselected background.");
+            Assert.AreEqual(new Color(1f, 0.62f, 0.14f, 1f), nativeTemplateTabTransform.GetComponent<RoundedRectGraphic>().color, "Switching support tabs should move the all-games selected orange.");
+            Assert.IsTrue(popup.Find("Dialog/Content/NativeTemplateSlot").gameObject.activeSelf, "Native-template tab should reveal the reserved ad area.");
+            AssertAnnouncementText(popup.Find("Dialog/Content/Description"), "下方区域展示原生模板广告");
+            Assert.IsFalse(actionButton.interactable, "Editor safe mode should disable the configured native-template action button.");
+
+            var config = HallAdConfig.Load();
+            Assert.IsNotNull(config, "Hall ad config should load from Resources.");
+            Assert.AreEqual("adunit-4459bd2f40090b8a", config.RewardedVideoAdUnitId);
+            Assert.AreEqual("adunit-6947c599497ae3e7", config.InterstitialAdUnitId);
+            Assert.AreEqual("adunit-c71be83723ecbe79", config.NativeTemplateAdUnitId);
+
+            var closeButton = popup.Find("Dialog/CloseButton")?.GetComponent<Button>();
+            Assert.IsNotNull(closeButton, "Support popup should expose a close button.");
+            Assert.AreEqual(60f, (closeButton.transform as RectTransform).anchoredPosition.y, 0.01f, "Support popup close button should leave comfortable space above the bottom edge.");
+            closeButton.onClick.Invoke();
+            yield return null;
+            Assert.IsNull(GameObject.Find("HallOverlay")?.transform.Find("SupportAuthorPopup"), "Close button should dismiss the support popup.");
+        }
+
+        [UnityTest]
+        public IEnumerator CompletedRewardedVideoGrantsOnePersistentGlobalChestOnlyOnce()
+        {
+            ResetProgress();
+
+            MiniGameAppController controller = null;
+            yield return LoadController(value => controller = value);
+            Assert.IsNotNull(controller, "Hall controller should load before simulating a rewarded-video close callback.");
+
+            var supportButton = GameObject.Find("HallView")?.transform.Find("Shell/HeaderMenu/MenuPanel/SupportAuthorButton")?.GetComponent<Button>();
+            supportButton.onClick.Invoke();
+            yield return null;
+
+            var hallViewField = typeof(MiniGameAppController).GetField("hallView", BindingFlags.Instance | BindingFlags.NonPublic);
+            var hallView = hallViewField?.GetValue(controller);
+            Assert.IsNotNull(hallView, "Hall view should be available for controlled ad callback simulation.");
+            var rendererField = hallView.GetType().GetField("renderer", BindingFlags.Instance | BindingFlags.NonPublic);
+            var renderer = rendererField?.GetValue(hallView);
+            Assert.IsNotNull(renderer, "Hall renderer should be available for controlled ad callback simulation.");
+
+            var rendererType = renderer.GetType();
+            rendererType.GetField("supportAdOperationPending", BindingFlags.Instance | BindingFlags.NonPublic)?.SetValue(renderer, true);
+            rendererType.GetField("supportRewardHandled", BindingFlags.Instance | BindingFlags.NonPublic)?.SetValue(renderer, false);
+            var completeMethod = rendererType.GetMethod("CompleteRewardedVideoAttempt", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.IsNotNull(completeMethod, "Rewarded-video completion handler should exist.");
+
+            completeMethod.Invoke(renderer, new object[] { true, false });
+            completeMethod.Invoke(renderer, new object[] { true, false });
+            yield return null;
+
+            Assert.AreEqual(1, controller.GetTotalChestCount(), "Repeated close callbacks should grant exactly one global chest.");
+            var hallOverlay = GameObject.Find("HallOverlay")?.transform;
+            Assert.IsNotNull(hallOverlay?.Find("SupportAuthorPopup"), "Showing the ad result should keep the support-author popup open underneath.");
+            AssertAnnouncementText(hallOverlay?.Find("SupportAdResultPopup/Dialog/MessagePanel/Message"), "获得 1 个宝箱");
+            var resultConfirmButton = hallOverlay?.Find("SupportAdResultPopup/Dialog/Buttons/ConfirmButton")?.GetComponent<Button>();
+            Assert.IsNotNull(resultConfirmButton, "Ad result should use the shared MiniGamePopup confirmation button.");
+            resultConfirmButton.onClick.Invoke();
+            yield return null;
+            Assert.IsNull(hallOverlay?.Find("SupportAdResultPopup"), "Confirming the ad result should close only the result popup.");
+            Assert.IsNotNull(hallOverlay?.Find("SupportAuthorPopup"), "Confirming the ad result should return to the existing support-author popup.");
+            StringAssert.Contains("\"HallRewardChestCount\":1", PlayerPrefs.GetString(MiniGameSaveStore.PlayerPrefsKey), "Global reward chest should be persisted at the save root.");
+
+            MiniGameAppController reloadedController = null;
+            yield return LoadController(value => reloadedController = value);
+            Assert.IsNotNull(reloadedController, "Hall controller should reload after persisting a global chest.");
+            Assert.AreEqual(1, reloadedController.GetTotalChestCount(), "Global reward chest should survive a scene reload.");
+
+            var countText = GameObject.Find("HallView")?.transform.Find("Shell/HeaderStats/ChestStat/CountText");
+            AssertAnnouncementText(countText, "1");
+        }
+
+        [UnityTest]
         public IEnumerator AboutMenuOpensAnnouncementPopupAndCloseButtonDismissesIt()
         {
             ResetProgress();
@@ -205,16 +320,21 @@ namespace Tests
             Assert.IsNull(popup.Find("Dialog/Sidebar/Tab_Feedback"), "Announcement popup should not include the feedback tab.");
             Assert.IsNull(popup.Find("Dialog/Sidebar/Tab_Preview"), "Announcement popup should not include the preview tab.");
             Assert.IsNull(popup.Find("Dialog/Sidebar/Tab_Events"), "Announcement popup should not include the events tab.");
-            var latestUpdateCard = popup.Find("Dialog/ContentFrame/Viewport/Content/VersionCard_20260610");
+            var latestUpdateCard = popup.Find("Dialog/ContentFrame/Viewport/Content/VersionCard_20260809");
+            var juneUpdateCard = popup.Find("Dialog/ContentFrame/Viewport/Content/VersionCard_20260610");
             var mayUpdateCard = popup.Find("Dialog/ContentFrame/Viewport/Content/VersionCard_20260505");
             var firstUpdateCard = popup.Find("Dialog/ContentFrame/Viewport/Content/VersionCard_20260501");
             Assert.IsNotNull(latestUpdateCard, "Announcement popup should render the latest update card by default.");
+            Assert.IsNotNull(juneUpdateCard, "Announcement popup should render the 2026-06-10 update card.");
             Assert.IsNotNull(mayUpdateCard, "Announcement popup should render the 2026-05-05 update card.");
             Assert.IsNotNull(firstUpdateCard, "Announcement popup should render the 2026-05-01 update card.");
             AssertAnnouncementText(popup.Find("Dialog/ContentFrame/Viewport/Content/TitleRow/Title"), "最近更新");
-            AssertAnnouncementText(latestUpdateCard.Find("VersionBadge/Label"), "2026-06-10");
-            AssertAnnouncementText(latestUpdateCard.Find("Body"), "优化大厅体验");
-            AssertAnnouncementText(latestUpdateCard.Find("Body"), "连连看新增首局提示");
+            AssertAnnouncementText(latestUpdateCard.Find("VersionBadge/Label"), "2026-08-09");
+            AssertAnnouncementText(latestUpdateCard.Find("Body"), "新增支持作者界面");
+            AssertAnnouncementText(latestUpdateCard.Find("Body"), "1 个大厅宝箱");
+            AssertAnnouncementText(juneUpdateCard.Find("VersionBadge/Label"), "2026-06-10");
+            AssertAnnouncementText(juneUpdateCard.Find("Body"), "优化大厅体验");
+            AssertAnnouncementText(juneUpdateCard.Find("Body"), "连连看新增首局提示");
             AssertAnnouncementText(mayUpdateCard.Find("VersionBadge/Label"), "2026-05-05");
             AssertAnnouncementText(mayUpdateCard.Find("Body"), "叠牌消消");
             AssertAnnouncementText(mayUpdateCard.Find("Body"), "游戏圈");

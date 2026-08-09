@@ -249,7 +249,7 @@ namespace HuanYouYu.Editor.MiniGameHall
         private static void SaveAndRefresh(MiniGameSaveStore.LoadedState loaded, bool changed, string message)
         {
             var store = new MiniGameSaveStore();
-            store.Save(loaded.ProgressLookup, loaded.FavoriteGameIds);
+            store.Save(loaded.ProgressLookup, loaded.FavoriteGameIds, loaded.HallRewardChestCount);
 
             Debug.Log(changed ? message : message + " 当前存档无需变化。");
         }

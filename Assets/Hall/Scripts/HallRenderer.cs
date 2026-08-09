@@ -105,6 +105,7 @@ namespace HuanYouYu.MiniGameHall
 
         private readonly Action<string> enterGame;
         private readonly Action<string> toggleFavorite;
+        private readonly Action<int> grantHallRewardChest;
         private GameObject root;
         private RectTransform favoritesContentRoot;
         private RectTransform allGamesContentRoot;
@@ -133,6 +134,7 @@ namespace HuanYouYu.MiniGameHall
         private readonly List<MiniGameCardViewModel> cachedCards = new List<MiniGameCardViewModel>();
         private HallTab currentTab = HallTab.Favorites;
         private int selectedHeaderTagIndex;
+        private int hallRewardChestCount;
         private ToastRunner toastRunner;
 
         /// <summary>
@@ -141,10 +143,12 @@ namespace HuanYouYu.MiniGameHall
         public HallRenderer(
             Transform parent,
             Action<string> enterGameAction,
-            Action<string> toggleFavoriteAction)
+            Action<string> toggleFavoriteAction,
+            Action<int> grantHallRewardChestAction)
         {
             enterGame = enterGameAction;
             toggleFavorite = toggleFavoriteAction;
+            grantHallRewardChest = grantHallRewardChestAction;
 
             if (!TryBuildFromPrefab(parent))
             {
@@ -346,14 +350,16 @@ namespace HuanYouYu.MiniGameHall
         {
             CloseHeaderMenu();
             CloseActiveModal();
+            DisposeSupportAds();
             root.SetActive(false);
         }
 
         /// <summary>
         /// 刷新大厅数据源，并根据当前页签重建内容。
         /// </summary>
-        public void Refresh(IList<MiniGameCardViewModel> cards)
+        public void Refresh(IList<MiniGameCardViewModel> cards, int globalRewardChestCount)
         {
+            hallRewardChestCount = Mathf.Max(0, globalRewardChestCount);
             cachedCards.Clear();
             for (var i = 0; i < cards.Count; i++)
             {
@@ -738,7 +744,7 @@ namespace HuanYouYu.MiniGameHall
         /// </summary>
         private GrowthSnapshot BuildGrowthSnapshot()
         {
-            var totalExp = 0;
+            var totalExp = Mathf.Max(0, hallRewardChestCount) * 35;
             for (var i = 0; i < cachedCards.Count; i++)
             {
                 var progress = cachedCards[i].Progress;
@@ -793,7 +799,7 @@ namespace HuanYouYu.MiniGameHall
 
         private int GetTotalChestCount()
         {
-            var totalChestCount = 0;
+            var totalChestCount = Mathf.Max(0, hallRewardChestCount);
             for (var i = 0; i < cachedCards.Count; i++)
             {
                 var progress = cachedCards[i] != null ? cachedCards[i].Progress : null;
