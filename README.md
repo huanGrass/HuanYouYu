@@ -53,6 +53,7 @@
 - 占点攻防（ControlPoint）
 - 数学电灯（LightsOut）
 - 点灯谜题（Akari）
+- 旋转解环（BraceletUnlink）
 - 叠牌消消（StackMatch）
 - 方块消除（BlockPuzzle）
 - 猜数字（BullsCows）
