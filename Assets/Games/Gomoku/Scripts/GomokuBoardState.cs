@@ -105,6 +105,47 @@ namespace HuanYouYu.MiniGameHall
             return willWin;
         }
 
+        public bool TryGetWinningLine(int row, int column, GomokuStone stone, out GomokuMove[] winningLine)
+        {
+            winningLine = Array.Empty<GomokuMove>();
+            if (!IsInside(row, column) || stone == GomokuStone.None || stones[row, column] != stone)
+            {
+                return false;
+            }
+
+            for (var index = 0; index < DirectionSteps.Length; index += 2)
+            {
+                var deltaRow = DirectionSteps[index];
+                var deltaColumn = DirectionSteps[index + 1];
+                var startRow = row;
+                var startColumn = column;
+                while (IsInside(startRow - deltaRow, startColumn - deltaColumn) &&
+                    stones[startRow - deltaRow, startColumn - deltaColumn] == stone)
+                {
+                    startRow -= deltaRow;
+                    startColumn -= deltaColumn;
+                }
+
+                var line = new List<GomokuMove>();
+                var scanRow = startRow;
+                var scanColumn = startColumn;
+                while (IsInside(scanRow, scanColumn) && stones[scanRow, scanColumn] == stone)
+                {
+                    line.Add(new GomokuMove(scanRow, scanColumn));
+                    scanRow += deltaRow;
+                    scanColumn += deltaColumn;
+                }
+
+                if (line.Count >= 5)
+                {
+                    winningLine = line.ToArray();
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public bool HasAnyStone()
         {
             for (var row = 0; row < Size; row++)

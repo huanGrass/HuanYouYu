@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,7 +15,11 @@ namespace HuanYouYu.MiniGameHall
         private const float ContentPadding = 24f;
         private const float BoardFrameSize = 660f;
         private const float BoardPadding = 12f;
-        private const float BoardSpacing = 2f;
+        private const float IntersectionPadding = 18f;
+        private const float AiMoveDelaySeconds = 1f;
+        private const float WinningStoneStepSeconds = 0.11f;
+        private const float WinningPulseSeconds = 0.28f;
+        private const float SettlementDelayAfterWinningAnimationSeconds = 1f;
 
         private static readonly Color BoardFrameColor = new Color32(246, 226, 176, 255);
         private static readonly Color BoardGridColor = new Color32(208, 171, 107, 255);
@@ -22,6 +27,10 @@ namespace HuanYouYu.MiniGameHall
         private static readonly Color CellColor = new Color32(255, 255, 255, 0);
         private static readonly Color BlackStoneColor = new Color32(46, 43, 38, 255);
         private static readonly Color WhiteStoneColor = new Color32(250, 246, 234, 255);
+        private static readonly Color PreviewBlackColor = new Color32(46, 43, 38, 190);
+        private static readonly Color PreviewWhiteColor = new Color32(255, 252, 242, 220);
+        private static readonly Color LastMoveColor = new Color32(208, 70, 56, 255);
+        private static readonly Color WinningStoneColor = new Color32(255, 196, 63, 255);
 
         private readonly CellView[,] cells = new CellView[BoardSize, BoardSize];
 
@@ -33,6 +42,12 @@ namespace HuanYouYu.MiniGameHall
         private GomokuStone playerStone;
         private GomokuStone aiStone;
         private GomokuRoundState roundState;
+        private int previewRow = -1;
+        private int previewColumn = -1;
+        private int lastMoveRow = -1;
+        private int lastMoveColumn = -1;
+        private Coroutine aiTurnCoroutine;
+        private Coroutine endRoundCoroutine;
 
         public GameGomokuView(
             MonoBehaviour hostBehaviour,
@@ -77,10 +92,13 @@ namespace HuanYouYu.MiniGameHall
 
         protected override void ResetGame()
         {
+            CancelPendingAiTurn();
+            CancelEndRoundAnimation();
             Shell.ClosePopup();
             boardState = new GomokuBoardState(BoardSize);
             boardState.Reset();
             roundState = GomokuRoundState.Ongoing;
+            ClearMoveFeedback();
 
             var playerFirst = UnityEngine.Random.value >= 0.5f;
             playerStone = playerFirst ? GomokuStone.Black : GomokuStone.White;
@@ -91,17 +109,25 @@ namespace HuanYouYu.MiniGameHall
 
             if (aiStone == GomokuStone.Black)
             {
-                ExecuteAiTurn();
+                ScheduleAiTurn();
             }
         }
 
         protected override void OnPauseRequested()
         {
+            if (roundState != GomokuRoundState.Ongoing)
+            {
+                return;
+            }
+
+            CancelPendingAiTurn();
             Shell.ShowPausePopup(ResumeFromPause, ConfirmExitToHall);
         }
 
         protected override void OnBeforeDispose()
         {
+            CancelPendingAiTurn();
+            CancelEndRoundAnimation();
             Shell.ClosePopup();
 
             if (restartButton != null)
@@ -140,6 +166,9 @@ namespace HuanYouYu.MiniGameHall
 
             var boardFrameImage = boardFrame.AddComponent<Image>();
             boardFrameImage.color = BoardFrameColor;
+            var boardShadow = boardFrame.AddComponent<Shadow>();
+            boardShadow.effectColor = new Color32(83, 53, 24, 90);
+            boardShadow.effectDistance = new Vector2(0f, -5f);
 
             var boardGrid = CreateUiObject("BoardGrid", boardFrameRect);
             var boardGridRect = boardGrid.GetComponent<RectTransform>();
@@ -148,23 +177,86 @@ namespace HuanYouYu.MiniGameHall
             var boardGridImage = boardGrid.AddComponent<Image>();
             boardGridImage.color = BoardGridColor;
 
-            var gridLayout = boardGrid.AddComponent<GridLayoutGroup>();
+            var lineRoot = CreateUiObject("IntersectionLines", boardGridRect);
+            var lineRootRect = lineRoot.GetComponent<RectTransform>();
+            StretchWithPadding(lineRootRect, IntersectionPadding);
+            CreateIntersectionGrid(lineRootRect);
+
+            var cellGrid = CreateUiObject("IntersectionCells", boardGridRect);
+            var cellGridRect = cellGrid.GetComponent<RectTransform>();
+            StretchWithPadding(cellGridRect, IntersectionPadding);
+            var gridLayout = cellGrid.AddComponent<GridLayoutGroup>();
             gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
             gridLayout.constraintCount = BoardSize;
-            gridLayout.spacing = new Vector2(BoardSpacing, BoardSpacing);
+            gridLayout.spacing = Vector2.zero;
             gridLayout.childAlignment = TextAnchor.MiddleCenter;
 
-            var availableSize = BoardFrameSize - (BoardPadding * 2f) - (BoardSpacing * (BoardSize - 1));
-            var cellSize = Mathf.FloorToInt(availableSize / BoardSize);
+            var availableSize = BoardFrameSize - (BoardPadding * 2f) - (IntersectionPadding * 2f);
+            var cellSize = availableSize / BoardSize;
             gridLayout.cellSize = new Vector2(cellSize, cellSize);
 
             for (var row = 0; row < BoardSize; row++)
             {
                 for (var col = 0; col < BoardSize; col++)
                 {
-                    cells[row, col] = CreateCell(row, col, boardGridRect);
+                    cells[row, col] = CreateCell(row, col, cellGridRect);
                 }
             }
+        }
+
+        private static void CreateIntersectionGrid(RectTransform parent)
+        {
+            var edgeInset = 0.5f / BoardSize;
+            for (var index = 0; index < BoardSize; index++)
+            {
+                var position = (index + 0.5f) / BoardSize;
+                CreateIntersectionLine("HorizontalLine_" + index, parent, false, position, edgeInset);
+                CreateIntersectionLine("VerticalLine_" + index, parent, true, position, edgeInset);
+            }
+
+            CreateStarPoint(parent, 3, 3);
+            CreateStarPoint(parent, 3, 11);
+            CreateStarPoint(parent, 7, 7);
+            CreateStarPoint(parent, 11, 3);
+            CreateStarPoint(parent, 11, 11);
+        }
+
+        private static void CreateIntersectionLine(string name, Transform parent, bool vertical, float position, float edgeInset)
+        {
+            var lineObject = CreateUiObject(name, parent);
+            var lineRect = lineObject.GetComponent<RectTransform>();
+            if (vertical)
+            {
+                lineRect.anchorMin = new Vector2(position, edgeInset);
+                lineRect.anchorMax = new Vector2(position, 1f - edgeInset);
+                lineRect.sizeDelta = new Vector2(2f, 0f);
+            }
+            else
+            {
+                lineRect.anchorMin = new Vector2(edgeInset, 1f - position);
+                lineRect.anchorMax = new Vector2(1f - edgeInset, 1f - position);
+                lineRect.sizeDelta = new Vector2(0f, 2f);
+            }
+
+            lineRect.anchoredPosition = Vector2.zero;
+            var lineImage = lineObject.AddComponent<Image>();
+            lineImage.color = BoardLineColor;
+            lineImage.raycastTarget = false;
+        }
+
+        private static void CreateStarPoint(Transform parent, int row, int column)
+        {
+            var pointObject = CreateUiObject("StarPoint_" + row + "_" + column, parent);
+            var pointRect = pointObject.GetComponent<RectTransform>();
+            var x = (column + 0.5f) / BoardSize;
+            var y = 1f - ((row + 0.5f) / BoardSize);
+            pointRect.anchorMin = new Vector2(x, y);
+            pointRect.anchorMax = new Vector2(x, y);
+            pointRect.sizeDelta = new Vector2(8f, 8f);
+            pointRect.anchoredPosition = Vector2.zero;
+            var pointGraphic = pointObject.AddComponent<GomokuCircleGraphic>();
+            pointGraphic.color = BoardLineColor;
+            pointGraphic.raycastTarget = false;
         }
 
         private CellView CreateCell(int row, int col, Transform parent)
@@ -179,67 +271,30 @@ namespace HuanYouYu.MiniGameHall
             var capturedCol = col;
             cellButton.onClick.AddListener(delegate { OnCellClicked(capturedRow, capturedCol); });
 
-            CreateGridLine("TopLine", cellObject.transform, Vector2.up, row == 0);
-            CreateGridLine("BottomLine", cellObject.transform, Vector2.down, true);
-            CreateGridLine("LeftLine", cellObject.transform, Vector2.left, col == 0);
-            CreateGridLine("RightLine", cellObject.transform, Vector2.right, true);
-
             var stoneObject = CreateUiObject("Stone", cellObject.transform);
             var stoneRect = stoneObject.GetComponent<RectTransform>();
-            StretchWithPadding(stoneRect, 4f);
+            StretchWithPadding(stoneRect, 3f);
             var stoneGraphic = stoneObject.AddComponent<GomokuCircleGraphic>();
+            stoneGraphic.raycastTarget = false;
             stoneGraphic.enabled = false;
 
-            return new CellView(cellButton, cellImage, stoneGraphic);
-        }
+            var previewObject = CreateUiObject("Preview_" + row + "_" + col, cellObject.transform);
+            var previewRect = previewObject.GetComponent<RectTransform>();
+            StretchWithPadding(previewRect, 4f);
+            var previewGraphic = previewObject.AddComponent<GomokuCircleGraphic>();
+            previewGraphic.SetDashedOutline(true);
+            previewGraphic.raycastTarget = false;
+            previewGraphic.enabled = false;
 
-        private static void CreateGridLine(string name, Transform parent, Vector2 direction, bool visible)
-        {
-            if (!visible)
-            {
-                return;
-            }
+            var markerObject = CreateUiObject("LastMoveMarker_" + row + "_" + col, cellObject.transform);
+            var markerRect = markerObject.GetComponent<RectTransform>();
+            StretchWithPadding(markerRect, 16f);
+            var markerGraphic = markerObject.AddComponent<GomokuCircleGraphic>();
+            markerGraphic.color = LastMoveColor;
+            markerGraphic.raycastTarget = false;
+            markerGraphic.enabled = false;
 
-            var lineObject = CreateUiObject(name, parent);
-            var lineRect = lineObject.GetComponent<RectTransform>();
-            const float thickness = 2f;
-
-            if (direction == Vector2.up)
-            {
-                lineRect.anchorMin = new Vector2(0f, 1f);
-                lineRect.anchorMax = new Vector2(1f, 1f);
-                lineRect.pivot = new Vector2(0.5f, 1f);
-                lineRect.sizeDelta = new Vector2(0f, thickness);
-                lineRect.anchoredPosition = Vector2.zero;
-            }
-            else if (direction == Vector2.down)
-            {
-                lineRect.anchorMin = new Vector2(0f, 0f);
-                lineRect.anchorMax = new Vector2(1f, 0f);
-                lineRect.pivot = new Vector2(0.5f, 0f);
-                lineRect.sizeDelta = new Vector2(0f, thickness);
-                lineRect.anchoredPosition = Vector2.zero;
-            }
-            else if (direction == Vector2.left)
-            {
-                lineRect.anchorMin = new Vector2(0f, 0f);
-                lineRect.anchorMax = new Vector2(0f, 1f);
-                lineRect.pivot = new Vector2(0f, 0.5f);
-                lineRect.sizeDelta = new Vector2(thickness, 0f);
-                lineRect.anchoredPosition = Vector2.zero;
-            }
-            else
-            {
-                lineRect.anchorMin = new Vector2(1f, 0f);
-                lineRect.anchorMax = new Vector2(1f, 1f);
-                lineRect.pivot = new Vector2(1f, 0.5f);
-                lineRect.sizeDelta = new Vector2(thickness, 0f);
-                lineRect.anchoredPosition = Vector2.zero;
-            }
-
-            var lineImage = lineObject.AddComponent<Image>();
-            lineImage.color = BoardLineColor;
-            lineImage.raycastTarget = false;
+            return new CellView(cellButton, cellImage, stoneGraphic, previewGraphic, markerGraphic);
         }
 
         private void OnCellClicked(int row, int col)
@@ -249,11 +304,29 @@ namespace HuanYouYu.MiniGameHall
                 return;
             }
 
+            if (boardState.GetStone(row, col) != GomokuStone.None)
+            {
+                return;
+            }
+
+            if (previewRow != row || previewColumn != col)
+            {
+                previewRow = row;
+                previewColumn = col;
+                MiniGameSfxPlayer.Play(MiniGameSfxType.UiTap, 0.7f, 1.12f);
+                RefreshBoardUi();
+                return;
+            }
+
             if (!boardState.TryPlaceStone(row, col, playerStone, out roundState))
             {
                 return;
             }
 
+            previewRow = -1;
+            previewColumn = -1;
+            lastMoveRow = row;
+            lastMoveColumn = col;
             MiniGameSfxPlayer.Play(MiniGameSfxType.TileSelect, 0.9f, 1.05f);
             RefreshBoardUi();
             RefreshHud();
@@ -264,7 +337,37 @@ namespace HuanYouYu.MiniGameHall
                 return;
             }
 
+            ScheduleAiTurn();
+        }
+
+        private void ScheduleAiTurn()
+        {
+            CancelPendingAiTurn();
+            if (roundState != GomokuRoundState.Ongoing || boardState.CurrentTurn != aiStone)
+            {
+                return;
+            }
+
+            aiTurnCoroutine = HostBehaviour.StartCoroutine(ExecuteAiTurnAfterDelay());
+        }
+
+        private IEnumerator ExecuteAiTurnAfterDelay()
+        {
+            yield return new WaitForSeconds(AiMoveDelaySeconds);
+            aiTurnCoroutine = null;
             ExecuteAiTurn();
+        }
+
+        private void CancelPendingAiTurn()
+        {
+            if (aiTurnCoroutine == null || HostBehaviour == null)
+            {
+                aiTurnCoroutine = null;
+                return;
+            }
+
+            HostBehaviour.StopCoroutine(aiTurnCoroutine);
+            aiTurnCoroutine = null;
         }
 
         private void ExecuteAiTurn()
@@ -284,6 +387,8 @@ namespace HuanYouYu.MiniGameHall
             }
 
             boardState.TryPlaceStone(move.Row, move.Column, aiStone, out roundState);
+            lastMoveRow = move.Row;
+            lastMoveColumn = move.Column;
             MiniGameSfxPlayer.Play(MiniGameSfxType.TileSelect, 0.82f, 0.94f);
             RefreshBoardUi();
             RefreshHud();
@@ -304,6 +409,46 @@ namespace HuanYouYu.MiniGameHall
             RefreshBoardUi();
             RefreshHud();
             PlayEndRoundSfx();
+            if (TryGetWinningLine(out var winningLine))
+            {
+                CancelEndRoundAnimation();
+                endRoundCoroutine = HostBehaviour.StartCoroutine(AnimateWinningLineThenShowSettlement(winningLine));
+                return;
+            }
+
+            ShowEndRoundSettlement();
+        }
+
+        private IEnumerator AnimateWinningLineThenShowSettlement(GomokuMove[] winningLine)
+        {
+            for (var index = 0; index < winningLine.Length; index++)
+            {
+                var move = winningLine[index];
+                var stone = cells[move.Row, move.Column].Stone;
+                stone.color = WinningStoneColor;
+                stone.rectTransform.localScale = Vector3.one * 1.18f;
+                yield return new WaitForSeconds(WinningStoneStepSeconds);
+                stone.rectTransform.localScale = Vector3.one;
+            }
+
+            var elapsed = 0f;
+            while (elapsed < WinningPulseSeconds)
+            {
+                elapsed += Time.deltaTime;
+                var progress = Mathf.Clamp01(elapsed / WinningPulseSeconds);
+                var scale = 1f + (Mathf.Sin(progress * Mathf.PI) * 0.18f);
+                SetWinningLineScale(winningLine, scale);
+                yield return null;
+            }
+
+            SetWinningLineScale(winningLine, 1f);
+            yield return new WaitForSeconds(SettlementDelayAfterWinningAnimationSeconds);
+            endRoundCoroutine = null;
+            ShowEndRoundSettlement();
+        }
+
+        private void ShowEndRoundSettlement()
+        {
             MiniGameSfxPlayer.Play(MiniGameSfxType.Settle, 0.92f, 1f);
             var settlement = BuildSettlement();
             ShowRewardSettlementPanel(
@@ -323,6 +468,53 @@ namespace HuanYouYu.MiniGameHall
                 ResetGame,
                 delegate { CompleteGame?.Invoke(settlement); },
                 true);
+        }
+
+        private bool TryGetWinningLine(out GomokuMove[] winningLine)
+        {
+            winningLine = Array.Empty<GomokuMove>();
+            if (boardState == null || lastMoveRow < 0 || lastMoveColumn < 0)
+            {
+                return false;
+            }
+
+            var winningStone = roundState == GomokuRoundState.BlackWin ? GomokuStone.Black :
+                roundState == GomokuRoundState.WhiteWin ? GomokuStone.White : GomokuStone.None;
+            return boardState.TryGetWinningLine(lastMoveRow, lastMoveColumn, winningStone, out winningLine);
+        }
+
+        private void SetWinningLineScale(GomokuMove[] winningLine, float scale)
+        {
+            if (winningLine == null)
+            {
+                return;
+            }
+
+            for (var index = 0; index < winningLine.Length; index++)
+            {
+                var move = winningLine[index];
+                cells[move.Row, move.Column].Stone.rectTransform.localScale = Vector3.one * scale;
+            }
+        }
+
+        private void CancelEndRoundAnimation()
+        {
+            if (endRoundCoroutine != null && HostBehaviour != null)
+            {
+                HostBehaviour.StopCoroutine(endRoundCoroutine);
+            }
+
+            endRoundCoroutine = null;
+            for (var row = 0; row < BoardSize; row++)
+            {
+                for (var column = 0; column < BoardSize; column++)
+                {
+                    if (cells[row, column].Stone != null)
+                    {
+                        cells[row, column].Stone.rectTransform.localScale = Vector3.one;
+                    }
+                }
+            }
         }
 
         private MiniGameRewardSettlementPanelStyle ResolveSettlementStyle()
@@ -379,6 +571,9 @@ namespace HuanYouYu.MiniGameHall
                     var cell = cells[row, col];
                     cell.Button.interactable = roundState == GomokuRoundState.Ongoing && stone == GomokuStone.None && boardState.CurrentTurn == playerStone;
                     cell.Stone.enabled = stone != GomokuStone.None;
+                    cell.Preview.enabled = stone == GomokuStone.None && row == previewRow && col == previewColumn;
+                    cell.Preview.color = playerStone == GomokuStone.Black ? PreviewBlackColor : PreviewWhiteColor;
+                    cell.LastMoveMarker.enabled = stone != GomokuStone.None && row == lastMoveRow && col == lastMoveColumn;
                     if (stone == GomokuStone.Black)
                     {
                         cell.Stone.color = BlackStoneColor;
@@ -429,6 +624,10 @@ namespace HuanYouYu.MiniGameHall
         private void ResumeFromPause()
         {
             Shell.ClosePopup();
+            if (roundState == GomokuRoundState.Ongoing && boardState.CurrentTurn == aiStone)
+            {
+                ScheduleAiTurn();
+            }
         }
 
         private void ConfirmExitToHall()
@@ -530,6 +729,14 @@ namespace HuanYouYu.MiniGameHall
             ResetGame();
         }
 
+        private void ClearMoveFeedback()
+        {
+            previewRow = -1;
+            previewColumn = -1;
+            lastMoveRow = -1;
+            lastMoveColumn = -1;
+        }
+
         private static GameObject LoadRequiredSectionPrefab(string resourcePath, Transform parent, string instanceName)
         {
             var prefab = Resources.Load<GameObject>(resourcePath);
@@ -577,11 +784,18 @@ namespace HuanYouYu.MiniGameHall
 
         private readonly struct CellView
         {
-            public CellView(Button button, Image background, GomokuCircleGraphic stone)
+            public CellView(
+                Button button,
+                Image background,
+                GomokuCircleGraphic stone,
+                GomokuCircleGraphic preview,
+                GomokuCircleGraphic lastMoveMarker)
             {
                 Button = button;
                 Background = background;
                 Stone = stone;
+                Preview = preview;
+                LastMoveMarker = lastMoveMarker;
             }
 
             public Button Button { get; }
@@ -589,6 +803,10 @@ namespace HuanYouYu.MiniGameHall
             public Image Background { get; }
 
             public GomokuCircleGraphic Stone { get; }
+
+            public GomokuCircleGraphic Preview { get; }
+
+            public GomokuCircleGraphic LastMoveMarker { get; }
         }
     }
 }

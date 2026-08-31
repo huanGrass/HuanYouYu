@@ -89,6 +89,45 @@ namespace Tests
             yield return null;
         }
 
+        [UnityTest]
+        public IEnumerator BottomBarUsesUnifiedTextButtons()
+        {
+            var root = CreateGameRoot();
+            var host = root.GetComponent<TestHostBehaviour>();
+            var canvas = root.transform.Find("MiniGameCanvas");
+            var game = new NonogramGameView(host, canvas, _ => { }, () => { });
+            yield return null;
+
+            var gameRoot = GameObject.Find("NonogramView");
+            var actionBar = gameRoot.transform.Find("BottomHost/NonogramBottom/ActionBar");
+            Assert.IsNotNull(actionBar, "Nonogram should use the shared bottom action tray.");
+            AssertUnifiedTextButton(actionBar, "FillModeButton");
+            AssertUnifiedTextButton(actionBar, "CrossModeButton");
+            AssertUnifiedTextButton(actionBar, "ResetButton");
+            AssertUnifiedTextButton(actionBar, "NextPuzzleButton");
+
+            var activePuzzleField = typeof(NonogramGameView).GetField("activePuzzle", InstancePrivate);
+            var nextButton = actionBar.Find("NextPuzzleButton").GetComponent<Button>();
+            var firstPuzzle = activePuzzleField.GetValue(game);
+            nextButton.onClick.Invoke();
+            var secondPuzzle = activePuzzleField.GetValue(game);
+            nextButton.onClick.Invoke();
+            var thirdPuzzle = activePuzzleField.GetValue(game);
+            Assert.AreNotSame(firstPuzzle, secondPuzzle, "First next-puzzle click should change the puzzle.");
+            Assert.AreNotSame(secondPuzzle, thirdPuzzle, "Next-puzzle button should remain active after changing once.");
+
+            game.Dispose();
+            Object.Destroy(root);
+            yield return null;
+        }
+
+        private static void AssertUnifiedTextButton(Transform actionBar, string buttonName)
+        {
+            var button = actionBar.Find(buttonName)?.GetComponent<Button>();
+            Assert.IsNotNull(button, "Missing unified bottom button: " + buttonName);
+            Assert.IsInstanceOf<RoundedRectGraphic>(button.targetGraphic, "Bottom text button should use the shared rounded style.");
+        }
+
         private static GameObject CreateGameRoot()
         {
             var root = new GameObject("NonogramTestRoot");

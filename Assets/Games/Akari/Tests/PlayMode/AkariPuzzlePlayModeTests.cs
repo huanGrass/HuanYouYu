@@ -217,6 +217,186 @@ namespace Tests
             yield return null;
         }
 
+        [UnityTest]
+        public IEnumerator WhiteCellCyclesFromBulbToCrossToEmpty()
+        {
+            var root = new GameObject("AkariCellStateTestRoot", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+            var rootRect = root.GetComponent<RectTransform>();
+            rootRect.sizeDelta = new Vector2(750f, 1334f);
+            var canvas = root.GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            var scaler = root.GetComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(750f, 1334f);
+
+            var host = root.AddComponent<TestHost>();
+            MiniGameAkariGameView view = null;
+            try
+            {
+                view = new MiniGameAkariGameView(host, root.transform, null, null);
+                yield return null;
+
+                var puzzle = CreateConflictPuzzle();
+                view.LoadPuzzleForTests(puzzle, new bool[puzzle.Cells.Length]);
+                var cell = GameObject.Find("Cell0");
+                var button = cell.GetComponent<Button>();
+                var bulb = cell.transform.Find("Bulb").gameObject;
+
+                button.onClick.Invoke();
+                Assert.IsTrue(bulb.activeSelf);
+
+                button.onClick.Invoke();
+                var cross = cell.transform.Find("Cross");
+                Assert.IsNotNull(cross, "Second click should create the cross state.");
+                Assert.IsFalse(bulb.activeSelf);
+                Assert.IsTrue(cross.gameObject.activeSelf);
+
+                button.onClick.Invoke();
+                Assert.IsFalse(bulb.activeSelf);
+                Assert.IsFalse(cross.gameObject.activeSelf);
+            }
+            finally
+            {
+                if (view != null)
+                {
+                    view.Dispose();
+                }
+
+                UnityEngine.Object.Destroy(root);
+            }
+
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator BottomModesControlWhiteCellMarking()
+        {
+            var root = new GameObject("AkariInputModeTestRoot", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+            var rootRect = root.GetComponent<RectTransform>();
+            rootRect.sizeDelta = new Vector2(750f, 1334f);
+            var canvas = root.GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            var scaler = root.GetComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(750f, 1334f);
+
+            var host = root.AddComponent<TestHost>();
+            MiniGameAkariGameView view = null;
+            try
+            {
+                view = new MiniGameAkariGameView(host, root.transform, null, null);
+                yield return null;
+
+                var cycleModeButton = GameObject.Find("AkariCycleModeButton");
+                var bulbModeButton = GameObject.Find("AkariBulbModeButton");
+                var crossModeButton = GameObject.Find("AkariCrossModeButton");
+                Assert.IsNotNull(cycleModeButton);
+                Assert.IsNotNull(bulbModeButton);
+                Assert.IsNotNull(crossModeButton);
+                Assert.AreEqual("点灯", UiTextCatalog.Get("akari.button.mode_bulb"));
+                AssertColorApproximately(
+                    new Color(0.90f, 0.75f, 0.28f, 1f),
+                    cycleModeButton.GetComponent<Button>().targetGraphic.color);
+
+                var puzzle = CreateConflictPuzzle();
+                view.LoadPuzzleForTests(puzzle, new bool[puzzle.Cells.Length]);
+                var cell = GameObject.Find("Cell0");
+                var cellButton = cell.GetComponent<Button>();
+                var bulb = cell.transform.Find("Bulb").gameObject;
+                var cross = cell.transform.Find("Cross").gameObject;
+
+                crossModeButton.GetComponent<Button>().onClick.Invoke();
+                AssertColorApproximately(
+                    new Color(0.90f, 0.75f, 0.28f, 1f),
+                    crossModeButton.GetComponent<Button>().targetGraphic.color);
+                cellButton.onClick.Invoke();
+                Assert.IsTrue(cross.activeSelf);
+                Assert.IsFalse(bulb.activeSelf);
+                cellButton.onClick.Invoke();
+                Assert.IsFalse(cross.activeSelf);
+
+                bulbModeButton.GetComponent<Button>().onClick.Invoke();
+                cellButton.onClick.Invoke();
+                Assert.IsTrue(bulb.activeSelf);
+                Assert.IsFalse(cross.activeSelf);
+                cellButton.onClick.Invoke();
+                Assert.IsFalse(bulb.activeSelf);
+
+                crossModeButton.GetComponent<Button>().onClick.Invoke();
+                cellButton.onClick.Invoke();
+                bulbModeButton.GetComponent<Button>().onClick.Invoke();
+                cellButton.onClick.Invoke();
+                Assert.IsTrue(bulb.activeSelf);
+                Assert.IsFalse(cross.activeSelf);
+
+                cycleModeButton.GetComponent<Button>().onClick.Invoke();
+                cellButton.onClick.Invoke();
+                Assert.IsFalse(bulb.activeSelf);
+                Assert.IsTrue(cross.activeSelf);
+            }
+            finally
+            {
+                if (view != null)
+                {
+                    view.Dispose();
+                }
+
+                UnityEngine.Object.Destroy(root);
+            }
+
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator RestartRequiresConfirmationAfterAnyCellOperation()
+        {
+            var root = new GameObject("AkariRestartConfirmTestRoot", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+            var rootRect = root.GetComponent<RectTransform>();
+            rootRect.sizeDelta = new Vector2(750f, 1334f);
+            var canvas = root.GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            var scaler = root.GetComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(750f, 1334f);
+
+            var host = root.AddComponent<TestHost>();
+            MiniGameAkariGameView view = null;
+            try
+            {
+                view = new MiniGameAkariGameView(host, root.transform, null, null);
+                yield return null;
+
+                var puzzle = CreateConflictPuzzle();
+                view.LoadPuzzleForTests(puzzle, new bool[puzzle.Cells.Length]);
+                GameObject.Find("Cell0").GetComponent<Button>().onClick.Invoke();
+                Assert.AreEqual(1, view.CurrentEvaluationForTests.BulbCount);
+
+                GameObject.Find("RestartButton").GetComponent<Button>().onClick.Invoke();
+                var popup = GameObject.Find("MiniGamePopup");
+                Assert.IsNotNull(popup, "Restart should ask for confirmation after the board was operated.");
+                Assert.AreEqual(1, view.CurrentEvaluationForTests.BulbCount, "Board progress should remain while confirmation is pending.");
+
+                var confirmButton = popup.transform.Find("Dialog/Buttons/ConfirmButton").GetComponent<Button>();
+                confirmButton.onClick.Invoke();
+                Assert.AreEqual(0, view.CurrentEvaluationForTests.BulbCount);
+                yield return null;
+
+                GameObject.Find("RestartButton").GetComponent<Button>().onClick.Invoke();
+                Assert.IsNull(GameObject.Find("MiniGamePopup"), "Restart without any operation should not ask for confirmation.");
+            }
+            finally
+            {
+                if (view != null)
+                {
+                    view.Dispose();
+                }
+
+                UnityEngine.Object.Destroy(root);
+            }
+
+            yield return null;
+        }
+
         private static AkariPuzzle CreateConflictPuzzle()
         {
             return new AkariPuzzle

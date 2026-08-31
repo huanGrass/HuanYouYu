@@ -14,8 +14,6 @@ namespace HuanYouYu.MiniGameHall
         private const int RewardTargetAttempts = 8;
         private static readonly Color PanelColor = new Color32(247, 250, 244, 238);
         private static readonly Color SlotColor = new Color32(255, 255, 255, 255);
-        private static readonly Color KeyColor = new Color32(232, 244, 255, 255);
-        private static readonly Color UsedKeyColor = new Color32(212, 222, 226, 255);
 
         private readonly System.Random random = new System.Random();
         private readonly Button[] digitButtons = new Button[10];
@@ -167,6 +165,7 @@ namespace HuanYouYu.MiniGameHall
             layout.childControlHeight = true;
             layout.childForceExpandWidth = true;
             layout.childForceExpandHeight = false;
+            MiniGameShellBottomBarBuilder.AddActionTrayBackground(root, new Vector2(12f, 10f), 34f);
 
             var guessRow = CreateRectObject("GuessRow", root);
             guessRow.AddComponent<LayoutElement>().preferredHeight = 154f;
@@ -446,11 +445,6 @@ namespace HuanYouYu.MiniGameHall
             for (var i = 0; i < digitButtons.Length; i++)
             {
                 digitButtons[i].interactable = !isFinished && currentGuess.Length < GuessLength && !usedDigits.Contains(i);
-                var graphic = digitButtons[i].targetGraphic as RoundedRectGraphic;
-                if (graphic != null)
-                {
-                    graphic.color = usedDigits.Contains(i) ? UsedKeyColor : KeyColor;
-                }
             }
 
             if (backspaceButton != null)
@@ -517,13 +511,13 @@ namespace HuanYouYu.MiniGameHall
             rect.sizeDelta = new Vector2(152f, 74f);
             var graphic = buttonObject.GetComponent<RoundedRectGraphic>();
             graphic.CornerRadius = 18f;
-            graphic.color = KeyColor;
             graphic.raycastTarget = true;
             var button = buttonObject.GetComponent<Button>();
             button.targetGraphic = graphic;
-            var label = CreateText("Label", rect, 25f, FontStyles.Bold, new Color32(47, 63, 77, 255));
+            var label = CreateText("Label", rect, 25f, FontStyles.Bold, Color.white);
             Stretch(label.rectTransform, Vector2.zero, Vector2.one, new Vector2(8f, 4f), new Vector2(-8f, -4f));
             label.text = labelText;
+            MiniGameShellBottomBarBuilder.ConfigureTextActionButton(button, label);
             return button;
         }
 

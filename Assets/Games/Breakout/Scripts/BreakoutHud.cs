@@ -22,7 +22,10 @@ namespace HuanYouYu.MiniGameHall
                 topParent,
                 MiniGameShellTopBarBuilder.CreateDefaultConfig("BreakoutTop"));
             topRoot = topBarRefs.Root;
-            bottomRoot = CreateRoot("BreakoutBottomHud", bottomParent);
+            var bottomRefs = MiniGameShellBottomBarBuilder.CreateBottomContainer(
+                bottomParent,
+                MiniGameShellBottomBarBuilder.CreateDefaultContainerConfig("BreakoutBottomHud"));
+            bottomRoot = bottomRefs.Root;
             titleText = topBarRefs.TitleText;
             scoreText = topBarRefs.ScoreText;
             if (titleText == null || scoreText == null)
@@ -54,9 +57,15 @@ namespace HuanYouYu.MiniGameHall
                     UiTextCatalog.Get("breakout.level.classic")));
             levelText.rectTransform.sizeDelta = new Vector2(220f, 24f);
 
-            actionButton = CreateActionButton(bottomRoot, UiTextCatalog.Get("common.action.restart"));
+            actionButton = MiniGameShellBottomBarBuilder.CreateTextActionButton(
+                bottomRefs.ActionBar,
+                "ActionButton",
+                UiTextCatalog.Get("common.action.restart"),
+                264f,
+                74f,
+                28f,
+                24f);
             actionLabel = actionButton.GetComponentInChildren<TextMeshProUGUI>();
-            actionLabel.color = new Color32(20, 28, 36, 255);
 
             actionButton.onClick.AddListener(OnActionClicked);
             MiniGameSfxPlayer.Attach(actionButton, MiniGameSfxType.UiTap, 0.92f);
@@ -99,13 +108,6 @@ namespace HuanYouYu.MiniGameHall
             actionButton.gameObject.SetActive(visible);
             actionButton.interactable = interactable;
             actionLabel.text = label;
-            var background = actionButton.targetGraphic as Image;
-            if (background != null)
-            {
-                background.color = interactable
-                    ? new Color32(245, 203, 94, 255)
-                    : new Color32(136, 148, 166, 255);
-            }
         }
 
         public void Dispose()
@@ -124,18 +126,6 @@ namespace HuanYouYu.MiniGameHall
         private void OnActionClicked()
         {
             ActionRequested?.Invoke();
-        }
-
-        private static RectTransform CreateRoot(string name, Transform parent)
-        {
-            var go = new GameObject(name, typeof(RectTransform));
-            var rect = go.GetComponent<RectTransform>();
-            rect.SetParent(parent, false);
-            rect.anchorMin = Vector2.zero;
-            rect.anchorMax = Vector2.one;
-            rect.offsetMin = Vector2.zero;
-            rect.offsetMax = Vector2.zero;
-            return rect;
         }
 
         private static TextMeshProUGUI CreateOverlayText(
@@ -169,39 +159,5 @@ namespace HuanYouYu.MiniGameHall
             return text;
         }
 
-        private static Button CreateActionButton(RectTransform parent, string labelText)
-        {
-            var go = new GameObject("ActionButton", typeof(RectTransform), typeof(Image), typeof(Button));
-            var rect = go.GetComponent<RectTransform>();
-            rect.SetParent(parent, false);
-            rect.anchorMin = new Vector2(0.5f, 0f);
-            rect.anchorMax = new Vector2(0.5f, 0f);
-            rect.pivot = new Vector2(0.5f, 0f);
-            rect.anchoredPosition = new Vector2(0f, 18f);
-            rect.sizeDelta = new Vector2(264f, 74f);
-
-            var image = go.GetComponent<Image>();
-            image.color = new Color32(245, 203, 94, 255);
-
-            var labelGo = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));
-            var labelRect = labelGo.GetComponent<RectTransform>();
-            labelRect.SetParent(rect, false);
-            labelRect.anchorMin = Vector2.zero;
-            labelRect.anchorMax = Vector2.one;
-            labelRect.offsetMin = Vector2.zero;
-            labelRect.offsetMax = Vector2.zero;
-            labelRect.pivot = new Vector2(0.5f, 0.5f);
-
-            var label = labelGo.GetComponent<TextMeshProUGUI>();
-            label.fontSize = 28f;
-            label.fontStyle = FontStyles.Bold;
-            label.alignment = TextAlignmentOptions.Center;
-            label.color = new Color32(20, 28, 36, 255);
-            label.text = labelText;
-
-            var button = go.GetComponent<Button>();
-            button.targetGraphic = image;
-            return button;
-        }
     }
 }

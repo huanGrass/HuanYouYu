@@ -27,7 +27,7 @@ public static class TMPStaticSubsetFontBuilder
         " 0123456789" +
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" +
         ".,!?;:'\"`~@#$%^&*()-_=+[]{}<>/\\| " +
-        "，。！？；：、（）【】《》“”‘’…—";
+        "，。！？；：、（）【】《》“”‘’…—←↑→↓↔↕↖↗↘↙";
 
     private const string CommonChineseCharacters =
         "的一是了不在人有我他这中大来上个国到说们为子和你地出道也时要就下以生会自着去之过家学对可里后小心多天而能好都然没日于起发成只如事把还用第样道想作种开见经法现当点最本间定行所情者新前后同" +
@@ -267,6 +267,12 @@ public static class TMPStaticSubsetFontBuilder
 
         // Misc symbols and dingbats.
         if (codePoint >= 0x2600 && codePoint <= 0x27BF)
+        {
+            return true;
+        }
+
+        // Basic arrows, such as U+2192 RIGHTWARDS ARROW.
+        if (codePoint >= 0x2190 && codePoint <= 0x21FF)
         {
             return true;
         }

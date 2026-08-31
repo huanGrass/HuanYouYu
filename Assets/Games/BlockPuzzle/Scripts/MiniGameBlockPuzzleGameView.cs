@@ -16,6 +16,7 @@ namespace HuanYouYu.MiniGameHall
         private const float BoardGridSize = (BlockPuzzleBoard.Size * BoardCellSize) + ((BlockPuzzleBoard.Size - 1) * BoardCellGap);
         private const float TrayCellSize = 30f;
         private const float TrayCellGap = 4f;
+        private const float DragLiftDistance = 124f;
 
         private static readonly Color ContentStatusColor = new Color32(72, 91, 65, 255);
         private static readonly Color BoardPanelColor = new Color(1f, 0.98f, 0.91f, 0.84f);
@@ -350,10 +351,10 @@ namespace HuanYouYu.MiniGameHall
             Vector2 contentPoint;
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(contentRoot, eventData.position, eventData.pressEventCamera, out contentPoint))
             {
-                activeDragView.Root.anchoredPosition = contentPoint;
+                activeDragView.Root.anchoredPosition = contentPoint + (Vector2.up * DragLiftDistance);
             }
 
-            if (TryResolvePlacement(activeDragView, eventData, out activeDragAnchorX, out activeDragAnchorY))
+            if (TryResolvePlacement(activeDragView, out activeDragAnchorX, out activeDragAnchorY))
             {
                 activeDragCanPlace = gameState.Board.CanPlace(activeDragView.Piece, activeDragAnchorX, activeDragAnchorY);
                 ShowPlacementPreview(activeDragView.Piece, activeDragAnchorX, activeDragAnchorY, activeDragCanPlace);
@@ -401,7 +402,7 @@ namespace HuanYouYu.MiniGameHall
             SetStatus("blockpuzzle.status.ready");
         }
 
-        private bool TryResolvePlacement(BlockPuzzlePieceView view, PointerEventData eventData, out int anchorX, out int anchorY)
+        private bool TryResolvePlacement(BlockPuzzlePieceView view, out int anchorX, out int anchorY)
         {
             anchorX = 0;
             anchorY = 0;
@@ -410,11 +411,7 @@ namespace HuanYouYu.MiniGameHall
                 return false;
             }
 
-            Vector2 boardPoint;
-            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(boardGrid, eventData.position, eventData.pressEventCamera, out boardPoint))
-            {
-                return false;
-            }
+            var boardPoint = (Vector2)boardGrid.InverseTransformPoint(view.Root.position);
 
             var pieceWidth = ComputePiecePixelSize(view.Piece.Width, BoardCellSize, BoardCellGap);
             var pieceHeight = ComputePiecePixelSize(view.Piece.Height, BoardCellSize, BoardCellGap);

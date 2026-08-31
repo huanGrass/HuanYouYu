@@ -4,5 +4,6 @@
   "descriptionKey": "game.2048.description",
   "isPlayable": true,
   "statusLabelKey": "status.playable",
+  "updatedAt": "2026-08-31",
   "category": "number"
 }

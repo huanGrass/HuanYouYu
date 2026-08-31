@@ -4,5 +4,6 @@
   "descriptionKey": "game.water_sort.description",
   "isPlayable": true,
   "statusLabelKey": "status.playable",
+  "updatedAt": "2026-08-13",
   "category": "eliminate"
 }

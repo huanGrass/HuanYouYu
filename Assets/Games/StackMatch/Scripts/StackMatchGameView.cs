@@ -29,8 +29,10 @@ namespace HuanYouYu.MiniGameHall
         private const float MoveToTrayDuration = 0.30f;
         private const float MatchClearDuration = 0.18f;
         private static readonly Color CardColor = new Color32(252, 253, 248, 255);
-        private static readonly Color CardShadowColor = new Color32(180, 187, 177, 120);
-        private static readonly Color CardHighlightColor = new Color32(255, 255, 255, 95);
+        private static readonly Color CardDropShadowColor = new Color32(83, 91, 67, 82);
+        private static readonly Color CardThicknessBackColor = new Color32(174, 169, 137, 255);
+        private static readonly Color CardThicknessColor = new Color32(218, 214, 181, 255);
+        private static readonly Color CardHighlightColor = new Color32(255, 255, 255, 118);
         private static readonly Color CoveredMaskColor = new Color(0f, 0f, 0f, 0.30f);
         private static readonly Color TrayFrameColor = new Color32(150, 96, 48, 245);
 
@@ -105,6 +107,7 @@ namespace HuanYouYu.MiniGameHall
 
         private sealed class CardView
         {
+            public readonly List<CardView> CoveredCards = new List<CardView>();
             public int Index;
             public int TypeId;
             public int Layer;
@@ -127,6 +130,8 @@ namespace HuanYouYu.MiniGameHall
             public Coroutine ClearRoutine;
             public bool IsMoving;
             public bool IsClearing;
+            public bool IsCoverageActive;
+            public int ActiveCoverCount;
             public CardState State;
         }
 
@@ -470,63 +475,15 @@ namespace HuanYouYu.MiniGameHall
                 Shell.BottomHost,
                 MiniGameShellBottomBarBuilder.CreateDefaultContainerConfig("StackMatchBottom"));
             bottomRoot = bottomRefs.Root;
-            bottomRefs.ActionBar.sizeDelta = new Vector2(412f, 88f);
+            MiniGameShellBottomBarBuilder.ConfigureTextActionBar(bottomRefs.ActionBar);
 
-            moveOutButton = CreateBottomTextButton(bottomRefs.ActionBar, "MoveOutButton", UiTextCatalog.Get("stack_match.action.move_out"));
-            shuffleButton = CreateBottomTextButton(bottomRefs.ActionBar, "ShuffleButton", UiTextCatalog.Get("stack_match.action.shuffle"));
-            undoButton = CreateBottomTextButton(bottomRefs.ActionBar, "UndoButton", UiTextCatalog.Get("stack_match.action.undo"));
+            moveOutButton = MiniGameShellBottomBarBuilder.CreateTextActionButton(bottomRefs.ActionBar, "MoveOutButton", UiTextCatalog.Get("stack_match.action.move_out"));
+            shuffleButton = MiniGameShellBottomBarBuilder.CreateTextActionButton(bottomRefs.ActionBar, "ShuffleButton", UiTextCatalog.Get("stack_match.action.shuffle"));
+            undoButton = MiniGameShellBottomBarBuilder.CreateTextActionButton(bottomRefs.ActionBar, "UndoButton", UiTextCatalog.Get("stack_match.action.undo"));
 
             moveOutButton.onClick.AddListener(OnMoveOutClicked);
             shuffleButton.onClick.AddListener(OnShuffleClicked);
             undoButton.onClick.AddListener(OnUndoClicked);
-        }
-
-        private static Button CreateBottomTextButton(Transform parent, string name, string labelText)
-        {
-            var buttonObject = new GameObject(name, typeof(RectTransform), typeof(Button), typeof(LayoutElement));
-            var buttonRect = buttonObject.GetComponent<RectTransform>();
-            buttonRect.SetParent(parent, false);
-            buttonRect.anchorMin = new Vector2(0.5f, 0.5f);
-            buttonRect.anchorMax = new Vector2(0.5f, 0.5f);
-            buttonRect.pivot = new Vector2(0.5f, 0.5f);
-            buttonRect.sizeDelta = new Vector2(116f, 72f);
-
-            var layoutElement = buttonObject.GetComponent<LayoutElement>();
-            layoutElement.preferredWidth = 116f;
-            layoutElement.preferredHeight = 72f;
-            layoutElement.layoutPriority = 1;
-
-            var button = buttonObject.GetComponent<Button>();
-            var backgroundObject = CreateRectObject("Background", buttonRect);
-            var backgroundRect = backgroundObject.GetComponent<RectTransform>();
-            Stretch(backgroundRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
-            var backgroundImage = backgroundObject.AddComponent<Image>();
-            backgroundImage.color = new Color32(53, 125, 97, 255);
-            button.targetGraphic = backgroundImage;
-
-            var colors = button.colors;
-            colors.normalColor = Color.white;
-            colors.highlightedColor = new Color(0.98f, 0.98f, 0.98f, 1f);
-            colors.pressedColor = new Color(0.86f, 0.86f, 0.86f, 1f);
-            colors.selectedColor = colors.highlightedColor;
-            colors.disabledColor = new Color(0.58f, 0.58f, 0.58f, 0.65f);
-            colors.colorMultiplier = 1f;
-            colors.fadeDuration = 0.08f;
-            button.colors = colors;
-
-            var labelObject = CreateRectObject("Label", buttonRect);
-            var labelRect = labelObject.GetComponent<RectTransform>();
-            Stretch(labelRect, Vector2.zero, Vector2.one, new Vector2(8f, 4f), new Vector2(-8f, -4f));
-            var label = labelObject.AddComponent<TextMeshProUGUI>();
-            label.fontSize = 21f;
-            label.fontStyle = FontStyles.Bold;
-            label.color = Color.white;
-            label.alignment = TextAlignmentOptions.Center;
-            label.enableWordWrapping = false;
-            label.raycastTarget = false;
-            label.text = labelText;
-
-            return button;
         }
 
         private void BuildLevel(LevelDefinition level)
@@ -565,6 +522,48 @@ namespace HuanYouYu.MiniGameHall
             {
                 cards[i].Root.SetSiblingIndex(i);
             }
+
+            BuildCoverageGraph();
+        }
+
+        private void BuildCoverageGraph()
+        {
+            for (var i = 0; i < cards.Count; i++)
+            {
+                cards[i].CoveredCards.Clear();
+                cards[i].IsCoverageActive = true;
+                cards[i].ActiveCoverCount = 0;
+            }
+
+            for (var targetIndex = 0; targetIndex < cards.Count; targetIndex++)
+            {
+                var target = cards[targetIndex];
+                for (var coverIndex = 0; coverIndex < cards.Count; coverIndex++)
+                {
+                    var coveringCard = cards[coverIndex];
+                    if (target == coveringCard || !CanCover(target, coveringCard))
+                    {
+                        continue;
+                    }
+
+                    target.ActiveCoverCount += 1;
+                    coveringCard.CoveredCards.Add(target);
+                }
+            }
+        }
+
+        private static bool CanCover(CardView target, CardView coveringCard)
+        {
+            if (target.IsBlindBox)
+            {
+                return coveringCard.IsBlindBox
+                    && coveringCard.BlindBoxGroup == target.BlindBoxGroup
+                    && coveringCard.BlindBoxOrder > target.BlindBoxOrder;
+            }
+
+            return !coveringCard.IsBlindBox
+                && IsDrawnAbove(target, coveringCard)
+                && HasBoardRectCover(target, coveringCard);
         }
 
         private int[] BuildTypeSequence(LevelDefinition level, SlotDefinition[] slots)
@@ -701,9 +700,17 @@ namespace HuanYouYu.MiniGameHall
             rect.anchoredPosition = boardPosition;
             rect.localScale = Vector3.one;
 
-            var shadowObject = CreateRectObject("Shadow", rect);
-            var shadow = EnsureRoundedRectGraphic(shadowObject, CardShadowColor, 18f, false);
-            Stretch(shadow.rectTransform, Vector2.zero, Vector2.one, new Vector2(4f, -5f), new Vector2(0f, -1f));
+            var dropShadowObject = CreateRectObject("DropShadow", rect);
+            var dropShadow = EnsureRoundedRectGraphic(dropShadowObject, CardDropShadowColor, 18f, false);
+            Stretch(dropShadow.rectTransform, Vector2.zero, Vector2.one, new Vector2(4f, -10f), new Vector2(7f, -7f));
+
+            var thicknessBackObject = CreateRectObject("ThicknessBack", rect);
+            var thicknessBack = EnsureRoundedRectGraphic(thicknessBackObject, CardThicknessBackColor, 18f, false);
+            Stretch(thicknessBack.rectTransform, Vector2.zero, Vector2.one, new Vector2(3f, -7f), new Vector2(3f, -7f));
+
+            var thicknessObject = CreateRectObject("Thickness", rect);
+            var thickness = EnsureRoundedRectGraphic(thicknessObject, CardThicknessColor, 18f, false);
+            Stretch(thickness.rectTransform, Vector2.zero, Vector2.one, new Vector2(1f, -5f), new Vector2(2f, -4f));
 
             var faceObject = CreateRectObject("Face", rect);
             var background = EnsureRoundedRectGraphic(faceObject, CardColor, 18f, true);
@@ -802,7 +809,7 @@ namespace HuanYouYu.MiniGameHall
             MiniGameSfxPlayer.Play(MiniGameSfxType.UiTap, 0.9f);
             MoveCardToTray(card);
             undoStack.Add(card);
-            RefreshAll(false);
+            RefreshAfterBoardCoverageChanged(card);
         }
 
         private void OnMovedOutCardClicked(CardView card)
@@ -823,6 +830,11 @@ namespace HuanYouYu.MiniGameHall
             var fromBoard = card.State == CardState.Board;
             var startWorldPosition = card.Root.position;
             var movingGhost = fromBoard ? CreateMoveGhost(card) : null;
+            if (fromBoard)
+            {
+                SetCardCoverageActive(card, false);
+            }
+
             card.State = CardState.Tray;
             card.Root.SetParent(trayRoot, false);
             card.Root.sizeDelta = new Vector2(TrayCardWidth, TrayCardHeight);
@@ -902,7 +914,9 @@ namespace HuanYouYu.MiniGameHall
             }
             else
             {
-                RefreshAll(false);
+                RefreshHud();
+                RefreshMovedOutInteractivity();
+                RefreshActionButtons();
             }
         }
 
@@ -1024,6 +1038,7 @@ namespace HuanYouYu.MiniGameHall
             undoUsed = true;
             trayCards.Remove(card);
             card.State = CardState.Board;
+            SetCardCoverageActive(card, true);
             StopCardAnimations(card);
             card.Root.SetParent(boardRoot, false);
             card.Root.sizeDelta = new Vector2(CardWidth, CardHeight);
@@ -1033,9 +1048,10 @@ namespace HuanYouYu.MiniGameHall
             card.Root.anchoredPosition = card.BoardRect.center;
             card.Root.localScale = Vector3.one;
             card.CanvasGroup.alpha = 1f;
-            card.Button.interactable = true;
             MiniGameSfxPlayer.Play(MiniGameSfxType.UiTap, 0.95f);
-            RefreshAll();
+            RefreshTrayPositions();
+            RefreshCard(card);
+            RefreshAfterBoardCoverageChanged(card);
         }
 
         private void ShowResult(bool won)
@@ -1133,45 +1149,23 @@ namespace HuanYouYu.MiniGameHall
 
         private bool IsCovered(CardView target)
         {
-            if (target.IsBlindBox)
-            {
-                return IsBlindBoxCovered(target);
-            }
-
-            for (var i = 0; i < cards.Count; i++)
-            {
-                var other = cards[i];
-                if (other == target || other.IsBlindBox || other.State != CardState.Board || !IsDrawnAbove(target, other))
-                {
-                    continue;
-                }
-
-                if (HasBoardRectCover(target, other))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return target != null && target.ActiveCoverCount > 0;
         }
 
-        private bool IsBlindBoxCovered(CardView target)
+        private static void SetCardCoverageActive(CardView coveringCard, bool active)
         {
-            for (var i = 0; i < cards.Count; i++)
+            if (coveringCard == null || coveringCard.IsCoverageActive == active)
             {
-                var other = cards[i];
-                if (other == target || !other.IsBlindBox || other.State != CardState.Board)
-                {
-                    continue;
-                }
-
-                if (other.BlindBoxGroup == target.BlindBoxGroup && other.BlindBoxOrder > target.BlindBoxOrder)
-                {
-                    return true;
-                }
+                return;
             }
 
-            return false;
+            coveringCard.IsCoverageActive = active;
+            var delta = active ? 1 : -1;
+            for (var i = 0; i < coveringCard.CoveredCards.Count; i++)
+            {
+                var coveredCard = coveringCard.CoveredCards[i];
+                coveredCard.ActiveCoverCount += delta;
+            }
         }
 
         private static bool IsDrawnAbove(CardView target, CardView other)
@@ -1207,6 +1201,46 @@ namespace HuanYouYu.MiniGameHall
 
             RefreshMovedOutPositions();
 
+            RefreshActionButtons();
+        }
+
+        private void RefreshAfterBoardCoverageChanged(CardView changedCard)
+        {
+            RefreshHud();
+            if (changedCard != null)
+            {
+                for (var i = 0; i < changedCard.CoveredCards.Count; i++)
+                {
+                    RefreshCardInteraction(changedCard.CoveredCards[i]);
+                }
+            }
+
+            RefreshMovedOutInteractivity();
+            RefreshActionButtons();
+        }
+
+        private void RefreshCardInteraction(CardView card)
+        {
+            if (card == null || card.Root == null || card.State != CardState.Board)
+            {
+                return;
+            }
+
+            var covered = IsCovered(card);
+            card.Button.interactable = !covered && !settlementShown;
+            SetCoveredMaskVisible(card, covered);
+        }
+
+        private void RefreshMovedOutInteractivity()
+        {
+            for (var i = 0; i < movedOutCards.Count; i++)
+            {
+                movedOutCards[i].Button.interactable = !settlementShown && trayCards.Count < TrayCapacity;
+            }
+        }
+
+        private void RefreshActionButtons()
+        {
             if (moveOutButton != null)
             {
                 moveOutButton.interactable = !settlementShown && !moveOutUsed && trayCards.Count >= MoveOutCount && movedOutCards.Count == 0 && !HasMovingTrayCard();
@@ -1266,6 +1300,9 @@ namespace HuanYouYu.MiniGameHall
             {
                 StopCardAnimations(card);
                 card.Root.SetParent(boardRoot, false);
+                card.Root.anchorMin = new Vector2(0.5f, 0.5f);
+                card.Root.anchorMax = new Vector2(0.5f, 0.5f);
+                card.Root.pivot = new Vector2(0.5f, 0.5f);
                 card.Root.sizeDelta = new Vector2(CardWidth, CardHeight);
                 card.LayoutElement.ignoreLayout = false;
                 card.LayoutElement.preferredWidth = -1f;
@@ -1273,7 +1310,7 @@ namespace HuanYouYu.MiniGameHall
                 card.Root.anchoredPosition = card.BoardRect.center;
                 card.Root.localScale = Vector3.one;
                 card.CanvasGroup.alpha = 1f;
-                card.Root.SetSiblingIndex(card.Layer * 100 + card.Index);
+                card.Root.SetSiblingIndex(GetBoardSiblingIndex(card));
             }
             else if (movedOut)
             {
@@ -1292,6 +1329,26 @@ namespace HuanYouYu.MiniGameHall
             card.Icon.color = Color.white;
             SetCoveredMaskVisible(card, covered);
             RefreshCardVisual(card);
+        }
+
+        private int GetBoardSiblingIndex(CardView target)
+        {
+            var siblingIndex = 0;
+            for (var i = 0; i < cards.Count; i++)
+            {
+                var card = cards[i];
+                if (card == target)
+                {
+                    break;
+                }
+
+                if (card.State == CardState.Board)
+                {
+                    siblingIndex += 1;
+                }
+            }
+
+            return siblingIndex;
         }
 
         private void RefreshCardVisual(CardView card)

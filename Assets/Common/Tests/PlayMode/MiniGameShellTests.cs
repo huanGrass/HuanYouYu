@@ -1,14 +1,72 @@
 using System;
+using System.Collections;
 using System.Reflection;
 using HuanYouYu.MiniGameHall;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 using UnityEngine.UI;
 
 namespace Tests
 {
     public sealed class MiniGameShellTests
     {
+        [UnityTest]
+        public IEnumerator StaticTutorialOverlayDoesNotDirtyItsMaskEveryFrame()
+        {
+            var canvasObject = new GameObject("TutorialTestCanvas", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+            var targetObject = new GameObject("TutorialTarget", typeof(RectTransform));
+            MiniGameTutorialOverlay overlay = null;
+
+            try
+            {
+                var canvas = canvasObject.GetComponent<Canvas>();
+                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                targetObject.transform.SetParent(canvasObject.transform, false);
+                var targetRect = targetObject.GetComponent<RectTransform>();
+                targetRect.sizeDelta = new Vector2(160f, 80f);
+
+                overlay = MiniGameTutorialOverlay.Show(
+                    canvasObject.transform,
+                    new[]
+                    {
+                        new MiniGameTutorialStep
+                        {
+                            Target = targetRect,
+                            Title = "Tutorial",
+                            Message = "Keep this target still."
+                        }
+                    },
+                    null);
+
+                yield return null;
+                Canvas.ForceUpdateCanvases();
+                yield return null;
+
+                var mask = GameObject.Find("DimRoundedHole")?.GetComponent<Graphic>();
+                Assert.IsNotNull(mask, "Tutorial rounded-hole mask should exist.");
+                var dirtyCount = 0;
+                mask.RegisterDirtyVerticesCallback(() => dirtyCount++);
+
+                yield return null;
+                yield return null;
+                yield return null;
+
+                Assert.Zero(dirtyCount, "A static tutorial target should not rebuild the mask mesh every frame.");
+
+                targetRect.anchoredPosition += new Vector2(48f, -24f);
+                yield return null;
+
+                Assert.Greater(dirtyCount, 0, "The tutorial mask should refresh when its target moves.");
+            }
+            finally
+            {
+                overlay?.Dispose();
+                UnityEngine.Object.DestroyImmediate(targetObject);
+                UnityEngine.Object.DestroyImmediate(canvasObject);
+            }
+        }
+
         [Test]
         public void BackgroundVisibilityToggleOnlyAffectsBackgroundNode()
         {

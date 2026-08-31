@@ -29,6 +29,7 @@
     "stack-match",
     "blockpuzzle",
     "bulls-cows",
-    "arrow-escape"
+    "arrow-escape",
+    "bracelet-unlink"
   ]
 }

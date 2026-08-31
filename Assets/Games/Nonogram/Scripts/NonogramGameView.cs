@@ -27,12 +27,6 @@ namespace HuanYouYu.MiniGameHall
         private const float ModeHeight = 30f * UiScale;
         private const float ControlsHeight = 74f * UiScale;
         private const float BoardFramePadding = 28f * UiScale;
-        private const float ButtonWidth = 176f * UiScale;
-        private const float ButtonHeight = 76f * UiScale;
-        private const float ButtonFontSize = 32f * UiScale;
-        private const float SecondaryButtonWidth = 118f * UiScale;
-        private const float SecondaryButtonHeight = 52f * UiScale;
-        private const float SecondaryButtonFontSize = 22f * UiScale;
         private const float TitleFontSize = 46f * UiScale;
         private const float ProgressFontSize = 24f * UiScale;
         private const float TipsFontSize = 26f * UiScale;
@@ -80,9 +74,10 @@ namespace HuanYouYu.MiniGameHall
         private RectTransform boardInputRoot;
         private TextMeshProUGUI titleText;
         private TextMeshProUGUI progressText;
-        private TextMeshProUGUI modeText;
         private Button fillModeButton;
         private Button crossModeButton;
+        private Button resetButton;
+        private Button nextPuzzleButton;
         private TextMeshProUGUI[] rowHintTexts;
         private TextMeshProUGUI[] columnHintTexts;
         private NonogramBoardState boardState;
@@ -131,10 +126,8 @@ namespace HuanYouYu.MiniGameHall
             topConfig.ScoreStyle.FontSize = ProgressFontSize;
             topConfig.ScoreStyle.Color = new Color(0.86f, 0.58f, 0.20f);
             topRoot = MiniGameShellTopBarBuilder.CreateTopBar(Shell.TopHost, topConfig).Root;
-            bottomRoot = CreateBottomRoot();
             contentRoot = CreateContentRoot();
-            CreateBottomContentRoot(bottomRoot);
-            CreateBottomSecondaryActions(bottomRoot);
+            BuildBottomBar();
 
             titleText = FindRequiredText(topRoot, "Header/Title");
             progressText = FindRequiredText(topRoot, "Header/Score");
@@ -168,6 +161,26 @@ namespace HuanYouYu.MiniGameHall
         {
             StopSolveAnimation();
             Shell.ClosePopup();
+            if (fillModeButton != null)
+            {
+                fillModeButton.onClick.RemoveAllListeners();
+            }
+
+            if (crossModeButton != null)
+            {
+                crossModeButton.onClick.RemoveAllListeners();
+            }
+
+            if (resetButton != null)
+            {
+                resetButton.onClick.RemoveListener(RequestRestartPuzzle);
+            }
+
+            if (nextPuzzleButton != null)
+            {
+                nextPuzzleButton.onClick.RemoveListener(RequestAdvancePuzzle);
+            }
+
             if (topRoot != null)
             {
                 UnityEngine.Object.Destroy(topRoot.gameObject);
@@ -297,19 +310,12 @@ namespace HuanYouYu.MiniGameHall
         {
             if (fillModeButton != null)
             {
-                SetButtonSelected(fillModeButton, inputMode == NonogramInputMode.Fill);
+                MiniGameShellBottomBarBuilder.SetTextActionButtonSelected(fillModeButton, inputMode == NonogramInputMode.Fill);
             }
 
             if (crossModeButton != null)
             {
-                SetButtonSelected(crossModeButton, inputMode == NonogramInputMode.Cross);
-            }
-
-            if (modeText != null)
-            {
-                modeText.text = inputMode == NonogramInputMode.Fill
-                    ? UiTextCatalog.Get("nonogram.mode.fill")
-                    : UiTextCatalog.Get("nonogram.mode.cross");
+                MiniGameShellBottomBarBuilder.SetTextActionButtonSelected(crossModeButton, inputMode == NonogramInputMode.Cross);
             }
         }
 
@@ -929,77 +935,35 @@ namespace HuanYouYu.MiniGameHall
             return root;
         }
 
-        private RectTransform CreateBottomContentRoot(Transform parent)
+        private void BuildBottomBar()
         {
-            var rootObject = new GameObject("NonogramControlCard", typeof(RectTransform));
-            var root = rootObject.GetComponent<RectTransform>();
-            root.SetParent(parent, false);
-            root.anchorMin = new Vector2(0.5f, 0.5f);
-            root.anchorMax = new Vector2(0.5f, 0.5f);
-            root.pivot = new Vector2(0.5f, 0.5f);
-            root.sizeDelta = new Vector2(442f, 104f);
-            root.anchoredPosition = new Vector2(0f, 104f);
+            var bottomRefs = MiniGameShellBottomBarBuilder.CreateBottomContainer(
+                Shell.BottomHost,
+                MiniGameShellBottomBarBuilder.CreateDefaultContainerConfig("NonogramBottom"));
+            bottomRoot = bottomRefs.Root;
+            MiniGameShellBottomBarBuilder.ConfigureTextActionBar(bottomRefs.ActionBar);
 
-            var layout = root.gameObject.AddComponent<VerticalLayoutGroup>();
-            layout.padding = new RectOffset(
-                Mathf.RoundToInt(14f * UiScale),
-                Mathf.RoundToInt(14f * UiScale),
-                Mathf.RoundToInt(12f * UiScale),
-                Mathf.RoundToInt(12f * UiScale));
-            layout.spacing = Mathf.RoundToInt(6f * UiScale);
-            layout.childAlignment = TextAnchor.MiddleCenter;
-            layout.childForceExpandWidth = true;
-            layout.childForceExpandHeight = false;
-            layout.childControlWidth = true;
-            layout.childControlHeight = true;
-
-            var firstRow = CreateHorizontalGroup("ModeButtonsRow", root, 10f * UiScale, CreateOffset(0f, 0f, 0f, 0f));
-            firstRow.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.MiddleCenter;
-            AddLayoutSize(firstRow, 0f, 68f * UiScale, 1f, -1f);
-
-            fillModeButton = CreateActionButton(firstRow, UiTextCatalog.Get("nonogram.button.fill"));
-            crossModeButton = CreateActionButton(firstRow, UiTextCatalog.Get("nonogram.button.cross"));
+            fillModeButton = MiniGameShellBottomBarBuilder.CreateTextActionButton(
+                bottomRefs.ActionBar,
+                "FillModeButton",
+                UiTextCatalog.Get("nonogram.button.fill"));
+            crossModeButton = MiniGameShellBottomBarBuilder.CreateTextActionButton(
+                bottomRefs.ActionBar,
+                "CrossModeButton",
+                UiTextCatalog.Get("nonogram.button.cross"));
+            resetButton = MiniGameShellBottomBarBuilder.CreateTextActionButton(
+                bottomRefs.ActionBar,
+                "ResetButton",
+                UiTextCatalog.Get("nonogram.button.reset"));
+            nextPuzzleButton = MiniGameShellBottomBarBuilder.CreateTextActionButton(
+                bottomRefs.ActionBar,
+                "NextPuzzleButton",
+                UiTextCatalog.Get("nonogram.button.next"));
 
             fillModeButton.onClick.AddListener(delegate { SetInputMode(NonogramInputMode.Fill); });
             crossModeButton.onClick.AddListener(delegate { SetInputMode(NonogramInputMode.Cross); });
-
-            return root;
-        }
-
-        private RectTransform CreateBottomSecondaryActions(Transform parent)
-        {
-            var rootObject = new GameObject("NonogramSecondaryActions", typeof(RectTransform), typeof(HorizontalLayoutGroup));
-            var root = rootObject.GetComponent<RectTransform>();
-            root.SetParent(parent, false);
-            root.anchorMin = new Vector2(0f, 0f);
-            root.anchorMax = new Vector2(0f, 0f);
-            root.pivot = new Vector2(0f, 0f);
-            root.sizeDelta = new Vector2((SecondaryButtonWidth * 2f) + (10f * UiScale), SecondaryButtonHeight);
-            root.anchoredPosition = new Vector2(24f * UiScale, 16f * UiScale);
-
-            var layout = rootObject.GetComponent<HorizontalLayoutGroup>();
-            layout.spacing = 10f * UiScale;
-            layout.childForceExpandWidth = false;
-            layout.childForceExpandHeight = false;
-            layout.childControlWidth = false;
-            layout.childControlHeight = false;
-            layout.childAlignment = TextAnchor.MiddleLeft;
-
-            var resetButton = CreateSecondaryActionButton(root, UiTextCatalog.Get("nonogram.button.reset"));
-            var nextButton = CreateSecondaryActionButton(root, UiTextCatalog.Get("nonogram.button.next"));
             resetButton.onClick.AddListener(RequestRestartPuzzle);
-            nextButton.onClick.AddListener(RequestAdvancePuzzle);
-
-            return root;
-        }
-
-        private RectTransform CreateBottomRoot()
-        {
-            var rootObject = new GameObject("NonogramBottom", typeof(RectTransform));
-            var root = rootObject.GetComponent<RectTransform>();
-            root.SetParent(Shell.BottomHost, false);
-            Stretch(root, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
-            return root;
+            nextPuzzleButton.onClick.AddListener(RequestAdvancePuzzle);
         }
 
         private static TextMeshProUGUI FindRequiredText(Transform root, string path)
@@ -1138,76 +1102,6 @@ namespace HuanYouYu.MiniGameHall
             return text;
         }
 
-        private static Button CreateActionButton(Transform parent, string label)
-        {
-            var buttonObject = new GameObject(
-                label + "Button",
-                typeof(RectTransform),
-                typeof(Image),
-                typeof(Button),
-                typeof(LayoutElement));
-            var rect = buttonObject.GetComponent<RectTransform>();
-            rect.SetParent(parent, false);
-            rect.sizeDelta = new Vector2(ButtonWidth, ButtonHeight);
-
-            var image = buttonObject.GetComponent<Image>();
-            image.color = new Color(0.96f, 0.97f, 0.92f, 1f);
-
-            var layout = buttonObject.GetComponent<LayoutElement>();
-            layout.preferredWidth = ButtonWidth;
-            layout.preferredHeight = ButtonHeight;
-
-            var button = buttonObject.GetComponent<Button>();
-            var colors = button.colors;
-            colors.normalColor = image.color;
-            colors.highlightedColor = new Color(1f, 0.98f, 0.88f, 1f);
-            colors.pressedColor = new Color(0.84f, 0.89f, 0.76f, 1f);
-            colors.selectedColor = colors.highlightedColor;
-            button.colors = colors;
-
-            var text = CreateText("Label", rect, ButtonFontSize, FontStyles.Bold, TextAlignmentOptions.Center, false);
-            Stretch(text.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
-            text.text = label;
-            text.color = new Color(0.25f, 0.36f, 0.22f);
-
-            return button;
-        }
-
-        private static Button CreateSecondaryActionButton(Transform parent, string label)
-        {
-            var buttonObject = new GameObject(
-                label + "Button",
-                typeof(RectTransform),
-                typeof(Image),
-                typeof(Button),
-                typeof(LayoutElement));
-            var rect = buttonObject.GetComponent<RectTransform>();
-            rect.SetParent(parent, false);
-            rect.sizeDelta = new Vector2(SecondaryButtonWidth, SecondaryButtonHeight);
-
-            var image = buttonObject.GetComponent<Image>();
-            image.color = new Color(0.83f, 0.86f, 0.78f, 1f);
-
-            var layout = buttonObject.GetComponent<LayoutElement>();
-            layout.preferredWidth = SecondaryButtonWidth;
-            layout.preferredHeight = SecondaryButtonHeight;
-
-            var button = buttonObject.GetComponent<Button>();
-            var colors = button.colors;
-            colors.normalColor = image.color;
-            colors.highlightedColor = new Color(0.90f, 0.92f, 0.84f, 1f);
-            colors.pressedColor = new Color(0.70f, 0.76f, 0.66f, 1f);
-            colors.selectedColor = colors.highlightedColor;
-            button.colors = colors;
-
-            var text = CreateText("Label", rect, SecondaryButtonFontSize, FontStyles.Bold, TextAlignmentOptions.Center, false);
-            Stretch(text.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
-            text.text = label;
-            text.color = new Color(0.30f, 0.36f, 0.29f);
-
-            return button;
-        }
-
         private static GameObject CreateCrossMark(Transform parent, BoardLayoutMetrics metrics)
         {
             var rootObject = new GameObject("CrossMark", typeof(RectTransform));
@@ -1234,17 +1128,6 @@ namespace HuanYouYu.MiniGameHall
 
             var graphic = barObject.GetComponent<RoundedBarGraphic>();
             graphic.color = new Color(0.78f, 0.2f, 0.17f);
-        }
-
-        private static void SetButtonSelected(Button button, bool selected)
-        {
-            var image = button == null ? null : button.GetComponent<Image>();
-            if (image == null)
-            {
-                return;
-            }
-
-            image.color = selected ? new Color(0.90f, 0.75f, 0.28f) : new Color(0.96f, 0.97f, 0.92f, 1f);
         }
 
         private static void AddLayoutSize(RectTransform rect, float preferredWidth, float preferredHeight, float flexibleWidth, float flexibleHeight)

@@ -25,6 +25,7 @@ namespace HuanYouYu.MiniGameHall.EditorTools
             public bool isPlayable;
             public string statusLabelKey;
             public string category;
+            public string updatedAt;
         }
 
         [Serializable]
@@ -416,6 +417,7 @@ namespace HuanYouYu.MiniGameHall.EditorTools
                 ValidateTextKey(payload.descriptionKey, "descriptionKey", manifest.ManifestPath, textByKey, errors);
                 ValidateTextKey(payload.statusLabelKey, "statusLabelKey", manifest.ManifestPath, textByKey, errors);
                 ValidateCategory(payload.category, manifest.ManifestPath, errors);
+                ValidateUpdatedAt(payload.updatedAt, manifest.ManifestPath, errors);
 
                 if (payload.isPlayable)
                 {
@@ -476,6 +478,15 @@ namespace HuanYouYu.MiniGameHall.EditorTools
             }
         }
 
+        private static void ValidateUpdatedAt(string updatedAt, string manifestPath, List<string> errors)
+        {
+            if (string.IsNullOrWhiteSpace(updatedAt)
+                || !Regex.IsMatch(updatedAt.Trim(), "^\\d{4}-\\d{2}-\\d{2}$"))
+            {
+                errors.Add("manifest 缺少或包含无效 updatedAt: " + manifestPath);
+            }
+        }
+
         private static void WriteCatalogAsset(List<ManifestFile> manifests, Dictionary<string, string> textByKey)
         {
             var config = AssetDatabase.LoadAssetAtPath<MiniGameCatalogConfig>(OutputCatalogAssetPath);
@@ -500,7 +511,8 @@ namespace HuanYouYu.MiniGameHall.EditorTools
                     IsPlayable = payload.isPlayable,
                     StatusLabelKey = payload.statusLabelKey.Trim(),
                     StatusLabel = textByKey[payload.statusLabelKey.Trim()],
-                    Category = payload.category.Trim()
+                    Category = payload.category.Trim(),
+                    UpdatedAt = payload.updatedAt.Trim()
                 });
             }
 

@@ -275,6 +275,78 @@ private static readonly string[] DefaultFavoriteGameIds =
             SaveHallState();
         }
 
+        public void SetLevelCompletion(string gameId, int levelId, int score)
+        {
+            if (string.IsNullOrWhiteSpace(gameId))
+            {
+                return;
+            }
+
+            MiniGameProgressData progress;
+            if (!progressLookup.TryGetValue(gameId, out progress))
+            {
+                progress = MiniGameSaveStore.CreateEmpty(gameId);
+                progressLookup[gameId] = progress;
+            }
+            if (progress.LevelProgress == null)
+            {
+                progress.LevelProgress = new List<MiniGameLevelProgressData>();
+            }
+
+            MiniGameLevelProgressData levelProgress = null;
+            for (var index = 0; index < progress.LevelProgress.Count; index++)
+            {
+                if (progress.LevelProgress[index] != null
+                    && progress.LevelProgress[index].LevelId == levelId)
+                {
+                    levelProgress = progress.LevelProgress[index];
+                    break;
+                }
+            }
+
+            if (levelProgress == null)
+            {
+                progress.LevelProgress.Add(new MiniGameLevelProgressData
+                {
+                    LevelId = levelId,
+                    IsCompleted = true,
+                    BestScore = score
+                });
+            }
+            else
+            {
+                if (!levelProgress.IsCompleted || score > levelProgress.BestScore)
+                {
+                    levelProgress.BestScore = score;
+                }
+                levelProgress.IsCompleted = true;
+            }
+
+            SaveHallState();
+        }
+
+        public void ClearLevelCompletions(string gameId)
+        {
+            if (string.IsNullOrWhiteSpace(gameId))
+            {
+                return;
+            }
+
+            MiniGameProgressData progress;
+            if (!progressLookup.TryGetValue(gameId, out progress))
+            {
+                progress = MiniGameSaveStore.CreateEmpty(gameId);
+                progressLookup[gameId] = progress;
+            }
+            if (progress.LevelProgress == null || progress.LevelProgress.Count == 0)
+            {
+                return;
+            }
+
+            progress.LevelProgress.Clear();
+            SaveHallState();
+        }
+
         private static int GetHallLevelUpRequiredExp(int level)
         {
             return 100 + Mathf.Max(0, level - 1) * 60;
@@ -378,7 +450,7 @@ private static readonly string[] DefaultFavoriteGameIds =
 
             SaveHallState();
 
-            if (hallView != null && hallView.IsVisible && hallView.IsAllGamesTabActive)
+            if (hallView != null && hallView.IsVisible)
             {
                 hallView.RefreshFavoriteState(gameId, IsFavorite(gameId), GetFavoriteOrder(gameId));
                 return;

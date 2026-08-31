@@ -28,6 +28,7 @@ namespace HuanYouYu.MiniGameHall
             public string StatusLabelKey;
             public string StatusLabel;
             public string Category;
+            public string UpdatedAt;
         }
     }
 
@@ -97,7 +98,8 @@ namespace HuanYouYu.MiniGameHall
                     Description = UiTextCatalog.Get(entry.DescriptionKey),
                     IsPlayable = entry.IsPlayable,
                     StatusLabel = UiTextCatalog.Get(entry.StatusLabelKey),
-                    Category = string.IsNullOrWhiteSpace(entry.Category) ? string.Empty : entry.Category.Trim()
+                    Category = string.IsNullOrWhiteSpace(entry.Category) ? string.Empty : entry.Category.Trim(),
+                    UpdatedAt = string.IsNullOrWhiteSpace(entry.UpdatedAt) ? string.Empty : entry.UpdatedAt.Trim()
                 });
             }
         }

@@ -67,10 +67,14 @@ namespace Tests
             AssertButtonLabel("MoveOutButton", "移出");
             AssertButtonLabel("ShuffleButton", "洗牌");
             AssertButtonLabel("UndoButton", "撤回");
+            Assert.IsInstanceOf<RoundedRectGraphic>(FindButton("MoveOutButton").targetGraphic, "Move-out should use the shared rounded text-button style.");
+            Assert.IsInstanceOf<RoundedRectGraphic>(FindButton("ShuffleButton").targetGraphic, "Shuffle should use the shared rounded text-button style.");
+            Assert.IsInstanceOf<RoundedRectGraphic>(FindButton("UndoButton").targetGraphic, "Undo should use the shared rounded text-button style.");
             Assert.IsNotNull(FindButton("ShuffleButton"), "Shuffle button should exist.");
             Assert.IsNull(FindButton("LevelSelectButton"), "Level select button should be hidden for StackMatch.");
             Assert.IsNotNull(GameObject.Find("MovedOutCards"), "Moved-out card row should exist above the tray.");
             AssertCardFaceFillsRoot("StackMatchTile_0");
+            AssertCardDepthLayers("StackMatchTile_0");
             Assert.AreEqual(9, GetCards(GetActiveGame(controller)).Count, "First level should be tiny.");
         }
 
@@ -175,6 +179,68 @@ namespace Tests
             Assert.GreaterOrEqual(CountPartiallyCoveredNormalCards(cards), 80, "Hard level should use staggered partial cover instead of fully stacked cards.");
             Assert.LessOrEqual(CountFullyCoveredNormalCards(cards), 36, "Hard level should not mostly hide cards by placing another card at the same position.");
             AssertCoveredNormalCardsAreNotInteractable(cards);
+        }
+
+        [UnityTest]
+        public IEnumerator HardLevelUpdatesOnlyPrecomputedCoverageDependenciesAfterClick()
+        {
+            ResetProgress();
+
+            var controller = default(MiniGameAppController);
+            yield return LoadController(result => controller = result);
+
+            controller.EnterGame(StackMatchGameView.GameIdConstant);
+            yield return null;
+            yield return CompleteFirstLevel();
+
+            var nextButton = GameObject.Find("StackMatchSettlementPanel").transform.Find("Dialog/NextButton")?.GetComponent<Button>();
+            Assert.IsNotNull(nextButton, "Next button should exist.");
+            nextButton.onClick.Invoke();
+            yield return null;
+
+            var cards = GetCards(GetActiveGame(controller));
+            object selectedCard = null;
+            IList affectedCards = null;
+            for (var i = 0; i < cards.Count; i++)
+            {
+                var candidate = cards[i];
+                var dependencies = GetField<IList>(candidate, "CoveredCards");
+                if (GetField<Button>(candidate, "Button").interactable && dependencies.Count > 0)
+                {
+                    selectedCard = candidate;
+                    affectedCards = dependencies;
+                    break;
+                }
+            }
+
+            Assert.IsNotNull(selectedCard, "Hard level should expose a card that covers lower cards.");
+            Assert.Greater(affectedCards.Count, 0, "Selected card should have precomputed coverage dependencies.");
+            Assert.Less(affectedCards.Count, cards.Count / 2, "A click should only affect a local subset of the board.");
+
+            var previousCoverCounts = new Dictionary<object, int>();
+            for (var i = 0; i < cards.Count; i++)
+            {
+                previousCoverCounts[cards[i]] = GetField<int>(cards[i], "ActiveCoverCount");
+            }
+
+            ClickCard(selectedCard);
+            yield return null;
+
+            for (var i = 0; i < cards.Count; i++)
+            {
+                var card = cards[i];
+                var expectedCount = previousCoverCounts[card] - (affectedCards.Contains(card) ? 1 : 0);
+                Assert.AreEqual(expectedCount, GetField<int>(card, "ActiveCoverCount"), "Only directly covered cards should update after a click.");
+            }
+
+            yield return WaitForMoveToTray();
+            ClickButton("UndoButton");
+            yield return null;
+
+            for (var i = 0; i < cards.Count; i++)
+            {
+                Assert.AreEqual(previousCoverCounts[cards[i]], GetField<int>(cards[i], "ActiveCoverCount"), "Undo should restore the original coverage counts.");
+            }
         }
 
         [UnityTest]
@@ -409,6 +475,8 @@ namespace Tests
             controller.EnterGame(StackMatchGameView.GameIdConstant);
             yield return null;
 
+            var originalRoot = GetField<RectTransform>(GetCards(GetActiveGame(controller))[0], "Root");
+            var originalWorldPosition = originalRoot.position;
             ClickButton("StackMatchTile_0");
             yield return WaitForMoveToTray();
             Assert.AreEqual(1, GetTrayCards(GetActiveGame(controller)).Count, "Tray should contain the selected card.");
@@ -420,7 +488,50 @@ namespace Tests
             Assert.AreEqual(0, GetTrayCards(runtime).Count, "Undo should remove the last unmatched card from tray.");
             Assert.IsTrue(FindButton("StackMatchTile_0").interactable, "Restored card should become playable again.");
             Assert.AreEqual(GetField<Rect>(GetCards(runtime)[0], "BoardRect").center, GetField<RectTransform>(GetCards(runtime)[0], "Root").anchoredPosition, "Undo should restore the card to its original board position.");
+            Assert.AreEqual(originalWorldPosition, originalRoot.position, "Undo should restore the card to its original visible position.");
             Assert.IsFalse(FindButton("UndoButton").interactable, "Undo should only be usable once per run.");
+        }
+
+        [UnityTest]
+        public IEnumerator UndoRestoresHardLevelCardDrawOrder()
+        {
+            ResetProgress();
+
+            var controller = default(MiniGameAppController);
+            yield return LoadController(result => controller = result);
+
+            controller.EnterGame(StackMatchGameView.GameIdConstant);
+            yield return null;
+            yield return CompleteFirstLevel();
+
+            var nextButton = GameObject.Find("StackMatchSettlementPanel").transform.Find("Dialog/NextButton")?.GetComponent<Button>();
+            Assert.IsNotNull(nextButton, "Next button should exist.");
+            nextButton.onClick.Invoke();
+            yield return null;
+
+            var cards = GetCards(GetActiveGame(controller));
+            object selectedCard = null;
+            for (var i = 0; i < cards.Count; i++)
+            {
+                var candidate = cards[i];
+                var root = GetField<RectTransform>(candidate, "Root");
+                if (GetField<Button>(candidate, "Button").interactable && root.GetSiblingIndex() < root.parent.childCount - 1)
+                {
+                    selectedCard = candidate;
+                    break;
+                }
+            }
+
+            Assert.IsNotNull(selectedCard, "Hard level should expose a card below the final draw position.");
+            var selectedRoot = GetField<RectTransform>(selectedCard, "Root");
+            var originalSiblingIndex = selectedRoot.GetSiblingIndex();
+
+            ClickCard(selectedCard);
+            yield return WaitForMoveToTray();
+            ClickButton("UndoButton");
+            yield return null;
+
+            Assert.AreEqual(originalSiblingIndex, selectedRoot.GetSiblingIndex(), "Undo should restore the card to its original draw order.");
         }
 
         [UnityTest]
@@ -950,6 +1061,22 @@ namespace Tests
             Assert.IsNotNull(icon, "Card icon should exist.");
             Assert.AreEqual(new Vector2(10f, 10f), icon.offsetMin, "Card icon should keep a 10px inset from the face.");
             Assert.AreEqual(new Vector2(-10f, -10f), icon.offsetMax, "Card icon should keep a 10px inset from the face.");
+        }
+
+        private static void AssertCardDepthLayers(string cardName)
+        {
+            var cardObject = GameObject.Find(cardName);
+            Assert.IsNotNull(cardObject, "Could not find card: " + cardName);
+
+            var dropShadow = cardObject.transform.Find("DropShadow")?.GetComponent<RectTransform>();
+            var thicknessBack = cardObject.transform.Find("ThicknessBack")?.GetComponent<RectTransform>();
+            var thickness = cardObject.transform.Find("Thickness")?.GetComponent<RectTransform>();
+            Assert.IsNotNull(dropShadow, "Card should have a separate drop shadow.");
+            Assert.IsNotNull(thicknessBack, "Card should have a darker rear thickness edge.");
+            Assert.IsNotNull(thickness, "Card should have a visible thickness layer.");
+            Assert.Less(dropShadow.offsetMin.y, thicknessBack.offsetMin.y, "Drop shadow should extend below the card thickness.");
+            Assert.Less(thicknessBack.offsetMin.y, thickness.offsetMin.y, "Rear thickness edge should extend below the light thickness layer.");
+            Assert.Less(thickness.offsetMin.y, 0f, "Card thickness should extend below the face.");
         }
 
         private static void AssertButtonLabel(string buttonName, string expectedText)

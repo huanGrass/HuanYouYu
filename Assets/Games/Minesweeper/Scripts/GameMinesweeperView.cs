@@ -80,7 +80,7 @@ namespace HuanYouYu.MiniGameHall
                 throw new InvalidOperationException("Minesweeper prefab structure is incomplete.");
             }
 
-            modeButton = CreateModeButton(modeButtonHost, titleLabel.font, out modeButtonLabel);
+            modeButton = CreateModeButton(modeButtonHost, out modeButtonLabel);
             BuildBoardArea(titleLabel.font);
 
             restartButton.onClick.RemoveAllListeners();
@@ -611,38 +611,14 @@ namespace HuanYouYu.MiniGameHall
                 : UiTextCatalog.Get("minesweeper.mode.flag");
         }
 
-        private static Button CreateModeButton(Transform parent, TMP_FontAsset fontAsset, out TextMeshProUGUI label)
+        private static Button CreateModeButton(Transform parent, out TextMeshProUGUI label)
         {
-            var buttonObject = new GameObject("ModeButton", typeof(RectTransform), typeof(Image), typeof(Button));
-            var rectTransform = buttonObject.GetComponent<RectTransform>();
-            rectTransform.SetParent(parent, false);
-            rectTransform.anchorMin = Vector2.zero;
-            rectTransform.anchorMax = Vector2.one;
-            rectTransform.offsetMin = Vector2.zero;
-            rectTransform.offsetMax = Vector2.zero;
-
-            var image = buttonObject.GetComponent<Image>();
-            image.color = new Color(0.92f, 0.82f, 0.58f, 1f);
-
-            var button = buttonObject.GetComponent<Button>();
-            button.targetGraphic = image;
-
-            var labelObject = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));
-            var labelTransform = labelObject.GetComponent<RectTransform>();
-            labelTransform.SetParent(rectTransform, false);
-            labelTransform.anchorMin = Vector2.zero;
-            labelTransform.anchorMax = Vector2.one;
-            labelTransform.offsetMin = new Vector2(12f, 8f);
-            labelTransform.offsetMax = new Vector2(-12f, -8f);
-
-            label = labelObject.GetComponent<TextMeshProUGUI>();
-            label.font = fontAsset;
-            label.fontSize = 22f;
-            label.alignment = TextAlignmentOptions.Center;
-            label.color = new Color(0.31f, 0.36f, 0.17f, 1f);
-            label.enableWordWrapping = false;
-            label.overflowMode = TextOverflowModes.Overflow;
-
+            var button = MiniGameShellBottomBarBuilder.CreateTextActionButton(
+                parent,
+                "ModeButton",
+                string.Empty,
+                160f);
+            label = button.GetComponentInChildren<TextMeshProUGUI>();
             return button;
         }
 

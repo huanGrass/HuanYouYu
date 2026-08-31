@@ -250,13 +250,16 @@ namespace HuanYouYu.MiniGameHall
             directionPadConfig.OffsetMin = new Vector2(-230f, -100f);
             directionPadConfig.OffsetMax = new Vector2(-14f, 116f);
             directionPadConfig.RingColor = new Color(1f, 0.98f, 0.92f, 0.36f);
-            directionPadConfig.ButtonColor = new Color(246f / 255f, 203f / 255f, 86f / 255f, 1f);
-            directionPadConfig.ArrowColor = new Color(22f / 255f, 30f / 255f, 36f / 255f, 1f);
+            directionPadConfig.ArrowColor = new Color(0.25f, 0.36f, 0.22f, 1f);
             directionPadConfig.UpAction = RotateCurrentPiece;
             directionPadConfig.DownAction = SoftDropOneCell;
             directionPadConfig.LeftAction = null;
             directionPadConfig.RightAction = null;
             var directionPad = MiniGameDirectionPadBuilder.Create(rootRect, directionPadConfig);
+            MiniGameShellBottomBarBuilder.ConfigureTextActionButton(directionPad.UpButton);
+            MiniGameShellBottomBarBuilder.ConfigureTextActionButton(directionPad.DownButton);
+            MiniGameShellBottomBarBuilder.ConfigureTextActionButton(directionPad.LeftButton);
+            MiniGameShellBottomBarBuilder.ConfigureTextActionButton(directionPad.RightButton);
             AttachHoldRepeat(directionPad.LeftButton, MoveLeft);
             AttachHoldRepeat(directionPad.RightButton, MoveRight);
 
@@ -925,7 +928,6 @@ namespace HuanYouYu.MiniGameHall
             layout.preferredHeight = 82f;
 
             var graphic = go.GetComponent<RoundedRectGraphic>();
-            graphic.color = new Color32(246, 203, 86, 255);
             graphic.CornerRadius = 18f;
 
             var textGo = new GameObject("Label", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
@@ -938,12 +940,13 @@ namespace HuanYouYu.MiniGameHall
             text.fontSize = label.Length > 2 ? 23f : 34f;
             text.fontStyle = FontStyles.Bold;
             text.alignment = TextAlignmentOptions.Center;
-            text.color = new Color32(22, 30, 36, 255);
+            text.color = Color.white;
             text.enableWordWrapping = false;
             text.raycastTarget = false;
 
             var button = go.GetComponent<Button>();
             button.targetGraphic = graphic;
+            MiniGameShellBottomBarBuilder.ConfigureTextActionButton(button, text);
             button.onClick.AddListener(delegate
             {
                 MiniGameSfxPlayer.Play(MiniGameSfxType.UiTap, 0.8f);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using HuanYouYu.MiniGameHall;
 using NUnit.Framework;
@@ -16,6 +17,23 @@ namespace Tests
         public void TearDown()
         {
             ResetProgress();
+        }
+
+        [Test]
+        public void MiniGameCatalogEntriesHaveUpdateDates()
+        {
+            var definitions = MiniGameCatalog.GetDefinitions();
+
+            Assert.IsNotNull(definitions, "Mini-game catalog should be available.");
+            Assert.Greater(definitions.Count, 0, "Mini-game catalog should contain entries.");
+            for (var i = 0; i < definitions.Count; i++)
+            {
+                var definition = definitions[i];
+                Assert.IsNotNull(definition, "Mini-game catalog should not contain null entries.");
+                Assert.IsTrue(
+                    System.Text.RegularExpressions.Regex.IsMatch(definition.UpdatedAt ?? string.Empty, "^\\d{4}-\\d{2}-\\d{2}$"),
+                    "Mini-game update date should use yyyy-MM-dd: " + definition.Id);
+            }
         }
 
         [UnityTest]
@@ -87,6 +105,39 @@ namespace Tests
             Assert.IsNotNull(promptCard, "More-games prompt card should exist in all games.");
             Assert.IsNotNull(promptCard.transform.parent, "More-games prompt card should be mounted under a slot.");
             Assert.AreEqual(promptCard.transform.parent.parent.childCount - 1, promptCard.transform.parent.GetSiblingIndex(), "More-games prompt card should be appended to the end of all games.");
+        }
+
+        [UnityTest]
+        public IEnumerator LatestHeaderTagSortsGamesByUpdateDateDescending()
+        {
+            ResetProgress();
+
+            MiniGameAppController controller = null;
+            yield return LoadController(value => controller = value);
+
+            var allGamesTab = GameObject.Find("AllGamesTab");
+            Assert.IsNotNull(allGamesTab, "All games tab was not found.");
+            var allGamesLabel = allGamesTab.transform.Find("Content/Label")?.GetComponent("TextMeshProUGUI");
+            Assert.IsNotNull(allGamesLabel, "All games tab should expose a TMP label.");
+            var allGamesLabelTextProperty = allGamesLabel.GetType().GetProperty("text");
+            Assert.IsNotNull(allGamesLabelTextProperty, "All games tab label should expose a text property.");
+            Assert.AreEqual("全部游戏", allGamesLabelTextProperty.GetValue(allGamesLabel, null) as string, "Bottom navigation title should remain all games.");
+
+            allGamesTab.GetComponent<Button>().onClick.Invoke();
+            yield return null;
+
+            var tagBar = GameObject.Find("HeaderTagBar");
+            Assert.IsNotNull(tagBar, "All games page should expose a header tag bar.");
+            AssertHeaderTagLabel(tagBar.transform, "Tag_0", "最新");
+
+            var newestCard = GameObject.Find("bracelet-unlink_Card");
+            var midDateCard = GameObject.Find("water-sort_Card");
+            var oldestCard = GameObject.Find("classic-link_Card");
+            Assert.IsNotNull(newestCard, "Latest game card was not found.");
+            Assert.IsNotNull(midDateCard, "Mid-date game card was not found.");
+            Assert.IsNotNull(oldestCard, "Oldest game card was not found.");
+            Assert.Less(newestCard.transform.parent.GetSiblingIndex(), midDateCard.transform.parent.GetSiblingIndex(), "Newer games should appear before older games.");
+            Assert.Less(midDateCard.transform.parent.GetSiblingIndex(), oldestCard.transform.parent.GetSiblingIndex(), "Games should be sorted by update date descending.");
         }
 
         [UnityTest]
@@ -178,7 +229,7 @@ namespace Tests
         }
 
         [UnityTest]
-        public IEnumerator SupportAuthorMenuOpensConfiguredThreeTabAdPopupInEditorSafeMode()
+        public IEnumerator SupportAuthorMenuDisplaysBottomNativeTemplateAndTwoAdButtonsInEditorSafeMode()
         {
             ResetProgress();
 
@@ -196,35 +247,39 @@ namespace Tests
             var popup = GameObject.Find("HallOverlay")?.transform.Find("SupportAuthorPopup");
             Assert.IsNotNull(popup, "Support-author menu should open its popup.");
             var dialog = popup.Find("Dialog");
-            var tabBar = popup.Find("Dialog/TabBar");
-            var rewardedTab = popup.Find("Dialog/TabBar/Tab_RewardedVideo");
-            var nativeTemplateTabTransform = popup.Find("Dialog/TabBar/Tab_NativeTemplate");
             Assert.IsNotNull(dialog?.Find("InnerPanel"), "Support popup should use the layered green-and-cream panel style shared by other hall dialogs.");
-            Assert.IsNotNull(tabBar?.GetComponent<RoundedRectGraphic>(), "Support popup tab bar should use the rounded container from the all-games header tags.");
-            Assert.AreEqual(new Color(1f, 0.98f, 0.88f, 0.88f), tabBar.GetComponent<RoundedRectGraphic>().color, "Support popup tab bar should use the all-games header tag background.");
-            Assert.AreEqual(54f, (tabBar as RectTransform).sizeDelta.y, 0.01f, "Support popup tab bar should use the compact all-games header tag height.");
-            Assert.AreEqual(40f, (rewardedTab as RectTransform).sizeDelta.y, 0.01f, "Support popup tabs should use the compact all-games tag height.");
-            Assert.AreEqual(new Color(1f, 0.62f, 0.14f, 1f), rewardedTab.GetComponent<RoundedRectGraphic>().color, "Selected support tab should use the all-games selected orange.");
-            Assert.AreEqual(Color.white, rewardedTab.Find("Label").GetComponent<Graphic>().color, "Selected support tab label should use the all-games selected text color.");
-            Assert.AreEqual(new Color(1f, 1f, 0.96f, 0.95f), nativeTemplateTabTransform.GetComponent<RoundedRectGraphic>().color, "Unselected support tabs should use the all-games unselected background.");
-            Assert.AreEqual(new Color(0.32f, 0.42f, 0.19f, 1f), nativeTemplateTabTransform.Find("Label").GetComponent<Graphic>().color, "Unselected support tab labels should use the all-games green text.");
-            Assert.IsNotNull(popup.Find("Dialog/TabBar/Tab_NativeTemplate"), "Support popup should contain the native-template tab.");
-            Assert.IsNotNull(popup.Find("Dialog/TabBar/Tab_Interstitial"), "Support popup should contain the interstitial tab.");
-            AssertAnnouncementText(popup.Find("Dialog/Content/Description"), "完整观看一段激励视频");
+            Assert.IsNull(popup.Find("Dialog/TabBar"), "Support popup should no longer use ad-type tabs.");
+            Assert.IsNull(popup.Find("Dialog/Content/NativeTemplateSlot"), "Native-template ad should not occupy the support popup content.");
 
-            var actionButton = popup.Find("Dialog/Content/ActionButton")?.GetComponent<Button>();
-            Assert.IsNotNull(actionButton, "Support popup should contain an ad action button.");
-            Assert.IsFalse(actionButton.interactable, "Editor safe mode should disable the configured rewarded-video action button.");
-            AssertAnnouncementText(popup.Find("Dialog/Content/Status"), "微信小游戏环境");
-
-            var nativeTemplateTab = popup.Find("Dialog/TabBar/Tab_NativeTemplate")?.GetComponent<Button>();
-            nativeTemplateTab.onClick.Invoke();
-            yield return null;
-            Assert.AreEqual(new Color(1f, 1f, 0.96f, 0.95f), rewardedTab.GetComponent<RoundedRectGraphic>().color, "Switching support tabs should restore the all-games unselected background.");
-            Assert.AreEqual(new Color(1f, 0.62f, 0.14f, 1f), nativeTemplateTabTransform.GetComponent<RoundedRectGraphic>().color, "Switching support tabs should move the all-games selected orange.");
-            Assert.IsTrue(popup.Find("Dialog/Content/NativeTemplateSlot").gameObject.activeSelf, "Native-template tab should reveal the reserved ad area.");
-            AssertAnnouncementText(popup.Find("Dialog/Content/Description"), "下方区域展示原生模板广告");
-            Assert.IsFalse(actionButton.interactable, "Editor safe mode should disable the configured native-template action button.");
+            var rewardedVideoButton = popup.Find("Dialog/Content/RewardedVideoButton")?.GetComponent<Button>();
+            var interstitialButton = popup.Find("Dialog/Content/InterstitialButton")?.GetComponent<Button>();
+            Assert.IsNotNull(rewardedVideoButton, "Support popup should contain the rewarded-video button.");
+            Assert.IsNotNull(interstitialButton, "Support popup should contain the interstitial-ad button.");
+            Assert.AreEqual(2, popup.Find("Dialog/Content").GetComponentsInChildren<Button>(true).Length, "Support content should contain only the two ad action buttons.");
+            var rewardedDescription = popup.Find("Dialog/Content/RewardedVideoDescription") as RectTransform;
+            var interstitialDescription = popup.Find("Dialog/Content/InterstitialDescription") as RectTransform;
+            AssertAnnouncementText(rewardedDescription, "完整观看一段激励视频");
+            AssertAnnouncementText(interstitialDescription, "点击后展示一次全屏插屏广告");
+            var rewardedButtonRect = rewardedVideoButton.transform as RectTransform;
+            var interstitialButtonRect = interstitialButton.transform as RectTransform;
+            Assert.Greater(
+                (rewardedDescription.anchoredPosition.y - rewardedDescription.rect.height * 0.5f) -
+                (rewardedButtonRect.anchoredPosition.y + rewardedButtonRect.rect.height * 0.5f),
+                0f,
+                "Rewarded-video description should not overlap its button.");
+            Assert.Greater(
+                (interstitialDescription.anchoredPosition.y - interstitialDescription.rect.height * 0.5f) -
+                (interstitialButtonRect.anchoredPosition.y + interstitialButtonRect.rect.height * 0.5f),
+                0f,
+                "Interstitial-ad description should not overlap its button.");
+            AssertAnnouncementText(rewardedVideoButton.transform.Find("Label"), "播放激励视频");
+            AssertAnnouncementText(interstitialButton.transform.Find("Label"), "展示插屏广告");
+            Assert.AreEqual(
+                rewardedVideoButton.GetComponent<RoundedRectGraphic>().color,
+                interstitialButton.GetComponent<RoundedRectGraphic>().color,
+                "The two ad action buttons should use the same visual style.");
+            Assert.IsFalse(rewardedVideoButton.interactable, "Editor safe mode should disable the configured rewarded-video button.");
+            Assert.IsFalse(interstitialButton.interactable, "Editor safe mode should disable the configured interstitial-ad button.");
 
             var config = HallAdConfig.Load();
             Assert.IsNotNull(config, "Hall ad config should load from Resources.");
@@ -320,7 +375,7 @@ namespace Tests
             Assert.IsNull(popup.Find("Dialog/Sidebar/Tab_Feedback"), "Announcement popup should not include the feedback tab.");
             Assert.IsNull(popup.Find("Dialog/Sidebar/Tab_Preview"), "Announcement popup should not include the preview tab.");
             Assert.IsNull(popup.Find("Dialog/Sidebar/Tab_Events"), "Announcement popup should not include the events tab.");
-            var latestUpdateCard = popup.Find("Dialog/ContentFrame/Viewport/Content/VersionCard_20260809");
+            var latestUpdateCard = popup.Find("Dialog/ContentFrame/Viewport/Content/VersionCard_20260901");
             var juneUpdateCard = popup.Find("Dialog/ContentFrame/Viewport/Content/VersionCard_20260610");
             var mayUpdateCard = popup.Find("Dialog/ContentFrame/Viewport/Content/VersionCard_20260505");
             var firstUpdateCard = popup.Find("Dialog/ContentFrame/Viewport/Content/VersionCard_20260501");
@@ -329,9 +384,9 @@ namespace Tests
             Assert.IsNotNull(mayUpdateCard, "Announcement popup should render the 2026-05-05 update card.");
             Assert.IsNotNull(firstUpdateCard, "Announcement popup should render the 2026-05-01 update card.");
             AssertAnnouncementText(popup.Find("Dialog/ContentFrame/Viewport/Content/TitleRow/Title"), "最近更新");
-            AssertAnnouncementText(latestUpdateCard.Find("VersionBadge/Label"), "2026-08-09");
-            AssertAnnouncementText(latestUpdateCard.Find("Body"), "新增支持作者界面");
-            AssertAnnouncementText(latestUpdateCard.Find("Body"), "1 个大厅宝箱");
+            AssertAnnouncementText(latestUpdateCard.Find("VersionBadge/Label"), "2026-09-01");
+            AssertAnnouncementText(latestUpdateCard.Find("Body"), "新增小游戏：旋转解环");
+            AssertAnnouncementText(latestUpdateCard.Find("Body"), "大厅切换更流畅");
             AssertAnnouncementText(juneUpdateCard.Find("VersionBadge/Label"), "2026-06-10");
             AssertAnnouncementText(juneUpdateCard.Find("Body"), "优化大厅体验");
             AssertAnnouncementText(juneUpdateCard.Find("Body"), "连连看新增首局提示");
@@ -886,6 +941,45 @@ namespace Tests
         }
 
         [UnityTest]
+        public IEnumerator SwitchingBetweenFavoritesAndAllGamesShouldReuseBuiltCards()
+        {
+            ResetProgress();
+
+            MiniGameAppController controller = null;
+            yield return LoadController(value => controller = value);
+
+            var favoriteCard = GameObject.Find("classic-link_Card");
+            Assert.IsNotNull(favoriteCard, "Default favorite card was not found.");
+            var favoriteCardInstanceId = favoriteCard.GetInstanceID();
+
+            var allGamesTab = GameObject.Find("AllGamesTab");
+            var favoritesTab = GameObject.Find("FavoritesTab");
+            Assert.IsNotNull(allGamesTab, "All games tab was not found.");
+            Assert.IsNotNull(favoritesTab, "Favorites tab was not found.");
+
+            allGamesTab.GetComponent<Button>().onClick.Invoke();
+            yield return null;
+
+            var allGamesCard = GameObject.Find("nonogram_Card");
+            Assert.IsNotNull(allGamesCard, "Nonogram card was not found in all games tab.");
+            var allGamesCardInstanceId = allGamesCard.GetInstanceID();
+
+            favoritesTab.GetComponent<Button>().onClick.Invoke();
+            yield return null;
+
+            var reusedFavoriteCard = GameObject.Find("classic-link_Card");
+            Assert.IsNotNull(reusedFavoriteCard, "Default favorite card should still exist after returning to favorites.");
+            Assert.AreEqual(favoriteCardInstanceId, reusedFavoriteCard.GetInstanceID(), "Returning to favorites should reuse the existing card.");
+
+            allGamesTab.GetComponent<Button>().onClick.Invoke();
+            yield return null;
+
+            var reusedAllGamesCard = GameObject.Find("nonogram_Card");
+            Assert.IsNotNull(reusedAllGamesCard, "Nonogram card should still exist after returning to all games.");
+            Assert.AreEqual(allGamesCardInstanceId, reusedAllGamesCard.GetInstanceID(), "Returning to all games should reuse the existing card.");
+        }
+
+        [UnityTest]
         public IEnumerator AllGamesTabUsesAtLeastThreeColumnsInDefaultScene()
         {
             ResetProgress();
@@ -1071,8 +1165,75 @@ namespace Tests
             Assert.AreEqual(0, progress.TotalCoinCount);
             Assert.AreEqual(0, progress.CurrentLevelIndex);
             Assert.AreEqual(1, progress.UnlockedLevelCount);
+            Assert.IsNotNull(progress.LevelProgress);
+            Assert.AreEqual(0, progress.LevelProgress.Count);
             Assert.AreEqual(0, controller.GetGameTutorialSeenVersion("classic-link"));
             Assert.IsTrue(controller.IsFavorite("classic-link"), "Cleared save data should return the hall to first-launch default favorites.");
+        }
+
+        [UnityTest]
+        public IEnumerator LevelCompletionKeepsHighestScoreAndPersistsByStableId()
+        {
+            ResetProgress();
+
+            MiniGameAppController controller = null;
+            yield return LoadController(value => controller = value);
+            Assert.IsNotNull(controller);
+
+            controller.SetLevelCompletion("classic-link", 42, 300);
+            controller.SetLevelCompletion("classic-link", 42, 200);
+            controller.SetLevelCompletion("classic-link", 42, 450);
+
+            MiniGameAppController reloadedController = null;
+            yield return LoadController(value => reloadedController = value);
+            Assert.IsNotNull(reloadedController);
+
+            var progress = reloadedController.GetProgress("classic-link");
+            Assert.IsNotNull(progress.LevelProgress);
+            Assert.AreEqual(1, progress.LevelProgress.Count);
+            Assert.AreEqual(42, progress.LevelProgress[0].LevelId);
+            Assert.IsTrue(progress.LevelProgress[0].IsCompleted);
+            Assert.AreEqual(450, progress.LevelProgress[0].BestScore);
+        }
+
+        [UnityTest]
+        public IEnumerator EditorLevelToolsOpenAndClearCompletionRecordsTogether()
+        {
+            ResetProgress();
+
+            MiniGameAppController controller = null;
+            yield return LoadController(value => controller = value);
+            Assert.IsNotNull(controller);
+
+            Type utilityType = null;
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            for (var assemblyIndex = 0; assemblyIndex < assemblies.Length && utilityType == null; assemblyIndex++)
+            {
+                utilityType = assemblies[assemblyIndex].GetType(
+                    "HuanYouYu.Editor.MiniGameHall.HallEditorLevelProgressUtility");
+            }
+            Assert.IsNotNull(utilityType);
+
+            utilityType.GetMethod("OpenAllLevelProgress", BindingFlags.Public | BindingFlags.Static)
+                .Invoke(null, null);
+            var progress = controller.GetProgress(BraceletUnlinkGameView.GameIdConstant);
+            Assert.AreEqual(BraceletUnlinkGameView.LevelCount, progress.UnlockedLevelCount);
+            var completedIds = new HashSet<int>();
+            for (var index = 0; index < progress.LevelProgress.Count; index++)
+            {
+                if (progress.LevelProgress[index].IsCompleted)
+                {
+                    completedIds.Add(progress.LevelProgress[index].LevelId);
+                }
+            }
+            CollectionAssert.AreEquivalent(BraceletUnlinkGameView.LevelIds, completedIds);
+
+            utilityType.GetMethod("ClearAllLevelProgress", BindingFlags.Public | BindingFlags.Static)
+                .Invoke(null, null);
+            progress = controller.GetProgress(BraceletUnlinkGameView.GameIdConstant);
+            Assert.AreEqual(1, progress.UnlockedLevelCount);
+            Assert.AreEqual(0, progress.CurrentLevelIndex);
+            Assert.AreEqual(0, progress.LevelProgress.Count);
         }
 
         [UnityTest]

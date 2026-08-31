@@ -123,7 +123,8 @@ namespace HuanYouYu.MiniGameHall
                     TotalCoinCount = pair.Value.TotalCoinCount,
                     CurrentLevelIndex = Mathf.Max(0, pair.Value.CurrentLevelIndex),
                     UnlockedLevelCount = Mathf.Max(1, pair.Value.UnlockedLevelCount),
-                    TutorialSeenVersion = Mathf.Max(0, pair.Value.TutorialSeenVersion)
+                    TutorialSeenVersion = Mathf.Max(0, pair.Value.TutorialSeenVersion),
+                    LevelProgress = CloneLevelProgress(pair.Value.LevelProgress)
                 });
             }
 
@@ -163,7 +164,8 @@ namespace HuanYouYu.MiniGameHall
                 TotalCoinCount = 0,
                 CurrentLevelIndex = 0,
                 UnlockedLevelCount = 1,
-                TutorialSeenVersion = 0
+                TutorialSeenVersion = 0,
+                LevelProgress = new List<MiniGameLevelProgressData>()
             };
         }
 
@@ -180,6 +182,71 @@ namespace HuanYouYu.MiniGameHall
             {
                 progress.CurrentLevelIndex = progress.UnlockedLevelCount - 1;
             }
+            NormalizeCompletedLevels(progress);
+        }
+
+        private static List<MiniGameLevelProgressData> CloneLevelProgress(
+            IList<MiniGameLevelProgressData> source)
+        {
+            var result = new List<MiniGameLevelProgressData>();
+            if (source == null)
+            {
+                return result;
+            }
+            for (var index = 0; index < source.Count; index++)
+            {
+                var entry = source[index];
+                if (entry == null)
+                {
+                    continue;
+                }
+                result.Add(new MiniGameLevelProgressData
+                {
+                    LevelId = entry.LevelId,
+                    IsCompleted = entry.IsCompleted,
+                    BestScore = entry.BestScore
+                });
+            }
+            return result;
+        }
+
+        private static void NormalizeCompletedLevels(MiniGameProgressData progress)
+        {
+            var normalized = new List<MiniGameLevelProgressData>();
+            var lookup = new Dictionary<int, MiniGameLevelProgressData>();
+            if (progress.LevelProgress != null)
+            {
+                for (var index = 0; index < progress.LevelProgress.Count; index++)
+                {
+                    var entry = progress.LevelProgress[index];
+                    if (entry == null)
+                    {
+                        continue;
+                    }
+
+                    MiniGameLevelProgressData existing;
+                    if (!lookup.TryGetValue(entry.LevelId, out existing))
+                    {
+                        existing = new MiniGameLevelProgressData
+                        {
+                            LevelId = entry.LevelId,
+                            IsCompleted = entry.IsCompleted,
+                            BestScore = entry.BestScore
+                        };
+                        lookup[entry.LevelId] = existing;
+                        normalized.Add(existing);
+                    }
+                    else
+                    {
+                        if (entry.IsCompleted && (!existing.IsCompleted || entry.BestScore > existing.BestScore))
+                        {
+                            existing.BestScore = entry.BestScore;
+                        }
+                        existing.IsCompleted |= entry.IsCompleted;
+                    }
+                }
+            }
+            progress.LevelProgress = normalized;
         }
     }
 }

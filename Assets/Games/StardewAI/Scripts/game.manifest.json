@@ -4,5 +4,6 @@
   "descriptionKey": "game.stardewai.description",
   "isPlayable": true,
   "statusLabelKey": "status.playable",
+  "updatedAt": "2026-05-10",
   "category": "simulation"
 }

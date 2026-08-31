@@ -1,6 +1,10 @@
+using System.Collections;
 using System.Collections.Generic;
 using HuanYouYu.MiniGameHall;
 using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.TestTools;
 
 namespace Tests
 {
@@ -91,6 +95,31 @@ namespace Tests
             var move = state.TryPlaceTrayPiece(0, 0, 0);
             Assert.IsFalse(move.Success);
             Assert.IsTrue(move.GameOver);
+        }
+
+        [UnityTest]
+        public IEnumerator DraggedPieceStaysAbovePointer()
+        {
+            var hostObject = new GameObject("BlockPuzzleDragTestHost");
+            var controller = hostObject.AddComponent<MiniGameAppController>();
+            yield return null;
+
+            controller.EnterGame(MiniGameBlockPuzzleGameView.GameIdConstant);
+            yield return null;
+
+            var slot = GameObject.Find("TraySlot_0").GetComponent<RectTransform>();
+            var content = GameObject.Find("BlockPuzzleContent").GetComponent<RectTransform>();
+            var pointerPosition = RectTransformUtility.WorldToScreenPoint(null, slot.position);
+            var eventData = new PointerEventData(EventSystem.current) { position = pointerPosition };
+            ExecuteEvents.Execute(slot.gameObject, eventData, ExecuteEvents.beginDragHandler);
+
+            var piece = GameObject.Find("Piece_0").GetComponent<RectTransform>();
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(content, pointerPosition, null, out var pointerLocalPoint);
+            Assert.GreaterOrEqual(piece.anchoredPosition.y - pointerLocalPoint.y, 120f,
+                "Dragged piece should be lifted far enough to remain visible above the pointer.");
+
+            Object.Destroy(hostObject);
+            yield return null;
         }
     }
 }

@@ -38,6 +38,7 @@ namespace HuanYouYu.MiniGameHall
             { "rivercrossing", "rivercrossing" },
             { "slidingpuzzle", "slidingpuzzle" },
             { "towerofhanoi", "towerofhanoi" },
+            { "bracelet-unlink", "bracelet-unlink" },
             { "waterpouring", "waterpouring" },
             { "stack-match", "stack-match" }
         };

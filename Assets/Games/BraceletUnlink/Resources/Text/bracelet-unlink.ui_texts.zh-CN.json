@@ -1,0 +1,280 @@
+﻿{
+  "entries": [
+    {
+      "key": "game.bracelet-unlink.name",
+      "value": "旋转解环"
+    },
+    {
+      "key": "game.bracelet-unlink.description",
+      "value": "旋转手环，将两个开口同时放入地图金环。"
+    },
+    {
+      "key": "bracelet-unlink.hud.summary",
+      "value": "第 {0} 关 · 剩余金环 {1} 个 · 旋转 {2} 次"
+    },
+    {
+      "key": "bracelet-unlink.random.entry",
+      "value": "随机"
+    },
+    {
+      "key": "bracelet-unlink.random.hud.summary",
+      "value": "随机模式 · 剩余金环 {0} 个 · 旋转 {1} 次"
+    },
+    {
+      "key": "bracelet-unlink.confirm_restart.title",
+      "value": "确认重新开始"
+    },
+    {
+      "key": "bracelet-unlink.confirm_restart.message",
+      "value": "当前关卡已有操作，重新开始后会恢复到初始状态。"
+    },
+    {
+      "key": "bracelet-unlink.confirm_restart.confirm",
+      "value": "重新开始"
+    },
+    {
+      "key": "bracelet-unlink.hint.rotate",
+      "value": "自由旋转手环，让两个开口同时进入同一金环"
+    },
+    {
+      "key": "bracelet-unlink.hint.physics",
+      "value": "手环和随环金环碰到边框时会卡住"
+    },
+    {
+      "key": "bracelet-unlink.hint.blocked",
+      "value": "这里被卡住了，试试反向旋转"
+    },
+    {
+      "key": "bracelet-unlink.hint.waiting_pair",
+      "value": "单个开口不会锁定，需要两个开口同时对准"
+    },
+    {
+      "key": "bracelet-unlink.hint.map_buckle_cleared",
+      "value": "地图金环已消除，连接解除"
+    },
+    {
+      "key": "bracelet-unlink.hint.completed",
+      "value": "所有手环都解开了！"
+    },
+    {
+      "key": "bracelet-unlink.settlement.title",
+      "value": "解环成功"
+    },
+    {
+      "key": "bracelet-unlink.settlement.gestures",
+      "value": "旋转次数"
+    },
+    {
+      "key": "bracelet-unlink.settlement.cleared",
+      "value": "消除金环"
+    },
+    {
+      "key": "bracelet-unlink.settlement.exit_label",
+      "value": "结算方式"
+    },
+    {
+      "key": "bracelet-unlink.settlement.exit_value",
+      "value": "返回大厅"
+    },
+    {
+      "key": "bracelet-unlink.settlement.summary",
+      "value": "用 {0} 次旋转解开了所有手环。"
+    },
+    {
+      "key": "game.bracelet-unlink.help",
+      "value": "沿手环圆周拖动，使手环原地自由旋转。金环是空心通道，旁边手环可以穿在孔洞中，但不能穿过金环边框。手环金环会跟随所属手环旋转，地图金环固定不动。只有两只相连手环的开口同时进入同一个地图金环时，该地图金环才会消除。"
+    },
+    {
+      "key": "bracelet-unlink.editor.entry",
+      "value": "编辑"
+    },
+    {
+      "key": "bracelet-unlink.editor.title",
+      "value": "关卡编辑"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.select",
+      "value": "带圆框或短框的位置都可以点击编辑"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.empty_ring",
+      "value": "这个位置还没有手环"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.open_ring",
+      "value": "已选择开口手环"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.closed_ring",
+      "value": "已选择完整手环"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.edge_needs_rings",
+      "value": "请先在两端放置手环"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.empty_edge",
+      "value": "选择要放置的金环类型"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.existing_edge",
+      "value": "已选择这枚金环"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.choose_owner",
+      "value": "请直接点击金环要跟随的那只手环"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.attached_done",
+      "value": "随环金环已放置"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.ring_deleted",
+      "value": "手环及其相邻金环已删除"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.ring_changed",
+      "value": "手环已更新"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.edge_deleted",
+      "value": "金环已删除"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.edge_changed",
+      "value": "地图金环已放置"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.saved",
+      "value": "当前关卡已保存为JSON文件"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.loaded",
+      "value": "已读取保存的关卡"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.save_failed",
+      "value": "JSON文件保存失败"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.load_failed",
+      "value": "没有找到可读取的JSON存档"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.cleared",
+      "value": "关卡已清空"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.board_changed",
+      "value": "棋盘尺寸已切换，当前关卡已清空"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.level_added",
+      "value": "已新建关卡"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.level_changed",
+      "value": "已切换关卡"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.level_deleted",
+      "value": "已删除当前关卡"
+    },
+    {
+      "key": "bracelet-unlink.editor.status.cannot_delete_only_level",
+      "value": "至少保留一个关卡"
+    },
+    {
+      "key": "bracelet-unlink.editor.level",
+      "value": "关卡 {0}/{1}"
+    },
+    {
+      "key": "bracelet-unlink.editor.action.add_open",
+      "value": "放开口手环"
+    },
+    {
+      "key": "bracelet-unlink.editor.action.add_closed",
+      "value": "放完整手环"
+    },
+    {
+      "key": "bracelet-unlink.editor.action.rotate_left",
+      "value": "缺口左转"
+    },
+    {
+      "key": "bracelet-unlink.editor.action.rotate_right",
+      "value": "缺口右转"
+    },
+    {
+      "key": "bracelet-unlink.editor.action.make_closed",
+      "value": "改为完整"
+    },
+    {
+      "key": "bracelet-unlink.editor.action.make_open",
+      "value": "改为开口"
+    },
+    {
+      "key": "bracelet-unlink.editor.action.map_loop",
+      "value": "地图金环"
+    },
+    {
+      "key": "bracelet-unlink.editor.action.attached_loop",
+      "value": "随环金环"
+    },
+    {
+      "key": "bracelet-unlink.editor.action.delete",
+      "value": "删除"
+    },
+    {
+      "key": "bracelet-unlink.editor.action.cancel",
+      "value": "取消"
+    },
+    {
+      "key": "bracelet-unlink.editor.action.save",
+      "value": "保存"
+    },
+    {
+      "key": "bracelet-unlink.editor.action.load",
+      "value": "读取"
+    },
+    {
+      "key": "bracelet-unlink.editor.action.trial",
+      "value": "试玩"
+    },
+    {
+      "key": "bracelet-unlink.editor.action.close",
+      "value": "关闭"
+    },
+    {
+      "key": "bracelet-unlink.editor.action.clear",
+      "value": "清空"
+    },
+    {
+      "key": "bracelet-unlink.editor.action.board_smaller",
+      "value": "减小布局"
+    },
+    {
+      "key": "bracelet-unlink.editor.action.board_larger",
+      "value": "大布局"
+    },
+    {
+      "key": "bracelet-unlink.editor.action.previous_level",
+      "value": "上一关"
+    },
+    {
+      "key": "bracelet-unlink.editor.action.new_level",
+      "value": "新建"
+    },
+    {
+      "key": "bracelet-unlink.editor.action.delete_level",
+      "value": "删关"
+    },
+    {
+      "key": "bracelet-unlink.editor.action.next_level",
+      "value": "下一关"
+    },
+    {
+      "key": "bracelet-unlink.editor.action.return",
+      "value": "返回编辑"
+    }
+  ]
+}

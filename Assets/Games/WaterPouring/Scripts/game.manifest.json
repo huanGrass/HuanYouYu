@@ -4,5 +4,6 @@
   "descriptionKey": "game.waterpouring.description",
   "isPlayable": true,
   "statusLabelKey": "status.playable",
+  "updatedAt": "2026-08-12",
   "category": "puzzle"
 }

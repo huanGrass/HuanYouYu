@@ -4,5 +4,6 @@
   "descriptionKey": "game.lightsout.description",
   "isPlayable": true,
   "statusLabelKey": "status.playable",
+  "updatedAt": "2026-05-07",
   "category": "number"
 }

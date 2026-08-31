@@ -31,8 +31,6 @@ namespace HuanYouYu.MiniGameHall
         private static readonly Color WaterColor = new Color(0.18f, 0.66f, 0.86f, 0.86f);
         private static readonly Color TextColor = new Color(0.18f, 0.29f, 0.27f, 1f);
         private static readonly Color MutedTextColor = new Color(0.35f, 0.47f, 0.45f, 0.92f);
-        private static readonly Color ButtonColor = new Color(0.22f, 0.55f, 0.49f, 1f);
-        private static readonly Color DisabledButtonColor = new Color(0.55f, 0.62f, 0.61f, 0.58f);
 
         private static readonly LevelConfig[] Levels =
         {
@@ -63,8 +61,6 @@ namespace HuanYouYu.MiniGameHall
         private Button levelSelectButton;
         private Button fillButton;
         private Button emptyButton;
-        private Graphic fillButtonGraphic;
-        private Graphic emptyButtonGraphic;
 
         private MiniGameLevelProgressController levelProgress;
         private MiniGameLevelSelectView levelSelectView;
@@ -201,6 +197,7 @@ namespace HuanYouYu.MiniGameHall
             var bottomContainerRefs = MiniGameShellBottomBarBuilder.CreateBottomContainer(
                 Shell.BottomHost,
                 MiniGameShellBottomBarBuilder.CreateDefaultContainerConfig("WaterPouringActions"));
+            MiniGameShellBottomBarBuilder.ConfigureTextActionBar(bottomContainerRefs.ActionBar, 18f);
 
             restartButton = MiniGameShellBottomBarBuilder.CreateRestartButton(bottomContainerRefs.ActionBar).Button;
             if (restartButton != null)
@@ -217,10 +214,18 @@ namespace HuanYouYu.MiniGameHall
                 levelSelectButton.onClick.AddListener(OnLevelSelectClicked);
             }
 
-            fillButton = CreateTextActionButton(bottomContainerRefs.ActionBar, "FillButton", UiTextCatalog.Get("waterpouring.action.fill"), out fillButtonGraphic);
+            fillButton = MiniGameShellBottomBarBuilder.CreateTextActionButton(
+                bottomContainerRefs.ActionBar,
+                "FillButton",
+                UiTextCatalog.Get("waterpouring.action.fill"),
+                132f);
             fillButton.onClick.AddListener(OnFillClicked);
 
-            emptyButton = CreateTextActionButton(bottomContainerRefs.ActionBar, "EmptyButton", UiTextCatalog.Get("waterpouring.action.empty"), out emptyButtonGraphic);
+            emptyButton = MiniGameShellBottomBarBuilder.CreateTextActionButton(
+                bottomContainerRefs.ActionBar,
+                "EmptyButton",
+                UiTextCatalog.Get("waterpouring.action.empty"),
+                132f);
             emptyButton.onClick.AddListener(OnEmptyClicked);
         }
 
@@ -790,20 +795,15 @@ namespace HuanYouYu.MiniGameHall
         private void RefreshActionButtons()
         {
             var canOperate = !inputLocked && selectedCupIndex != EmptySelection;
-            SetButtonState(fillButton, fillButtonGraphic, canOperate);
-            SetButtonState(emptyButton, emptyButtonGraphic, canOperate);
+            SetButtonState(fillButton, canOperate);
+            SetButtonState(emptyButton, canOperate);
         }
 
-        private static void SetButtonState(Button button, Graphic graphic, bool interactable)
+        private static void SetButtonState(Button button, bool interactable)
         {
             if (button != null)
             {
                 button.interactable = interactable;
-            }
-
-            if (graphic != null)
-            {
-                graphic.color = interactable ? ButtonColor : DisabledButtonColor;
             }
         }
 
@@ -876,43 +876,6 @@ namespace HuanYouYu.MiniGameHall
             text.raycastTarget = false;
             text.enableWordWrapping = false;
             return text;
-        }
-
-        private static Button CreateTextActionButton(Transform parent, string name, string labelText, out Graphic backgroundGraphic)
-        {
-            var buttonObject = CreateRectObject(name, parent);
-            var buttonRect = buttonObject.GetComponent<RectTransform>();
-            buttonRect.anchorMin = new Vector2(0.5f, 0.5f);
-            buttonRect.anchorMax = new Vector2(0.5f, 0.5f);
-            buttonRect.pivot = new Vector2(0.5f, 0.5f);
-            buttonRect.sizeDelta = new Vector2(132f, 72f);
-
-            var layoutElement = buttonObject.AddComponent<LayoutElement>();
-            layoutElement.preferredWidth = 132f;
-            layoutElement.preferredHeight = 72f;
-            layoutElement.layoutPriority = 1;
-
-            var background = CreateRoundedRect("Background", buttonRect, ButtonColor, 26f, true);
-            Stretch(background.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
-            backgroundGraphic = background;
-
-            var button = buttonObject.AddComponent<Button>();
-            button.targetGraphic = background;
-            var colors = button.colors;
-            colors.normalColor = Color.white;
-            colors.highlightedColor = new Color(0.96f, 0.98f, 0.98f, 1f);
-            colors.pressedColor = new Color(0.82f, 0.9f, 0.88f, 1f);
-            colors.selectedColor = colors.highlightedColor;
-            colors.disabledColor = Color.white;
-            colors.colorMultiplier = 1f;
-            colors.fadeDuration = 0.08f;
-            button.colors = colors;
-
-            var label = CreateText("Label", buttonRect, 25f, FontStyles.Bold, Color.white);
-            label.alignment = TextAlignmentOptions.Center;
-            Stretch(label.rectTransform, Vector2.zero, Vector2.one, new Vector2(8f, 4f), new Vector2(-8f, -4f));
-            label.text = labelText;
-            return button;
         }
 
         private static RoundedRectGraphic CreateRoundedRect(string name, Transform parent, Color color, float cornerRadius, bool raycastTarget)

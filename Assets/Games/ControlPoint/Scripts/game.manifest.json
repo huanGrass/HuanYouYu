@@ -4,5 +4,6 @@
   "descriptionKey": "game.control_point.description",
   "isPlayable": true,
   "statusLabelKey": "status.playable",
+  "updatedAt": "2026-05-07",
   "category": "puzzle"
 }

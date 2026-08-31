@@ -163,6 +163,23 @@ namespace Tests
             Assert.AreEqual(11, move.Column);
         }
 
+        [Test]
+        public void WinningLineReturnsConnectedStonesInOrder()
+        {
+            var board = new HuanYouYu.MiniGameHall.GomokuBoardState(15);
+            board.Reset();
+            HuanYouYu.MiniGameHall.GomokuRoundState roundState;
+            PlaceAlternatingRow(board, 7, 4, out roundState);
+
+            HuanYouYu.MiniGameHall.GomokuMove[] winningLine;
+            Assert.IsTrue(board.TryGetWinningLine(7, 8, HuanYouYu.MiniGameHall.GomokuStone.Black, out winningLine));
+            Assert.AreEqual(5, winningLine.Length);
+            Assert.AreEqual(7, winningLine[0].Row);
+            Assert.AreEqual(4, winningLine[0].Column);
+            Assert.AreEqual(7, winningLine[4].Row);
+            Assert.AreEqual(8, winningLine[4].Column);
+        }
+
         private static void PlaceAlternatingRow(
             HuanYouYu.MiniGameHall.GomokuBoardState board,
             int row,

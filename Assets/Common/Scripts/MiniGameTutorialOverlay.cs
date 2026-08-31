@@ -47,8 +47,12 @@ namespace HuanYouYu.MiniGameHall
         private readonly Button skipButton;
         private readonly Button targetClickButton;
         private readonly TutorialOverlayUpdater updater;
+        private readonly Vector3[] targetCorners = new Vector3[4];
         private int currentIndex;
         private bool disposed;
+        private bool hasLayoutSnapshot;
+        private Rect lastTargetRect;
+        private Rect lastRootBounds;
 
         private MiniGameTutorialOverlay(Transform parent, IList<MiniGameTutorialStep> tutorialSteps, Action completed)
         {
@@ -133,10 +137,10 @@ namespace HuanYouYu.MiniGameHall
             pageText.text = (currentIndex + 1) + "/" + steps.Count;
             titleText.text = ResolveTitle(step);
             messageText.text = ResolveMessage(step);
-            RefreshCurrentStepLayout();
+            RefreshCurrentStepLayout(true);
         }
 
-        private void RefreshCurrentStepLayout()
+        private void RefreshCurrentStepLayout(bool force = false)
         {
             if (disposed || currentIndex < 0 || currentIndex >= steps.Count)
             {
@@ -146,6 +150,15 @@ namespace HuanYouYu.MiniGameHall
             var step = steps[currentIndex];
             var target = ResolveTarget(step);
             var targetRect = CalculateTargetRect(target, step != null ? step.Padding : Vector2.zero);
+            var rootBounds = rootRect.rect;
+            if (!force && hasLayoutSnapshot && AreRectsApproximatelyEqual(lastTargetRect, targetRect) && AreRectsApproximatelyEqual(lastRootBounds, rootBounds))
+            {
+                return;
+            }
+
+            hasLayoutSnapshot = true;
+            lastTargetRect = targetRect;
+            lastRootBounds = rootBounds;
             ApplyHole(targetRect);
             ApplyBubble(targetRect);
             if (targetClickRect.gameObject.activeSelf)
@@ -241,13 +254,12 @@ namespace HuanYouYu.MiniGameHall
                     fallbackSize.y);
             }
 
-            var corners = new Vector3[4];
-            target.GetWorldCorners(corners);
+            target.GetWorldCorners(targetCorners);
             var min = new Vector2(float.MaxValue, float.MaxValue);
             var max = new Vector2(float.MinValue, float.MinValue);
-            for (var i = 0; i < corners.Length; i++)
+            for (var i = 0; i < targetCorners.Length; i++)
             {
-                var local = rootRect.InverseTransformPoint(corners[i]);
+                var local = rootRect.InverseTransformPoint(targetCorners[i]);
                 min = Vector2.Min(min, local);
                 max = Vector2.Max(max, local);
             }
@@ -262,6 +274,14 @@ namespace HuanYouYu.MiniGameHall
             var x = Mathf.Clamp(center.x - width * 0.5f, canvasRect.xMin, canvasRect.xMax - width);
             var y = Mathf.Clamp(center.y - height * 0.5f, canvasRect.yMin, canvasRect.yMax - height);
             return new Rect(x, y, width, height);
+        }
+
+        private static bool AreRectsApproximatelyEqual(Rect left, Rect right)
+        {
+            return Mathf.Abs(left.x - right.x) < 0.01f &&
+                Mathf.Abs(left.y - right.y) < 0.01f &&
+                Mathf.Abs(left.width - right.width) < 0.01f &&
+                Mathf.Abs(left.height - right.height) < 0.01f;
         }
 
         private void ApplyHole(Rect target)

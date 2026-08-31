@@ -160,7 +160,6 @@ namespace HuanYouYu.MiniGameHall
             RefreshGridIfContentSizeChanged();
             AdvanceBottleReceiveAnimations(deltaTime);
             AdvanceBottleCapAnimations(deltaTime);
-            AdvanceIdleWater(deltaTime);
         }
 
         protected override void OnPauseRequested()

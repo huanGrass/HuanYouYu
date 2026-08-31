@@ -134,11 +134,41 @@ namespace Tests
             Assert.AreNotEqual(Color.white, levelSelectGraphic.color, "Level select button should not be white.");
             var levelSelectLabel = levelSelectButton.transform.Find("Label")?.GetComponent<Graphic>();
             Assert.IsNotNull(levelSelectLabel, "Level select button should have a label.");
-            Assert.AreEqual(Color.white, levelSelectLabel.color, "Level select button text should stay white.");
+            Assert.AreEqual(
+                new Color(0.25f, 0.36f, 0.22f, 1f),
+                levelSelectLabel.color,
+                "Level select button text should use the shared bottom-bar label color.");
             Assert.IsNotNull(FindButton("RestartButton"), "Restart button should exist.");
             Assert.IsNull(FindButton("NextLevelButton"), "Next level button should be removed from the bottom bar.");
             Assert.IsNull(FindButton("WaterSortEasyButton"), "Difficulty buttons should be replaced by level controls.");
             Assert.AreEqual(GetExpectedBottleCount(0), GetBottles(GetActiveGame(controller)).Count, "First level should create its generated bottle layout.");
+        }
+
+        [UnityTest]
+        public IEnumerator IdleWaterLayersDoNotDirtyTheirMeshesEveryFrame()
+        {
+            ResetProgress();
+
+            var controller = default(MiniGameAppController);
+            yield return LoadController(result => controller = result);
+            controller.EnterGame(WaterSortGameView.GameIdConstant);
+            yield return null;
+            Canvas.ForceUpdateCanvases();
+            yield return null;
+
+            var segment = GameObject.Find("WaterSortBottle_0")
+                ?.transform.Find("LiquidMask/FillArea/Segment_0")
+                ?.GetComponent<Graphic>();
+            Assert.IsNotNull(segment, "The first visible water segment should exist.");
+
+            var dirtyCount = 0;
+            segment.RegisterDirtyVerticesCallback(() => dirtyCount++);
+
+            yield return null;
+            yield return null;
+            yield return null;
+
+            Assert.Zero(dirtyCount, "Idle water layers should not rebuild their meshes every frame.");
         }
 
         [UnityTest]

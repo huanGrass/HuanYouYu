@@ -1,7 +1,16 @@
 using System;
+using System.Collections.Generic;
 
 namespace HuanYouYu.MiniGameHall
 {
+    [Serializable]
+    public sealed class MiniGameLevelProgressData
+    {
+        public int LevelId;
+        public bool IsCompleted;
+        public int BestScore;
+    }
+
     [Serializable]
     public sealed class MiniGameProgressData
     {
@@ -13,6 +22,7 @@ namespace HuanYouYu.MiniGameHall
         public int CurrentLevelIndex;
         public int UnlockedLevelCount;
         public int TutorialSeenVersion;
+        public List<MiniGameLevelProgressData> LevelProgress = new List<MiniGameLevelProgressData>();
     }
 
     public sealed class MiniGameSettlement

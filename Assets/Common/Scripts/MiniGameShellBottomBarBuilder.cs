@@ -12,6 +12,9 @@ namespace HuanYouYu.MiniGameHall
 
         private static readonly Color TrayColor = new Color(1f, 0.98f, 0.92f, 0.66f);
         private static readonly Color ShadowColor = new Color(0.31f, 0.42f, 0.26f, 0.10f);
+        private static readonly Color TextButtonColor = new Color(0.96f, 0.97f, 0.92f, 1f);
+        private static readonly Color SelectedTextButtonColor = new Color(0.90f, 0.75f, 0.28f, 1f);
+        private static readonly Color TextButtonLabelColor = new Color(0.25f, 0.36f, 0.22f, 1f);
         private static readonly Vector2 TrayPadding = new Vector2(24f, 12f);
         private static readonly Vector2 ShadowPadding = new Vector2(26f, 14f);
         private const float ShadowYOffset = -4f;
@@ -118,56 +121,133 @@ namespace HuanYouYu.MiniGameHall
 
         internal static ButtonRefs CreateLevelSelectButton(Transform parent, string instanceName = "LevelSelectButton")
         {
-            return CreateTextButton(parent, instanceName);
+            var button = CreateTextActionButton(parent, instanceName, "选关", 116f);
+            return new ButtonRefs(button, button.GetComponent<RectTransform>(), null);
         }
 
-        private static ButtonRefs CreateTextButton(Transform parent, string name)
+        internal static void ConfigureTextActionBar(RectTransform actionBar, float spacing = 14f)
         {
-            var buttonObject = new GameObject(name, typeof(RectTransform), typeof(Button), typeof(LayoutElement));
+            var layout = actionBar == null ? null : actionBar.GetComponent<HorizontalLayoutGroup>();
+            if (layout != null)
+            {
+                layout.spacing = spacing;
+            }
+        }
+
+        internal static void AddActionTrayBackground(
+            RectTransform parent,
+            Vector2 padding,
+            float cornerRadius = 32f)
+        {
+            if (parent == null)
+            {
+                return;
+            }
+
+            var shadow = CreateBarBackground(
+                "TrayShadow",
+                parent,
+                ShadowColor,
+                cornerRadius + 2f,
+                padding + new Vector2(2f, 2f),
+                ShadowYOffset);
+            shadow.transform.SetAsFirstSibling();
+
+            var tray = CreateBarBackground(
+                "ActionTray",
+                parent,
+                TrayColor,
+                cornerRadius,
+                padding,
+                0f);
+            tray.transform.SetSiblingIndex(1);
+        }
+
+        internal static Button CreateTextActionButton(
+            Transform parent,
+            string instanceName,
+            string labelText,
+            float width = 112f,
+            float height = 72f,
+            float fontSize = 22f,
+            float cornerRadius = 22f)
+        {
+            var buttonObject = new GameObject(instanceName, typeof(RectTransform), typeof(Button), typeof(LayoutElement));
             var buttonRect = buttonObject.GetComponent<RectTransform>();
             buttonRect.SetParent(parent, false);
             buttonRect.anchorMin = new Vector2(0.5f, 0.5f);
             buttonRect.anchorMax = new Vector2(0.5f, 0.5f);
             buttonRect.pivot = new Vector2(0.5f, 0.5f);
-            buttonRect.sizeDelta = new Vector2(116f, 72f);
+            buttonRect.sizeDelta = new Vector2(width, height);
 
             var layoutElement = buttonObject.GetComponent<LayoutElement>();
-            layoutElement.preferredWidth = 116f;
-            layoutElement.preferredHeight = 72f;
+            layoutElement.preferredWidth = width;
+            layoutElement.preferredHeight = height;
             layoutElement.layoutPriority = 1;
 
+            var background = buttonObject.AddComponent<RoundedRectGraphic>();
+            background.CornerRadius = cornerRadius;
+
             var button = buttonObject.GetComponent<Button>();
-            var backgroundObject = CreateRectObject("Background", buttonRect);
-            var backgroundRect = backgroundObject.GetComponent<RectTransform>();
-            Stretch(backgroundRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
-            var backgroundImage = backgroundObject.AddComponent<Image>();
-            backgroundImage.color = new Color32(53, 125, 97, 255);
-            button.targetGraphic = backgroundImage;
-            ConfigureButtonColors(button);
+            button.targetGraphic = background;
 
             var labelObject = CreateRectObject("Label", buttonRect);
             var labelRect = labelObject.GetComponent<RectTransform>();
-            Stretch(labelRect, Vector2.zero, Vector2.one, new Vector2(8f, 4f), new Vector2(-8f, -4f));
+            Stretch(labelRect, Vector2.zero, Vector2.one, new Vector2(6f, 2f), new Vector2(-6f, -2f));
             var label = labelObject.AddComponent<TextMeshProUGUI>();
-            label.fontSize = 21f;
+            label.font = MiniGameFontProvider.DefaultFont;
+            label.fontSize = fontSize;
             label.fontStyle = FontStyles.Bold;
-            label.color = Color.white;
+            label.color = TextButtonLabelColor;
             label.alignment = TextAlignmentOptions.Center;
             label.enableWordWrapping = false;
             label.raycastTarget = false;
-            label.text = "选关";
-
-            return new ButtonRefs(button, buttonRect, backgroundImage);
+            label.text = labelText;
+            ConfigureTextActionButton(button, label);
+            return button;
         }
 
-        private static void ConfigureButtonColors(Button button)
+        internal static void ConfigureTextActionButton(
+            Button button,
+            TextMeshProUGUI label = null,
+            bool selected = false)
+        {
+            if (button == null)
+            {
+                return;
+            }
+
+            if (button.targetGraphic != null)
+            {
+                button.targetGraphic.color = selected ? SelectedTextButtonColor : TextButtonColor;
+            }
+
+            if (label != null)
+            {
+                label.font = MiniGameFontProvider.DefaultFont;
+                label.fontStyle = FontStyles.Bold;
+                label.color = TextButtonLabelColor;
+            }
+
+            ConfigureTextActionButtonColors(button);
+        }
+
+        internal static void SetTextActionButtonSelected(Button button, bool selected)
+        {
+            if (button != null && button.targetGraphic != null)
+            {
+                button.targetGraphic.color = selected ? SelectedTextButtonColor : TextButtonColor;
+            }
+        }
+
+        private static void ConfigureTextActionButtonColors(Button button)
         {
             var colors = button.colors;
             colors.normalColor = Color.white;
-            colors.highlightedColor = new Color(0.98f, 0.98f, 0.98f, 1f);
-            colors.pressedColor = new Color(0.86f, 0.86f, 0.86f, 1f);
+            colors.highlightedColor = new Color(1f, 0.98f, 0.88f, 1f);
+            colors.pressedColor = new Color(0.84f, 0.89f, 0.76f, 1f);
             colors.selectedColor = colors.highlightedColor;
-            colors.disabledColor = new Color(0.58f, 0.58f, 0.58f, 0.65f);
+            colors.disabledColor = new Color(0.66f, 0.69f, 0.63f, 0.62f);
             colors.colorMultiplier = 1f;
             colors.fadeDuration = 0.08f;
             button.colors = colors;

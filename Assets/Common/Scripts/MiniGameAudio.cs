@@ -17,7 +17,8 @@ namespace HuanYouYu.MiniGameHall
         MatchFail,
         Shuffle,
         Combo,
-        Settle
+        Settle,
+        Collision
     }
 
     [DisallowMultipleComponent]
@@ -170,6 +171,8 @@ namespace HuanYouYu.MiniGameHall
                     return BuildCombo();
                 case MiniGameSfxType.Settle:
                     return BuildSettle();
+                case MiniGameSfxType.Collision:
+                    return BuildCollision();
                 default:
                     return BuildUiTap();
             }
@@ -243,6 +246,16 @@ namespace HuanYouYu.MiniGameHall
                 AddSineSweep(samples, 0.00f, 0.10f, 520f, 700f, 0.19f, 0.005f, 0.78f);
                 AddSineSweep(samples, 0.10f, 0.10f, 680f, 920f, 0.18f, 0.005f, 0.78f);
                 AddSineSweep(samples, 0.20f, 0.14f, 900f, 1260f, 0.17f, 0.005f, 0.78f);
+            });
+        }
+
+        private static AudioClip BuildCollision()
+        {
+            return BuildClip("sfx_collision", 0.11f, delegate(float[] samples)
+            {
+                AddSineSweep(samples, 0f, 0.08f, 520f, 250f, 0.20f, 0.002f, 0.92f);
+                AddSineSweep(samples, 0f, 0.11f, 290f, 180f, 0.12f, 0.002f, 0.96f);
+                AddNoise(samples, 0f, 0.045f, 0.10f, 0.001f, 0.88f);
             });
         }
 

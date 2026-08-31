@@ -1493,14 +1493,18 @@ namespace HuanYouYu.MiniGameHall
             toolLayout.childControlHeight = false;
             toolLayout.childForceExpandWidth = false;
             toolLayout.childForceExpandHeight = false;
+            MiniGameShellBottomBarBuilder.AddActionTrayBackground(toolRow, new Vector2(18f, 10f), 28f);
 
-            undoButton = CreateTextButton("ArrowEscapeUndoButton", toolRow, UiTextCatalog.Get("arrow-escape.action.undo"), new Vector2(126f, 74f), new Color32(87, 123, 178, 255));
-            hintButton = CreateTextButton("ArrowEscapeHintButton", toolRow, UiTextCatalog.Get("common.action.hint"), new Vector2(126f, 74f), new Color32(76, 150, 119, 255));
-            restartButton = CreateTextButton("RestartButton", toolRow, UiTextCatalog.Get("common.action.restart"), new Vector2(126f, 74f), new Color32(191, 128, 76, 255));
+            undoButton = MiniGameShellBottomBarBuilder.CreateTextActionButton(toolRow, "ArrowEscapeUndoButton", UiTextCatalog.Get("arrow-escape.action.undo"), 126f, 74f, 20f);
+            hintButton = MiniGameShellBottomBarBuilder.CreateTextActionButton(toolRow, "ArrowEscapeHintButton", UiTextCatalog.Get("common.action.hint"), 126f, 74f, 20f);
+            restartButton = MiniGameShellBottomBarBuilder.CreateTextActionButton(toolRow, "RestartButton", UiTextCatalog.Get("common.action.restart"), 126f, 74f, 20f);
 
             undoButton.onClick.AddListener(OnUndoClicked);
             hintButton.onClick.AddListener(OnHintClicked);
             restartButton.onClick.AddListener(OnRestartClicked);
+            MiniGameSfxPlayer.Attach(undoButton, MiniGameSfxType.UiTap, 0.9f);
+            MiniGameSfxPlayer.Attach(hintButton, MiniGameSfxType.UiTap, 0.9f);
+            MiniGameSfxPlayer.Attach(restartButton, MiniGameSfxType.UiTap, 0.9f);
         }
 
         private void CreateZoomControl(Transform parent)
@@ -2744,34 +2748,6 @@ namespace HuanYouYu.MiniGameHall
             slider.targetGraphic = handle;
             slider.SetValueWithoutNotify(0f);
             return slider;
-        }
-
-        private static Button CreateTextButton(string name, Transform parent, string text, Vector2 size, Color color)
-        {
-            var buttonObject = new GameObject(name, typeof(RectTransform), typeof(Button), typeof(LayoutElement), typeof(CanvasRenderer), typeof(RoundedRectGraphic));
-            buttonObject.transform.SetParent(parent, false);
-            var rect = buttonObject.GetComponent<RectTransform>();
-            rect.sizeDelta = size;
-            var layout = buttonObject.GetComponent<LayoutElement>();
-            layout.preferredWidth = size.x;
-            layout.preferredHeight = size.y;
-
-            var graphic = buttonObject.GetComponent<RoundedRectGraphic>();
-            graphic.color = color;
-            graphic.CornerRadius = 22f;
-            graphic.raycastTarget = true;
-            var button = buttonObject.GetComponent<Button>();
-            button.targetGraphic = graphic;
-            ConfigureButtonColors(button);
-
-            var label = CreateText("Label", rect, 20f, FontStyles.Bold, Color.white);
-            Stretch(label.rectTransform, Vector2.zero, Vector2.one, new Vector2(8f, 4f), new Vector2(-8f, -4f));
-            label.enableAutoSizing = true;
-            label.fontSizeMin = 13f;
-            label.fontSizeMax = 20f;
-            label.text = text;
-            MiniGameSfxPlayer.Attach(button, MiniGameSfxType.UiTap, 0.9f);
-            return button;
         }
 
         private static void CreateEscapeLane(string name, Transform parent, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot, Vector2 size, Vector2 position)

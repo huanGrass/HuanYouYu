@@ -133,6 +133,9 @@ namespace HuanYouYu.MiniGameHall
         private readonly List<HeaderTagBinding> headerTagButtons = new List<HeaderTagBinding>();
         private readonly List<MiniGameCardViewModel> cachedCards = new List<MiniGameCardViewModel>();
         private HallTab currentTab = HallTab.Favorites;
+        private bool favoritesContentBuilt;
+        private bool allGamesContentBuilt;
+        private bool profileContentBuilt;
         private int selectedHeaderTagIndex;
         private int hallRewardChestCount;
         private ToastRunner toastRunner;
@@ -366,6 +369,7 @@ namespace HuanYouYu.MiniGameHall
                 cachedCards.Add(cards[i]);
             }
 
+            InvalidateAllTabContent();
             RebuildCurrentTab();
         }
 
@@ -379,7 +383,7 @@ namespace HuanYouYu.MiniGameHall
                 return;
             }
 
-            var cardRoot = FindCardRoot(gameId);
+            var cardRoot = FindCardRoot(CurrentContentRoot, gameId);
             if (cardRoot == null)
             {
                 return;
@@ -411,7 +415,20 @@ namespace HuanYouYu.MiniGameHall
                 break;
             }
 
-            RefreshFavoriteBadge(gameId, isFavorite);
+            if (allGamesContentBuilt)
+            {
+                var allGamesCardRoot = FindCardRoot(allGamesContentRoot, gameId);
+                if (allGamesCardRoot != null)
+                {
+                    UpdateFavoriteBadge(allGamesCardRoot, isFavorite, gameId);
+                }
+            }
+
+            favoritesContentBuilt = false;
+            if (currentTab == HallTab.Favorites)
+            {
+                RebuildCurrentTab();
+            }
         }
 
         /// <summary>
@@ -438,9 +455,7 @@ namespace HuanYouYu.MiniGameHall
         /// </summary>
         private void RebuildCurrentTab()
         {
-            ClearChildren(favoritesContentRoot);
-            ClearChildren(allGamesContentRoot);
-            ClearChildren(profileContentRoot);
+            ClearChildren(CurrentContentRoot);
 
             if (currentTab == HallTab.Profile)
             {
@@ -465,17 +480,29 @@ namespace HuanYouYu.MiniGameHall
             }
             else
             {
+                var visibleCards = new List<MiniGameCardViewModel>();
                 for (var i = 0; i < cachedCards.Count; i++)
                 {
                     if (ShouldShowAllGamesCard(cachedCards[i]))
                     {
-                        CreateAllGamesCard(cachedCards[i], allGamesContentRoot);
+                        visibleCards.Add(cachedCards[i]);
                     }
+                }
+
+                if (selectedHeaderTagIndex == 0)
+                {
+                    visibleCards.Sort(CompareLatestCards);
+                }
+
+                for (var i = 0; i < visibleCards.Count; i++)
+                {
+                    CreateAllGamesCard(visibleCards[i], allGamesContentRoot);
                 }
 
                 CreateMoreGamesInProgressCard(allGamesContentRoot);
             }
 
+            SetCurrentTabContentBuilt(true);
             ApplyResponsiveLayout();
             scrollRect.content = CurrentContentRoot;
             UpdateNavSelection();
@@ -508,6 +535,21 @@ namespace HuanYouYu.MiniGameHall
             if (orderCompare != 0)
             {
                 return orderCompare;
+            }
+
+            var leftId = left != null && left.Definition != null ? left.Definition.Id : string.Empty;
+            var rightId = right != null && right.Definition != null ? right.Definition.Id : string.Empty;
+            return string.Compare(leftId, rightId, StringComparison.Ordinal);
+        }
+
+        private static int CompareLatestCards(MiniGameCardViewModel left, MiniGameCardViewModel right)
+        {
+            var leftUpdatedAt = left != null && left.Definition != null ? left.Definition.UpdatedAt : string.Empty;
+            var rightUpdatedAt = right != null && right.Definition != null ? right.Definition.UpdatedAt : string.Empty;
+            var updatedAtCompare = string.Compare(rightUpdatedAt, leftUpdatedAt, StringComparison.Ordinal);
+            if (updatedAtCompare != 0)
+            {
+                return updatedAtCompare;
             }
 
             var leftId = left != null && left.Definition != null ? left.Definition.Id : string.Empty;
@@ -899,7 +941,13 @@ namespace HuanYouYu.MiniGameHall
             profileContentRoot.gameObject.SetActive(tab == HallTab.Profile);
             UpdateHeaderTagBarVisibility();
             HideHeaderMenuPanel();
-            RebuildCurrentTab();
+            if (forceRebuild || !IsCurrentTabContentBuilt())
+            {
+                RebuildCurrentTab();
+                return;
+            }
+
+            ActivateCurrentTabContent();
         }
 
         private void UpdateHeaderTagBarVisibility()
@@ -929,8 +977,54 @@ namespace HuanYouYu.MiniGameHall
             UpdateHeaderTagSelection();
             if (currentTab == HallTab.AllGames)
             {
+                allGamesContentBuilt = false;
                 RebuildCurrentTab();
             }
+        }
+
+        private void InvalidateAllTabContent()
+        {
+            favoritesContentBuilt = false;
+            allGamesContentBuilt = false;
+            profileContentBuilt = false;
+        }
+
+        private bool IsCurrentTabContentBuilt()
+        {
+            switch (currentTab)
+            {
+                case HallTab.AllGames:
+                    return allGamesContentBuilt;
+                case HallTab.Profile:
+                    return profileContentBuilt;
+                default:
+                    return favoritesContentBuilt;
+            }
+        }
+
+        private void SetCurrentTabContentBuilt(bool built)
+        {
+            switch (currentTab)
+            {
+                case HallTab.AllGames:
+                    allGamesContentBuilt = built;
+                    break;
+                case HallTab.Profile:
+                    profileContentBuilt = built;
+                    break;
+                default:
+                    favoritesContentBuilt = built;
+                    break;
+            }
+        }
+
+        private void ActivateCurrentTabContent()
+        {
+            scrollRect.content = CurrentContentRoot;
+            UpdateNavSelection();
+            UpdateHeaderStats();
+            Canvas.ForceUpdateCanvases();
+            scrollRect.verticalNormalizedPosition = 1f;
         }
 
         private void ApplyResponsiveLayout()
@@ -1352,7 +1446,7 @@ namespace HuanYouYu.MiniGameHall
             badge.color = isFavorite ? FavoriteStarActiveColor : FavoriteStarInactiveColor;
         }
 
-        private Transform FindCardRoot(string gameId)
+        private static Transform FindCardRoot(RectTransform contentRoot, string gameId)
         {
             if (string.IsNullOrWhiteSpace(gameId))
             {
@@ -1360,7 +1454,6 @@ namespace HuanYouYu.MiniGameHall
             }
 
             var targetName = gameId + "_Card";
-            var contentRoot = CurrentContentRoot;
             if (contentRoot == null)
             {
                 return null;

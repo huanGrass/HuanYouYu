@@ -48,6 +48,7 @@ namespace HuanYouYu.Editor.MiniGameHall
                     progress.UnlockedLevelCount = entry.LevelCount;
                     changed = true;
                 }
+                changed |= MarkLevelsCompleted(progress, entry.LevelIds);
             }
 
             SaveAndRefresh(loaded, changed, "已开放所有关卡进度。");
@@ -159,6 +160,10 @@ namespace HuanYouYu.Editor.MiniGameHall
                     entry.GameId,
                     Mathf.Clamp(currentLevelIndex, 0, entry.LevelCount - 1),
                     entry.LevelCount);
+                for (var levelIndex = 0; levelIndex < entry.LevelIds.Length; levelIndex++)
+                {
+                    controller.SetLevelCompletion(entry.GameId, entry.LevelIds[levelIndex], 0);
+                }
             }
 
             controller.RefreshHallView();
@@ -177,6 +182,7 @@ namespace HuanYouYu.Editor.MiniGameHall
                 }
 
                 controller.SetLevelProgress(gameId, 0, 1);
+                controller.ClearLevelCompletions(gameId);
             }
 
             var definitions = MiniGameCatalog.GetDefinitions();
@@ -189,6 +195,7 @@ namespace HuanYouYu.Editor.MiniGameHall
                 }
 
                 controller.SetLevelProgress(definition.Id, 0, 1);
+                controller.ClearLevelCompletions(definition.Id);
             }
 
             controller.RefreshHallView();
@@ -236,14 +243,66 @@ namespace HuanYouYu.Editor.MiniGameHall
                 progressLookup[gameId] = progress;
             }
 
-            if (progress.CurrentLevelIndex == 0 && progress.UnlockedLevelCount == 1)
+            var hasLevelProgress = progress.LevelProgress != null && progress.LevelProgress.Count > 0;
+            if (progress.CurrentLevelIndex == 0
+                && progress.UnlockedLevelCount == 1
+                && !hasLevelProgress)
             {
                 return false;
             }
 
             progress.CurrentLevelIndex = 0;
             progress.UnlockedLevelCount = 1;
+            if (progress.LevelProgress == null)
+            {
+                progress.LevelProgress = new List<MiniGameLevelProgressData>();
+            }
+            else
+            {
+                progress.LevelProgress.Clear();
+            }
             return true;
+        }
+
+        private static bool MarkLevelsCompleted(MiniGameProgressData progress, int[] levelIds)
+        {
+            if (progress.LevelProgress == null)
+            {
+                progress.LevelProgress = new List<MiniGameLevelProgressData>();
+            }
+
+            var changed = false;
+            for (var levelIndex = 0; levelIndex < levelIds.Length; levelIndex++)
+            {
+                var levelId = levelIds[levelIndex];
+                MiniGameLevelProgressData levelProgress = null;
+                for (var progressIndex = 0; progressIndex < progress.LevelProgress.Count; progressIndex++)
+                {
+                    var candidate = progress.LevelProgress[progressIndex];
+                    if (candidate != null && candidate.LevelId == levelId)
+                    {
+                        levelProgress = candidate;
+                        break;
+                    }
+                }
+
+                if (levelProgress == null)
+                {
+                    progress.LevelProgress.Add(new MiniGameLevelProgressData
+                    {
+                        LevelId = levelId,
+                        IsCompleted = true,
+                        BestScore = 0
+                    });
+                    changed = true;
+                }
+                else if (!levelProgress.IsCompleted)
+                {
+                    levelProgress.IsCompleted = true;
+                    changed = true;
+                }
+            }
+            return changed;
         }
 
         private static void SaveAndRefresh(MiniGameSaveStore.LoadedState loaded, bool changed, string message)

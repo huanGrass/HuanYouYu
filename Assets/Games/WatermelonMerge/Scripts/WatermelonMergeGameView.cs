@@ -293,6 +293,7 @@ namespace HuanYouYu.MiniGameHall
 
             previewLabel.fontSize = 20f;
             previewLabel.fontStyle = FontStyles.Bold;
+            previewLabel.color = new Color(0.25f, 0.36f, 0.22f, 1f);
             previewLabel.alignment = TextAlignmentOptions.Center;
             previewLabel.enableWordWrapping = false;
             previewLabel.raycastTarget = false;

@@ -6,6 +6,13 @@ using UnityEngine.UI;
 
 namespace HuanYouYu.MiniGameHall
 {
+    internal enum AkariInputMode
+    {
+        Cycle,
+        Bulb,
+        Cross
+    }
+
     public sealed class MiniGameAkariGameView : MiniGameBase
     {
         public const string GameIdConstant = "akari";
@@ -25,11 +32,13 @@ namespace HuanYouYu.MiniGameHall
         private static readonly Color ConflictTextColor = new Color(1f, 0.36f, 0.30f, 1f);
         private static readonly Color SatisfiedTextColor = new Color(0.58f, 0.92f, 0.45f, 1f);
         private static readonly Color StatusTextColor = new Color(0.42f, 0.34f, 0.18f, 1f);
+        private static readonly Color CrossColor = new Color(0.40f, 0.37f, 0.29f, 0.88f);
 
         private readonly List<Button> cellButtons = new List<Button>();
         private readonly List<RoundedRectGraphic> cellBackgrounds = new List<RoundedRectGraphic>();
         private readonly List<TextMeshProUGUI> cellLabels = new List<TextMeshProUGUI>();
         private readonly List<AkariBulbView> cellBulbs = new List<AkariBulbView>();
+        private readonly List<GameObject> cellCrosses = new List<GameObject>();
 
         private TextMeshProUGUI titleLabel;
         private TextMeshProUGUI scoreLabel;
@@ -37,6 +46,9 @@ namespace HuanYouYu.MiniGameHall
         private TextMeshProUGUI statusLabel;
         private MiniGameDropdown difficultyDropdown;
         private MiniGameDropdown gridSizeDropdown;
+        private Button cycleModeButton;
+        private Button bulbModeButton;
+        private Button crossModeButton;
         private Button restartButton;
         private RectTransform boardPanel;
         private GridLayoutGroup boardLayout;
@@ -45,12 +57,14 @@ namespace HuanYouYu.MiniGameHall
         private AkariPuzzle currentPuzzle;
         private AkariEvaluation currentEvaluation;
         private bool[] playerBulbs;
+        private bool[] playerCrosses;
         private int currentQuestionNumber;
         private int score;
         private int completedPuzzleCount;
         private int moveCount;
         private int selectedDifficultyOption;
         private int selectedGridSizeOption;
+        private AkariInputMode inputMode;
         private bool isTransitioning;
 
         public MiniGameAkariGameView(
@@ -75,7 +89,25 @@ namespace HuanYouYu.MiniGameHall
             var bottomContainerRefs = MiniGameShellBottomBarBuilder.CreateBottomContainer(
                 Shell.BottomHost,
                 MiniGameShellBottomBarBuilder.CreateDefaultContainerConfig("AkariActions"));
+            MiniGameShellBottomBarBuilder.ConfigureTextActionBar(bottomContainerRefs.ActionBar);
+            cycleModeButton = MiniGameShellBottomBarBuilder.CreateTextActionButton(
+                bottomContainerRefs.ActionBar,
+                "AkariCycleModeButton",
+                UiTextCatalog.Get("akari.button.mode_cycle"));
+            bulbModeButton = MiniGameShellBottomBarBuilder.CreateTextActionButton(
+                bottomContainerRefs.ActionBar,
+                "AkariBulbModeButton",
+                UiTextCatalog.Get("akari.button.mode_bulb"));
+            crossModeButton = MiniGameShellBottomBarBuilder.CreateTextActionButton(
+                bottomContainerRefs.ActionBar,
+                "AkariCrossModeButton",
+                UiTextCatalog.Get("akari.button.mode_cross"));
             restartButton = MiniGameShellBottomBarBuilder.CreateRestartButton(bottomContainerRefs.ActionBar).Button;
+
+            cycleModeButton.onClick.AddListener(delegate { SetInputMode(AkariInputMode.Cycle); });
+            bulbModeButton.onClick.AddListener(delegate { SetInputMode(AkariInputMode.Bulb); });
+            crossModeButton.onClick.AddListener(delegate { SetInputMode(AkariInputMode.Cross); });
+            SetInputMode(AkariInputMode.Cycle);
 
             if (restartButton != null)
             {
@@ -90,6 +122,9 @@ namespace HuanYouYu.MiniGameHall
                 statusLabel == null ||
                 difficultyDropdown == null ||
                 gridSizeDropdown == null ||
+                cycleModeButton == null ||
+                bulbModeButton == null ||
+                crossModeButton == null ||
                 restartButton == null ||
                 boardPanel == null ||
                 boardLayout == null)
@@ -124,6 +159,21 @@ namespace HuanYouYu.MiniGameHall
             if (restartButton != null)
             {
                 restartButton.onClick.RemoveListener(OnRestartClicked);
+            }
+
+            if (cycleModeButton != null)
+            {
+                cycleModeButton.onClick.RemoveAllListeners();
+            }
+
+            if (bulbModeButton != null)
+            {
+                bulbModeButton.onClick.RemoveAllListeners();
+            }
+
+            if (crossModeButton != null)
+            {
+                crossModeButton.onClick.RemoveAllListeners();
             }
 
             if (difficultyDropdown != null)
@@ -404,6 +454,7 @@ namespace HuanYouYu.MiniGameHall
                 ResolveSelectedDifficulty(),
                 random);
             playerBulbs = new bool[currentPuzzle.Cells.Length];
+            playerCrosses = new bool[currentPuzzle.Cells.Length];
             moveCount = 0;
             isTransitioning = false;
             RebuildBoardIfNeeded();
@@ -434,6 +485,7 @@ namespace HuanYouYu.MiniGameHall
             cellBackgrounds.Clear();
             cellLabels.Clear();
             cellBulbs.Clear();
+            cellCrosses.Clear();
 
             for (var i = 0; i < currentPuzzle.Cells.Length; i++)
             {
@@ -504,21 +556,77 @@ namespace HuanYouYu.MiniGameHall
             bulbGraphic.Build();
             bulbObject.SetActive(false);
 
+            var crossObject = CreateCross(cellRect);
+            crossObject.SetActive(false);
+
             cellButtons.Add(button);
             cellBackgrounds.Add(background);
             cellLabels.Add(label);
             cellBulbs.Add(bulbGraphic);
+            cellCrosses.Add(crossObject);
+        }
+
+        private static GameObject CreateCross(Transform parent)
+        {
+            var crossObject = CreateRectObject("Cross", parent);
+            var crossRect = crossObject.GetComponent<RectTransform>();
+            Stretch(crossRect, Vector2.zero, Vector2.one, new Vector2(8f, 8f), new Vector2(-8f, -8f));
+
+            CreateCrossStroke("StrokeA", crossRect, 45f);
+            CreateCrossStroke("StrokeB", crossRect, -45f);
+            return crossObject;
+        }
+
+        private static void CreateCrossStroke(string name, Transform parent, float rotation)
+        {
+            var strokeObject = CreateRectObject(name, parent);
+            var stroke = strokeObject.AddComponent<RoundedRectGraphic>();
+            stroke.color = CrossColor;
+            stroke.CornerRadius = 4f;
+            stroke.raycastTarget = false;
+            var strokeRect = stroke.rectTransform;
+            Stretch(strokeRect, new Vector2(0.44f, 0.12f), new Vector2(0.56f, 0.88f), Vector2.zero, Vector2.zero);
+            strokeRect.localEulerAngles = new Vector3(0f, 0f, rotation);
         }
 
         private void HandleCellClicked(int index)
         {
-            if (isTransitioning || currentPuzzle == null || playerBulbs == null || currentPuzzle.Cells[index] != AkariCellKind.White)
+            if (isTransitioning || currentPuzzle == null || playerBulbs == null || playerCrosses == null || currentPuzzle.Cells[index] != AkariCellKind.White)
             {
                 return;
             }
 
             MiniGameSfxPlayer.Play(MiniGameSfxType.UiTap, 0.88f);
-            playerBulbs[index] = !playerBulbs[index];
+            switch (inputMode)
+            {
+                case AkariInputMode.Bulb:
+                    var shouldPlaceBulb = !playerBulbs[index];
+                    playerBulbs[index] = shouldPlaceBulb;
+                    playerCrosses[index] = false;
+                    break;
+                case AkariInputMode.Cross:
+                    var shouldPlaceCross = !playerCrosses[index];
+                    playerBulbs[index] = false;
+                    playerCrosses[index] = shouldPlaceCross;
+                    break;
+                default:
+                    if (playerBulbs[index])
+                    {
+                        playerBulbs[index] = false;
+                        playerCrosses[index] = true;
+                    }
+                    else if (playerCrosses[index])
+                    {
+                        playerCrosses[index] = false;
+                    }
+                    else
+                    {
+                        playerBulbs[index] = true;
+                    }
+
+                    break;
+            }
+
             moveCount++;
             RefreshAll(UiTextCatalog.Get("akari.status.playing"));
             if (currentEvaluation != null && currentEvaluation.IsSolved)
@@ -595,7 +703,7 @@ namespace HuanYouYu.MiniGameHall
 
         private void RefreshBoard()
         {
-            if (currentPuzzle == null || playerBulbs == null || currentEvaluation == null)
+            if (currentPuzzle == null || playerBulbs == null || playerCrosses == null || currentEvaluation == null)
             {
                 return;
             }
@@ -626,6 +734,11 @@ namespace HuanYouYu.MiniGameHall
                 {
                     cellBulbs[i].gameObject.SetActive(isBulb);
                     cellBulbs[i].SetColor(isBulbConflict ? new Color(0.55f, 0.08f, 0.07f, 1f) : new Color(0.06f, 0.07f, 0.06f, 1f));
+                }
+
+                if (cellCrosses[i] != null)
+                {
+                    cellCrosses[i].SetActive(isWhite && playerCrosses[i]);
                 }
 
                 if (cellButtons[i] != null)
@@ -728,6 +841,24 @@ namespace HuanYouYu.MiniGameHall
         private void OnRestartClicked()
         {
             MiniGameSfxPlayer.Play(MiniGameSfxType.UiTap, 0.95f);
+            if (moveCount <= 0)
+            {
+                RestartPuzzle();
+                return;
+            }
+
+            Shell.ShowConfirmPopup(
+                UiTextCatalog.Get("akari.confirm.restart.title"),
+                UiTextCatalog.Get("akari.confirm.restart.message"),
+                UiTextCatalog.Get("akari.confirm.restart.confirm"),
+                UiTextCatalog.Get("common.action.cancel"),
+                ResumeFromPause,
+                RestartPuzzle);
+        }
+
+        private void RestartPuzzle()
+        {
+            Shell.ClosePopup();
             StartPuzzle(Mathf.Max(1, currentQuestionNumber));
         }
 
@@ -762,6 +893,14 @@ namespace HuanYouYu.MiniGameHall
                 ChestCount = completedPuzzleCount,
                 Summary = UiTextCatalog.Format("akari.settlement.summary", completedPuzzleCount, score)
             };
+        }
+
+        private void SetInputMode(AkariInputMode mode)
+        {
+            inputMode = mode;
+            MiniGameShellBottomBarBuilder.SetTextActionButtonSelected(cycleModeButton, mode == AkariInputMode.Cycle);
+            MiniGameShellBottomBarBuilder.SetTextActionButtonSelected(bulbModeButton, mode == AkariInputMode.Bulb);
+            MiniGameShellBottomBarBuilder.SetTextActionButtonSelected(crossModeButton, mode == AkariInputMode.Cross);
         }
 
         private static GameObject CreateRectObject(string name, Transform parent)
@@ -875,6 +1014,7 @@ namespace HuanYouYu.MiniGameHall
             currentPuzzle = puzzle;
             currentQuestionNumber = puzzle != null ? puzzle.QuestionNumber : 1;
             playerBulbs = bulbs != null ? bulbs : new bool[puzzle != null && puzzle.Cells != null ? puzzle.Cells.Length : 0];
+            playerCrosses = new bool[playerBulbs.Length];
             moveCount = 0;
             isTransitioning = false;
             RebuildBoardIfNeeded();

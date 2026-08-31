@@ -41,12 +41,36 @@
       "value": "灯泡 {0}/{1} · 操作 {2}"
     },
     {
+      "key": "akari.button.mode_cycle",
+      "value": "切换"
+    },
+    {
+      "key": "akari.button.mode_bulb",
+      "value": "点灯"
+    },
+    {
+      "key": "akari.button.mode_cross",
+      "value": "打叉"
+    },
+    {
       "key": "akari.status.playing",
-      "value": "点击白格放置或移除灯泡。红色数字表示未满足，绿色数字表示已满足。"
+      "value": "选择操作模式后点击白格。红色数字表示未满足，绿色数字表示已满足。"
     },
     {
       "key": "akari.status.solved",
       "value": "本题完成，获得 {0} 分。"
+    },
+    {
+      "key": "akari.confirm.restart.title",
+      "value": "确认重新开始"
+    },
+    {
+      "key": "akari.confirm.restart.message",
+      "value": "当前题目已有操作，重新开始后会清空所有灯泡和叉号。"
+    },
+    {
+      "key": "akari.confirm.restart.confirm",
+      "value": "重新开始"
     },
     {
       "key": "akari.settlement.score",

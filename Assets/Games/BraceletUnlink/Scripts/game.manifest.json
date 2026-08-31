@@ -1,0 +1,9 @@
+﻿{
+  "gameId": "bracelet-unlink",
+  "nameKey": "game.bracelet-unlink.name",
+  "descriptionKey": "game.bracelet-unlink.description",
+  "isPlayable": true,
+  "statusLabelKey": "status.playable",
+  "updatedAt": "2026-08-31",
+  "category": "puzzle"
+}

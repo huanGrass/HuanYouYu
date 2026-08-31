@@ -213,7 +213,6 @@ namespace HuanYouYu.MiniGameHall
                 var segment = segmentObject.GetComponent<WaterLayerGraphic>();
                 segment.raycastTarget = false;
                 segment.WaveAmplitude = 0f;
-                segment.WavePhase = 0f;
                 segments[i] = segment;
             }
 
@@ -545,33 +544,6 @@ namespace HuanYouYu.MiniGameHall
             }
         }
 
-        private void AdvanceIdleWater(float deltaTime)
-        {
-            if (bottleViews.Count == 0)
-            {
-                return;
-            }
-
-            for (var i = 0; i < bottleViews.Count; i++)
-            {
-                var view = bottleViews[i];
-                if (view == null || view.Segments == null)
-                {
-                    continue;
-                }
-
-                for (var segmentIndex = 0; segmentIndex < view.Segments.Length; segmentIndex++)
-                {
-                    var segment = view.Segments[segmentIndex];
-                    if (segment != null && segment.gameObject.activeSelf)
-                    {
-                        segment.WavePhase += deltaTime * (activePourAnimations.Count > 0 ? 8f : 2.2f);
-                        segment.SetVerticesDirty();
-                    }
-                }
-            }
-        }
-
         private void ClearBottleViews()
         {
             for (var i = 0; i < bottleViews.Count; i++)
@@ -783,8 +755,6 @@ namespace HuanYouYu.MiniGameHall
             private float topClipY;
 
             public float WaveAmplitude { get; set; }
-
-            public float WavePhase { get; set; }
 
             public float SurfaceInset { get; set; }
 

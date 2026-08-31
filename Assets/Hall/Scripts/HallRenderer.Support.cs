@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,54 +8,29 @@ namespace HuanYouYu.MiniGameHall
     internal sealed partial class HallRenderer
     {
         private const string SupportTitleKey = "hall.support.title";
-        private const string SupportUnconfiguredKey = "hall.support.status.unconfigured";
-        private const string SupportEditorOnlyKey = "hall.support.status.wechat_only";
-        private const string SupportReadyKey = "hall.support.status.ready";
-        private const string SupportLoadingKey = "hall.support.status.loading";
-        private const string SupportShowingKey = "hall.support.status.showing";
-        private const string SupportNativeTemplateVisibleKey = "hall.support.status.native_template_visible";
         private const string SupportRewardSuccessKey = "hall.support.result.success";
         private const string SupportRewardIncompleteKey = "hall.support.result.incomplete";
         private const string SupportRewardErrorKey = "hall.support.result.error";
         private const string SupportResultPopupResourcePath = "MiniGamePopup";
+        private const int SupportNativeTemplateAdBottomOffset = 168;
 
-        private enum SupportAdTab
-        {
-            RewardedVideo,
-            NativeTemplate,
-            Interstitial
-        }
-
-        private sealed class SupportTabBinding
-        {
-            public SupportAdTab Tab;
-            public Button Button;
-            public RoundedRectGraphic Graphic;
-            public TextMeshProUGUI Label;
-            public LayoutElement LayoutElement;
-            public RectTransform RectTransform;
-        }
-
-        private readonly List<SupportTabBinding> supportTabBindings = new List<SupportTabBinding>();
         private HallAdConfig hallAdConfig;
-        private SupportAdTab activeSupportTab = SupportAdTab.RewardedVideo;
-        private TextMeshProUGUI supportDescriptionText;
-        private TextMeshProUGUI supportStatusText;
-        private TextMeshProUGUI supportActionLabel;
-        private Button supportActionButton;
-        private RectTransform supportNativeTemplateSlot;
+        private Button supportRewardedVideoButton;
+        private Button supportInterstitialButton;
         private WeChatWASM.WXCustomAd supportNativeTemplateAd;
         private WeChatWASM.WXInterstitialAd supportInterstitialAd;
         private WeChatWASM.WXRewardedVideoAd supportRewardedVideoAd;
         private GameObject supportResultPopupRoot;
         private bool supportAdOperationPending;
         private bool supportRewardHandled;
+        private bool supportNativeTemplateLoading;
 
         private void ShowSupportAuthorPopup()
         {
             CloseActiveModal();
             hallAdConfig = HallAdConfig.Load();
             activeModalRoot = CreateSupportAuthorPopup();
+            ShowSupportNativeTemplate();
         }
 
         private GameObject CreateSupportAuthorPopup()
@@ -74,7 +48,6 @@ namespace HuanYouYu.MiniGameHall
             title.color = new Color(0.32f, 0.42f, 0.19f, 1f);
             ConfigureRect(title.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -48f), new Vector2(420f, 58f));
 
-            CreateSupportTabBar(dialog);
             CreateSupportContent(dialog);
 
             var closeButton = CreateDialogButton(
@@ -87,7 +60,7 @@ namespace HuanYouYu.MiniGameHall
             ConfigureRect(closeButton.GetComponent<RectTransform>(), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 60f), new Vector2(210f, 58f));
             closeButton.transform.Find("Label").GetComponent<TextMeshProUGUI>().color = new Color(0.25f, 0.34f, 0.12f, 1f);
 
-            SelectSupportTab(SupportAdTab.RewardedVideo);
+            RefreshSupportActionState();
             return modal;
         }
 
@@ -152,252 +125,79 @@ namespace HuanYouYu.MiniGameHall
                 new Vector2(14f, 14f));
         }
 
-        private void CreateSupportTabBar(Transform dialog)
-        {
-            supportTabBindings.Clear();
-            var tabBar = new GameObject(
-                "TabBar",
-                typeof(RectTransform),
-                typeof(CanvasRenderer),
-                typeof(RoundedRectGraphic),
-                typeof(HorizontalLayoutGroup));
-            tabBar.transform.SetParent(dialog, false);
-            var tabBarRect = tabBar.GetComponent<RectTransform>();
-            tabBarRect.anchorMin = new Vector2(0.5f, 1f);
-            tabBarRect.anchorMax = new Vector2(0.5f, 1f);
-            tabBarRect.pivot = new Vector2(0.5f, 1f);
-            tabBarRect.anchoredPosition = new Vector2(0f, -104f);
-            tabBarRect.sizeDelta = new Vector2(588f, 54f);
-
-            var background = tabBar.GetComponent<RoundedRectGraphic>();
-            background.color = new Color(1f, 0.98f, 0.88f, 0.88f);
-            background.CornerRadius = 22f;
-            background.raycastTarget = false;
-
-            var layout = tabBar.GetComponent<HorizontalLayoutGroup>();
-            layout.padding = new RectOffset(10, 10, 7, 7);
-            layout.spacing = 8f;
-            layout.childAlignment = TextAnchor.MiddleCenter;
-            layout.childControlWidth = false;
-            layout.childControlHeight = false;
-            layout.childForceExpandWidth = false;
-            layout.childForceExpandHeight = false;
-
-            CreateSupportTab(tabBar.transform, "Tab_RewardedVideo", SupportAdTab.RewardedVideo, "hall.support.tab.rewarded");
-            CreateSupportTab(tabBar.transform, "Tab_NativeTemplate", SupportAdTab.NativeTemplate, "hall.support.tab.native_template");
-            CreateSupportTab(tabBar.transform, "Tab_Interstitial", SupportAdTab.Interstitial, "hall.support.tab.interstitial");
-        }
-
-        private void CreateSupportTab(Transform parent, string name, SupportAdTab tab, string textKey)
-        {
-            var tabObject = new GameObject(
-                name,
-                typeof(RectTransform),
-                typeof(CanvasRenderer),
-                typeof(RoundedRectGraphic),
-                typeof(Button),
-                typeof(LayoutElement));
-            tabObject.transform.SetParent(parent, false);
-            var tabRect = tabObject.GetComponent<RectTransform>();
-            tabRect.sizeDelta = new Vector2(168f, 40f);
-
-            var layoutElement = tabObject.GetComponent<LayoutElement>();
-            layoutElement.preferredWidth = 168f;
-            layoutElement.preferredHeight = 40f;
-
-            var graphic = tabObject.GetComponent<RoundedRectGraphic>();
-            graphic.CornerRadius = 18f;
-            graphic.raycastTarget = true;
-
-            var button = tabObject.GetComponent<Button>();
-            button.transition = Selectable.Transition.None;
-            button.targetGraphic = graphic;
-            button.onClick.AddListener(delegate { SelectSupportTab(tab); });
-            MiniGameSfxPlayer.Attach(button, MiniGameSfxType.UiTap, 0.66f);
-
-            var label = CreateButtonLabel("Label", UiTextCatalog.Get(textKey), 22f);
-            label.transform.SetParent(tabObject.transform, false);
-            label.enableAutoSizing = true;
-            label.fontSizeMin = 17f;
-            label.fontSizeMax = 22f;
-            Stretch(label.rectTransform, Vector2.zero, Vector2.one, new Vector2(8f, 0f), new Vector2(-8f, 0f));
-
-            supportTabBindings.Add(new SupportTabBinding
-            {
-                Tab = tab,
-                Button = button,
-                Graphic = graphic,
-                Label = label,
-                LayoutElement = layoutElement,
-                RectTransform = tabRect
-            });
-        }
-
         private void CreateSupportContent(Transform dialog)
         {
-            var content = CreatePopupPanel(dialog, "Content", new Vector2(588f, 420f));
+            var content = CreatePopupPanel(dialog, "Content", new Vector2(588f, 400f));
             content.anchorMin = new Vector2(0.5f, 1f);
             content.anchorMax = new Vector2(0.5f, 1f);
             content.pivot = new Vector2(0.5f, 1f);
-            content.anchoredPosition = new Vector2(0f, -178f);
+            content.anchoredPosition = new Vector2(0f, -132f);
             content.GetComponent<RoundedRectGraphic>().color = new Color(1f, 0.97f, 0.88f, 1f);
             content.GetComponent<Shadow>().effectColor = new Color(0.31f, 0.27f, 0.17f, 0.10f);
 
-            var descriptionBackdrop = CreateRoundedRect(
-                "DescriptionBackdrop",
+            CreateSupportAdDescription(
                 content,
-                new Color(1f, 1f, 0.97f, 0.78f),
-                18f,
-                false);
-            ConfigureRect(
-                descriptionBackdrop.GetComponent<RectTransform>(),
-                new Vector2(0.5f, 1f),
-                new Vector2(0.5f, 1f),
-                new Vector2(0f, -74f),
-                new Vector2(526f, 132f));
-
-            supportDescriptionText = CreatePopupText("Description", string.Empty, 25f, FontStyles.Normal, TextAlignmentOptions.TopLeft);
-            supportDescriptionText.transform.SetParent(content, false);
-            supportDescriptionText.enableWordWrapping = true;
-            supportDescriptionText.overflowMode = TextOverflowModes.Overflow;
-            supportDescriptionText.color = new Color(0.35f, 0.31f, 0.20f, 1f);
-            ConfigureRect(supportDescriptionText.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -74f), new Vector2(482f, 108f));
-
-            supportNativeTemplateSlot = CreatePopupPanel(content, "NativeTemplateSlot", new Vector2(510f, 126f));
-            supportNativeTemplateSlot.anchoredPosition = new Vector2(0f, -22f);
-            supportNativeTemplateSlot.GetComponent<RoundedRectGraphic>().color = new Color(0.91f, 0.86f, 0.72f, 1f);
-            var nativeTemplateHint = CreatePopupText("Hint", UiTextCatalog.Get("hall.support.native_template.placeholder"), 21f, FontStyles.Normal, TextAlignmentOptions.Center);
-            nativeTemplateHint.transform.SetParent(supportNativeTemplateSlot, false);
-            Stretch(nativeTemplateHint.rectTransform, Vector2.zero, Vector2.one, new Vector2(12f, 8f), new Vector2(-12f, -8f));
-
-            var statusBackdrop = CreateRoundedRect(
-                "StatusBackdrop",
+                "RewardedVideoDescription",
+                "hall.support.description.rewarded",
+                new Vector2(0f, -52f));
+            supportRewardedVideoButton = CreateDialogButton(
+                "RewardedVideoButton",
                 content,
-                new Color(0.82f, 0.89f, 0.46f, 0.42f),
-                16f,
-                false);
-            ConfigureRect(
-                statusBackdrop.GetComponent<RectTransform>(),
-                new Vector2(0.5f, 0f),
-                new Vector2(0.5f, 0f),
-                new Vector2(0f, 118f),
-                new Vector2(500f, 52f));
-
-            supportStatusText = CreatePopupText("Status", string.Empty, 21f, FontStyles.Bold, TextAlignmentOptions.Center);
-            supportStatusText.transform.SetParent(content, false);
-            supportStatusText.enableWordWrapping = true;
-            supportStatusText.color = new Color(0.32f, 0.42f, 0.19f, 1f);
-            ConfigureRect(supportStatusText.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 118f), new Vector2(476f, 48f));
-
-            supportActionButton = CreateDialogButton(
-                "ActionButton",
-                content,
-                string.Empty,
-                new Vector2(300f, 64f),
+                UiTextCatalog.Get("hall.support.action.rewarded"),
+                new Vector2(420f, 64f),
                 new Color(0.98f, 0.78f, 0.30f, 1f),
-                HandleSupportActionClicked);
-            ConfigureRect(supportActionButton.GetComponent<RectTransform>(), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 58f), new Vector2(300f, 64f));
-            supportActionLabel = supportActionButton.transform.Find("Label")?.GetComponent<TextMeshProUGUI>();
-            if (supportActionLabel != null)
-            {
-                supportActionLabel.color = Color.white;
-            }
+                ShowSupportRewardedVideo);
+            ConfigureRect(supportRewardedVideoButton.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -122f), new Vector2(420f, 64f));
+
+            CreateSupportAdDescription(
+                content,
+                "InterstitialDescription",
+                "hall.support.description.interstitial",
+                new Vector2(0f, -212f));
+            supportInterstitialButton = CreateDialogButton(
+                "InterstitialButton",
+                content,
+                UiTextCatalog.Get("hall.support.action.interstitial"),
+                new Vector2(420f, 64f),
+                new Color(0.98f, 0.78f, 0.30f, 1f),
+                ShowSupportInterstitial);
+            ConfigureRect(supportInterstitialButton.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -282f), new Vector2(420f, 64f));
+
         }
 
-        private void SelectSupportTab(SupportAdTab tab)
+        private void CreateSupportAdDescription(Transform parent, string name, string textKey, Vector2 position)
         {
-            if (supportAdOperationPending)
-            {
-                return;
-            }
-
-            if (activeSupportTab == SupportAdTab.NativeTemplate && tab != SupportAdTab.NativeTemplate)
-            {
-                HideAndDestroyNativeTemplateAd();
-            }
-
-            activeSupportTab = tab;
-            for (var i = 0; i < supportTabBindings.Count; i++)
-            {
-                var binding = supportTabBindings[i];
-                var selected = binding.Tab == tab;
-                binding.Graphic.color = selected
-                    ? new Color(1f, 0.62f, 0.14f, 1f)
-                    : new Color(1f, 1f, 0.96f, 0.95f);
-                binding.Label.color = selected ? Color.white : new Color(0.32f, 0.42f, 0.19f, 1f);
-
-                var width = selected ? 184f : 168f;
-                binding.LayoutElement.preferredWidth = width;
-                binding.RectTransform.sizeDelta = new Vector2(width, 40f);
-            }
-
-            if (supportDescriptionText != null)
-            {
-                supportDescriptionText.text = UiTextCatalog.Get(GetSupportDescriptionKey(tab));
-            }
-
-            if (supportActionLabel != null)
-            {
-                supportActionLabel.text = UiTextCatalog.Get(GetSupportActionKey(tab));
-            }
-
-            if (supportNativeTemplateSlot != null)
-            {
-                supportNativeTemplateSlot.gameObject.SetActive(tab == SupportAdTab.NativeTemplate);
-            }
-
-            RefreshSupportActionState();
+            var description = CreatePopupText(name, UiTextCatalog.Get(textKey), 18f, FontStyles.Normal, TextAlignmentOptions.Center);
+            description.transform.SetParent(parent, false);
+            description.enableWordWrapping = true;
+            description.color = new Color(0.35f, 0.31f, 0.20f, 1f);
+            ConfigureRect(description.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), position, new Vector2(490f, 58f));
         }
 
         private void RefreshSupportActionState()
         {
-            if (supportActionButton == null || supportStatusText == null)
-            {
-                return;
-            }
-
-            var adUnitId = GetSupportAdUnitId(activeSupportTab);
-            var configured = !string.IsNullOrWhiteSpace(adUnitId);
             var supportedEnvironment = !Application.isEditor;
-            supportActionButton.interactable = configured && supportedEnvironment && !supportAdOperationPending;
-
-            if (!configured)
+            var available = supportedEnvironment && !supportAdOperationPending;
+            if (supportRewardedVideoButton != null)
             {
-                supportStatusText.text = UiTextCatalog.Get(SupportUnconfiguredKey);
-            }
-            else if (!supportedEnvironment)
-            {
-                supportStatusText.text = UiTextCatalog.Get(SupportEditorOnlyKey);
-            }
-            else if (!supportAdOperationPending)
-            {
-                supportStatusText.text = UiTextCatalog.Get(SupportReadyKey);
-            }
-        }
-
-        private void HandleSupportActionClicked()
-        {
-            if (supportAdOperationPending || string.IsNullOrWhiteSpace(GetSupportAdUnitId(activeSupportTab)))
-            {
-                return;
+                supportRewardedVideoButton.interactable = available && !string.IsNullOrWhiteSpace(hallAdConfig?.RewardedVideoAdUnitId);
             }
 
-            switch (activeSupportTab)
+            if (supportInterstitialButton != null)
             {
-                case SupportAdTab.NativeTemplate:
-                    ShowSupportNativeTemplate();
-                    break;
-                case SupportAdTab.Interstitial:
-                    ShowSupportInterstitial();
-                    break;
-                default:
-                    ShowSupportRewardedVideo();
-                    break;
+                supportInterstitialButton.interactable = available && !string.IsNullOrWhiteSpace(hallAdConfig?.InterstitialAdUnitId);
             }
         }
 
         private void ShowSupportNativeTemplate()
         {
+            if (supportNativeTemplateAd != null || supportNativeTemplateLoading ||
+                !IsSupportPopupActive() || Application.isEditor ||
+                string.IsNullOrWhiteSpace(hallAdConfig?.NativeTemplateAdUnitId))
+            {
+                return;
+            }
+
             try
             {
                 HideAndDestroyNativeTemplateAd();
@@ -409,34 +209,30 @@ namespace HuanYouYu.MiniGameHall
                     style = style,
                     styleRaw = JsonUtility.ToJson(style)
                 });
-                supportAdOperationPending = true;
-                SetSupportStatus(SupportLoadingKey);
+                supportNativeTemplateLoading = true;
                 supportNativeTemplateAd.OnError(delegate(WeChatWASM.WXADErrorResponse response)
                 {
-                    if (!IsSupportOperationActive())
+                    if (!IsSupportPopupActive())
                     {
                         return;
                     }
 
-                    supportAdOperationPending = false;
+                    supportNativeTemplateLoading = false;
                     HideAndDestroyNativeTemplateAd();
-                    ShowSupportResult(SupportRewardErrorKey, false);
                 });
                 supportNativeTemplateAd.OnClose(delegate
                 {
-                    supportAdOperationPending = false;
+                    supportNativeTemplateLoading = false;
                     DestroySupportNativeTemplateAd();
-                    SetSupportStatus(SupportReadyKey);
                 });
                 supportNativeTemplateAd.OnHide(delegate
                 {
-                    supportAdOperationPending = false;
+                    supportNativeTemplateLoading = false;
                     DestroySupportNativeTemplateAd();
-                    SetSupportStatus(SupportReadyKey);
                 });
                 supportNativeTemplateAd.OnLoad(delegate
                 {
-                    if (!IsSupportOperationActive())
+                    if (!IsSupportPopupActive())
                     {
                         HideAndDestroyNativeTemplateAd();
                         return;
@@ -445,32 +241,30 @@ namespace HuanYouYu.MiniGameHall
                     supportNativeTemplateAd?.Show(
                         delegate
                         {
-                            supportAdOperationPending = false;
-                            RefreshSupportActionState();
-                            if (supportStatusText != null)
-                            {
-                                supportStatusText.text = UiTextCatalog.Get(SupportNativeTemplateVisibleKey);
-                            }
+                            supportNativeTemplateLoading = false;
                         },
                         delegate
                         {
-                            supportAdOperationPending = false;
+                            supportNativeTemplateLoading = false;
                             HideAndDestroyNativeTemplateAd();
-                            ShowSupportResult(SupportRewardErrorKey, false);
                         });
                 });
             }
             catch (Exception exception)
             {
                 Debug.LogWarning("原生模板广告创建失败: " + exception.Message);
-                supportAdOperationPending = false;
+                supportNativeTemplateLoading = false;
                 HideAndDestroyNativeTemplateAd();
-                ShowSupportResult(SupportRewardErrorKey, false);
             }
         }
 
         private void ShowSupportInterstitial()
         {
+            if (supportAdOperationPending || string.IsNullOrWhiteSpace(hallAdConfig?.InterstitialAdUnitId))
+            {
+                return;
+            }
+
             try
             {
                 DestroySupportInterstitial();
@@ -479,12 +273,10 @@ namespace HuanYouYu.MiniGameHall
                     adUnitId = hallAdConfig.InterstitialAdUnitId
                 });
                 supportAdOperationPending = true;
-                SetSupportStatus(SupportLoadingKey);
                 supportInterstitialAd.OnClose(delegate
                 {
                     supportAdOperationPending = false;
                     DestroySupportInterstitial();
-                    SetSupportStatus(SupportReadyKey);
                     RefreshSupportActionState();
                 });
                 supportInterstitialAd.OnError(delegate(WeChatWASM.WXADErrorResponse response)
@@ -499,7 +291,7 @@ namespace HuanYouYu.MiniGameHall
                     ShowSupportResult(SupportRewardErrorKey, false);
                 });
                 supportInterstitialAd.Show(
-                    delegate { SetSupportStatus(SupportShowingKey); },
+                    delegate { },
                     delegate
                     {
                         if (!IsSupportOperationActive())
@@ -516,7 +308,7 @@ namespace HuanYouYu.MiniGameHall
                                 }
 
                                 supportInterstitialAd?.Show(
-                                    delegate { SetSupportStatus(SupportShowingKey); },
+                                    delegate { },
                                     delegate { CompleteSupportAdError(); });
                             },
                             delegate { CompleteSupportAdError(); });
@@ -531,14 +323,18 @@ namespace HuanYouYu.MiniGameHall
 
         private void ShowSupportRewardedVideo()
         {
+            if (supportAdOperationPending || string.IsNullOrWhiteSpace(hallAdConfig?.RewardedVideoAdUnitId))
+            {
+                return;
+            }
+
             try
             {
                 EnsureSupportRewardedVideoAd();
                 supportAdOperationPending = true;
                 supportRewardHandled = false;
-                SetSupportStatus(SupportLoadingKey);
                 supportRewardedVideoAd.Show(
-                    delegate { SetSupportStatus(SupportShowingKey); },
+                    delegate { },
                     delegate
                     {
                         if (!IsSupportOperationActive())
@@ -555,7 +351,7 @@ namespace HuanYouYu.MiniGameHall
                                 }
 
                                 supportRewardedVideoAd?.Show(
-                                    delegate { SetSupportStatus(SupportShowingKey); },
+                                    delegate { },
                                     delegate { CompleteRewardedVideoAttempt(false, true); });
                             },
                             delegate { CompleteRewardedVideoAttempt(false, true); });
@@ -655,15 +451,8 @@ namespace HuanYouYu.MiniGameHall
 
         private WeChatWASM.CustomStyle CreateSupportNativeTemplateStyle()
         {
-            Canvas.ForceUpdateCanvases();
-            var corners = new Vector3[4];
-            supportNativeTemplateSlot.GetWorldCorners(corners);
-            var bottomLeft = RectTransformUtility.WorldToScreenPoint(null, corners[0]);
-            var topRight = RectTransformUtility.WorldToScreenPoint(null, corners[2]);
-            var screenWidth = Mathf.Max(1f, Screen.width);
-            var screenHeight = Mathf.Max(1f, Screen.height);
-            var windowWidth = screenWidth;
-            var windowHeight = screenHeight;
+            var windowWidth = Mathf.Max(1f, Screen.width);
+            var windowHeight = Mathf.Max(1f, Screen.height);
 
             try
             {
@@ -678,13 +467,12 @@ namespace HuanYouYu.MiniGameHall
             {
             }
 
-            var scaleX = windowWidth / screenWidth;
-            var scaleY = windowHeight / screenHeight;
+            var width = Mathf.Max(1, Mathf.RoundToInt(windowWidth * 0.92f));
             return new WeChatWASM.CustomStyle
             {
-                left = Mathf.RoundToInt(bottomLeft.x * scaleX),
-                top = Mathf.RoundToInt(windowHeight - (topRight.y * scaleY)),
-                width = Mathf.RoundToInt(Mathf.Max(1f, topRight.x - bottomLeft.x) * scaleX)
+                left = Mathf.RoundToInt((windowWidth - width) * 0.5f),
+                top = Mathf.Max(0, Mathf.RoundToInt(windowHeight) - SupportNativeTemplateAdBottomOffset),
+                width = width
             };
         }
 
@@ -699,12 +487,9 @@ namespace HuanYouYu.MiniGameHall
             }
 
             HideAndDestroyNativeTemplateAd();
-            supportTabBindings.Clear();
-            supportDescriptionText = null;
-            supportStatusText = null;
-            supportActionLabel = null;
-            supportActionButton = null;
-            supportNativeTemplateSlot = null;
+            supportNativeTemplateLoading = false;
+            supportRewardedVideoButton = null;
+            supportInterstitialButton = null;
         }
 
         private void DisposeSupportAds()
@@ -712,6 +497,7 @@ namespace HuanYouYu.MiniGameHall
             HideAndDestroyNativeTemplateAd();
             DestroySupportInterstitial();
             supportAdOperationPending = false;
+            supportNativeTemplateLoading = false;
         }
 
         private void HideAndDestroyNativeTemplateAd()
@@ -778,65 +564,15 @@ namespace HuanYouYu.MiniGameHall
             }
         }
 
-        private void SetSupportStatus(string textKey)
-        {
-            if (supportStatusText != null)
-            {
-                supportStatusText.text = UiTextCatalog.Get(textKey);
-            }
-
-            RefreshSupportActionState();
-        }
-
         private bool IsSupportOperationActive()
         {
             return supportAdOperationPending &&
-                   activeModalRoot != null &&
-                   activeModalRoot.name == "SupportAuthorPopup";
+                   IsSupportPopupActive();
         }
 
-        private string GetSupportAdUnitId(SupportAdTab tab)
+        private bool IsSupportPopupActive()
         {
-            if (hallAdConfig == null)
-            {
-                return string.Empty;
-            }
-
-            switch (tab)
-            {
-                case SupportAdTab.NativeTemplate:
-                    return hallAdConfig.NativeTemplateAdUnitId;
-                case SupportAdTab.Interstitial:
-                    return hallAdConfig.InterstitialAdUnitId;
-                default:
-                    return hallAdConfig.RewardedVideoAdUnitId;
-            }
-        }
-
-        private static string GetSupportDescriptionKey(SupportAdTab tab)
-        {
-            switch (tab)
-            {
-                case SupportAdTab.NativeTemplate:
-                    return "hall.support.description.native_template";
-                case SupportAdTab.Interstitial:
-                    return "hall.support.description.interstitial";
-                default:
-                    return "hall.support.description.rewarded";
-            }
-        }
-
-        private static string GetSupportActionKey(SupportAdTab tab)
-        {
-            switch (tab)
-            {
-                case SupportAdTab.NativeTemplate:
-                    return "hall.support.action.native_template";
-                case SupportAdTab.Interstitial:
-                    return "hall.support.action.interstitial";
-                default:
-                    return "hall.support.action.rewarded";
-            }
+            return activeModalRoot != null && activeModalRoot.name == "SupportAuthorPopup";
         }
 
         private static void ConfigureRect(

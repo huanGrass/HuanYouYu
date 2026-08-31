@@ -36,7 +36,7 @@ namespace HuanYouYu.MiniGameHall
                         OffsetMin = new Vector2(18f, -106f),
                         OffsetMax = new Vector2(234f, 106f),
                         RingColor = new Color(1f, 1f, 1f, 0.36f),
-                        ButtonColor = new Color(1f, 1f, 1f, 0.95f),
+                        ButtonColor = new Color(0.96f, 0.97f, 0.92f, 1f),
                         ArrowColor = new Color(0.31f, 0.42f, 0.26f, 1f),
                         RingCornerRadius = 82f,
                         ButtonSize = 92f,

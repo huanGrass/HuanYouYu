@@ -55,7 +55,10 @@ namespace HuanYouYu.Editor.MiniGameHall
                         continue;
                     }
 
-                    entries.Add(new MiniGameLevelCatalogEntry(gameId, levelCount));
+                    entries.Add(new MiniGameLevelCatalogEntry(
+                        gameId,
+                        levelCount,
+                        GetLevelIds(type, levelCount)));
                 }
             }
 
@@ -114,18 +117,47 @@ namespace HuanYouYu.Editor.MiniGameHall
 
             return false;
         }
+
+        private static int[] GetLevelIds(Type type, int levelCount)
+        {
+            var property = type.GetProperty(
+                "LevelIds",
+                BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+            if (property != null)
+            {
+                var values = property.GetValue(null, null) as IEnumerable<int>;
+                if (values != null)
+                {
+                    var ids = new List<int>(values);
+                    if (ids.Count == levelCount && new HashSet<int>(ids).Count == ids.Count)
+                    {
+                        return ids.ToArray();
+                    }
+                }
+            }
+
+            var sequentialIds = new int[levelCount];
+            for (var index = 0; index < levelCount; index++)
+            {
+                sequentialIds[index] = index;
+            }
+            return sequentialIds;
+        }
     }
 
     internal readonly struct MiniGameLevelCatalogEntry
     {
-        public MiniGameLevelCatalogEntry(string gameId, int levelCount)
+        public MiniGameLevelCatalogEntry(string gameId, int levelCount, int[] levelIds)
         {
             GameId = gameId;
             LevelCount = levelCount;
+            LevelIds = levelIds;
         }
 
         public string GameId { get; }
 
         public int LevelCount { get; }
+
+        public int[] LevelIds { get; }
     }
 }
