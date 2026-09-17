@@ -1509,24 +1509,7 @@ namespace HuanYouYu.MiniGameHall
 
         private void CreateZoomControl(Transform parent)
         {
-            var zoomRoot = CreateRectObject("ArrowEscapeZoomControl", parent);
-            var layoutElement = zoomRoot.gameObject.AddComponent<LayoutElement>();
-            layoutElement.preferredWidth = 330f;
-            layoutElement.preferredHeight = 52f;
-            EnsureRoundedRectGraphic(zoomRoot.gameObject, new Color32(248, 251, 255, 245), 18f, true);
-
-            var layout = zoomRoot.gameObject.AddComponent<HorizontalLayoutGroup>();
-            layout.padding = new RectOffset(10, 10, 6, 6);
-            layout.spacing = 9f;
-            layout.childAlignment = TextAnchor.MiddleCenter;
-            layout.childControlWidth = false;
-            layout.childControlHeight = false;
-            layout.childForceExpandWidth = false;
-            layout.childForceExpandHeight = false;
-
-            zoomOutButton = CreateZoomIconButton("ArrowEscapeZoomOutButton", zoomRoot, false);
-            zoomSlider = CreateZoomSlider(zoomRoot);
-            zoomInButton = CreateZoomIconButton("ArrowEscapeZoomInButton", zoomRoot, true);
+            zoomSlider = MiniGameZoomControl.Create(parent, "ArrowEscape", out zoomOutButton, out zoomInButton);
 
             zoomSlider.onValueChanged.AddListener(OnZoomSliderChanged);
             zoomOutButton.onClick.AddListener(OnZoomOutClicked);
@@ -2652,104 +2635,6 @@ namespace HuanYouYu.MiniGameHall
             button.colors = colors;
         }
 
-        private static Button CreateZoomIconButton(string name, Transform parent, bool isPlus)
-        {
-            var buttonObject = new GameObject(name, typeof(RectTransform), typeof(Button), typeof(LayoutElement), typeof(CanvasRenderer), typeof(RoundedRectGraphic));
-            buttonObject.transform.SetParent(parent, false);
-            var rect = buttonObject.GetComponent<RectTransform>();
-            rect.sizeDelta = new Vector2(38f, 38f);
-            var layout = buttonObject.GetComponent<LayoutElement>();
-            layout.preferredWidth = 38f;
-            layout.preferredHeight = 38f;
-
-            var background = buttonObject.GetComponent<RoundedRectGraphic>();
-            background.color = new Color32(255, 255, 255, 255);
-            background.CornerRadius = 19f;
-            background.raycastTarget = true;
-
-            var iconObject = new GameObject("Icon", typeof(RectTransform), typeof(CanvasRenderer), typeof(ArrowEscapeZoomIconGraphic));
-            iconObject.transform.SetParent(rect, false);
-            var iconRect = iconObject.GetComponent<RectTransform>();
-            iconRect.anchorMin = new Vector2(0.5f, 0.5f);
-            iconRect.anchorMax = new Vector2(0.5f, 0.5f);
-            iconRect.pivot = new Vector2(0.5f, 0.5f);
-            iconRect.sizeDelta = new Vector2(30f, 30f);
-            var icon = iconObject.GetComponent<ArrowEscapeZoomIconGraphic>();
-            icon.IsPlus = isPlus;
-            icon.color = new Color32(73, 99, 138, 255);
-            icon.raycastTarget = false;
-
-            var button = buttonObject.GetComponent<Button>();
-            button.targetGraphic = background;
-            ConfigureButtonColors(button);
-            MiniGameSfxPlayer.Attach(button, MiniGameSfxType.UiTap, 0.85f);
-            return button;
-        }
-
-        private static Slider CreateZoomSlider(Transform parent)
-        {
-            var sliderObject = new GameObject("ArrowEscapeZoomSlider", typeof(RectTransform), typeof(Slider), typeof(LayoutElement));
-            sliderObject.transform.SetParent(parent, false);
-            var sliderRect = sliderObject.GetComponent<RectTransform>();
-            sliderRect.sizeDelta = new Vector2(214f, 38f);
-            var layout = sliderObject.GetComponent<LayoutElement>();
-            layout.preferredWidth = 214f;
-            layout.preferredHeight = 38f;
-
-            var backgroundObject = new GameObject("Background", typeof(RectTransform), typeof(CanvasRenderer), typeof(RoundedRectGraphic));
-            backgroundObject.transform.SetParent(sliderRect, false);
-            var backgroundRect = backgroundObject.GetComponent<RectTransform>();
-            backgroundRect.anchorMin = new Vector2(0f, 0.5f);
-            backgroundRect.anchorMax = new Vector2(1f, 0.5f);
-            backgroundRect.pivot = new Vector2(0.5f, 0.5f);
-            backgroundRect.offsetMin = new Vector2(0f, -4f);
-            backgroundRect.offsetMax = new Vector2(0f, 4f);
-            var background = backgroundObject.GetComponent<RoundedRectGraphic>();
-            background.color = new Color32(148, 148, 148, 255);
-            background.CornerRadius = 4f;
-            background.raycastTarget = false;
-
-            var fillArea = CreateRectObject("Fill Area", sliderRect);
-            Stretch(fillArea, Vector2.zero, Vector2.one, new Vector2(0f, 15f), new Vector2(0f, -15f));
-            var fillObject = new GameObject("Fill", typeof(RectTransform), typeof(CanvasRenderer), typeof(RoundedRectGraphic));
-            fillObject.transform.SetParent(fillArea, false);
-            var fillRect = fillObject.GetComponent<RectTransform>();
-            Stretch(fillRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
-            var fill = fillObject.GetComponent<RoundedRectGraphic>();
-            fill.color = new Color32(28, 219, 99, 255);
-            fill.CornerRadius = 4f;
-            fill.raycastTarget = false;
-
-            var handleArea = CreateRectObject("Handle Slide Area", sliderRect);
-            handleArea.anchorMin = new Vector2(0f, 0.5f);
-            handleArea.anchorMax = new Vector2(1f, 0.5f);
-            handleArea.pivot = new Vector2(0.5f, 0.5f);
-            handleArea.offsetMin = new Vector2(0f, -16f);
-            handleArea.offsetMax = new Vector2(0f, 16f);
-            var handleObject = new GameObject("Handle", typeof(RectTransform), typeof(CanvasRenderer), typeof(RoundedRectGraphic));
-            handleObject.transform.SetParent(handleArea, false);
-            var handleRect = handleObject.GetComponent<RectTransform>();
-            handleRect.anchorMin = new Vector2(0.5f, 0.5f);
-            handleRect.anchorMax = new Vector2(0.5f, 0.5f);
-            handleRect.pivot = new Vector2(0.5f, 0.5f);
-            handleRect.sizeDelta = new Vector2(32f, 0f);
-            var handle = handleObject.GetComponent<RoundedRectGraphic>();
-            handle.color = new Color32(64, 166, 230, 255);
-            handle.CornerRadius = 16f;
-            handle.raycastTarget = true;
-
-            var slider = sliderObject.GetComponent<Slider>();
-            slider.direction = Slider.Direction.LeftToRight;
-            slider.minValue = 0f;
-            slider.maxValue = 1f;
-            slider.wholeNumbers = false;
-            slider.fillRect = fillRect;
-            slider.handleRect = handleRect;
-            slider.targetGraphic = handle;
-            slider.SetValueWithoutNotify(0f);
-            return slider;
-        }
-
         private static void CreateEscapeLane(string name, Transform parent, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot, Vector2 size, Vector2 position)
         {
             var lane = CreateRectObject(name, parent);
@@ -3094,72 +2979,6 @@ namespace HuanYouYu.MiniGameHall
             vh.AddVert(b, vertexColor, Vector2.zero);
             vh.AddVert(c, vertexColor, Vector2.zero);
             vh.AddTriangle(startIndex, startIndex + 1, startIndex + 2);
-        }
-    }
-
-    public sealed class ArrowEscapeZoomIconGraphic : MaskableGraphic
-    {
-        public bool IsPlus { get; set; }
-
-        protected override void OnPopulateMesh(VertexHelper vh)
-        {
-            vh.Clear();
-            var rect = rectTransform.rect;
-            var radius = Mathf.Min(rect.width, rect.height) * 0.26f;
-            var center = new Vector2(rect.center.x - radius * 0.12f, rect.center.y + radius * 0.08f);
-            var thickness = Mathf.Max(2.4f, radius * 0.18f);
-            AddRing(vh, center, radius, thickness);
-
-            var handleStart = center + new Vector2(radius * 0.58f, -radius * 0.58f);
-            var handleEnd = center + new Vector2(radius * 1.22f, -radius * 1.22f);
-            AddSegment(vh, handleStart, handleEnd, thickness);
-
-            var markHalf = radius * 0.42f;
-            AddSegment(vh, center + Vector2.left * markHalf, center + Vector2.right * markHalf, thickness);
-            if (IsPlus)
-            {
-                AddSegment(vh, center + Vector2.down * markHalf, center + Vector2.up * markHalf, thickness);
-            }
-        }
-
-        private void AddRing(VertexHelper vh, Vector2 center, float radius, float thickness)
-        {
-            const int SegmentCount = 28;
-            var innerRadius = radius - thickness;
-            for (var i = 0; i < SegmentCount; i++)
-            {
-                var a0 = Mathf.PI * 2f * i / SegmentCount;
-                var a1 = Mathf.PI * 2f * (i + 1) / SegmentCount;
-                var outer0 = center + new Vector2(Mathf.Cos(a0), Mathf.Sin(a0)) * radius;
-                var outer1 = center + new Vector2(Mathf.Cos(a1), Mathf.Sin(a1)) * radius;
-                var inner1 = center + new Vector2(Mathf.Cos(a1), Mathf.Sin(a1)) * innerRadius;
-                var inner0 = center + new Vector2(Mathf.Cos(a0), Mathf.Sin(a0)) * innerRadius;
-                AddQuad(vh, outer0, outer1, inner1, inner0);
-            }
-        }
-
-        private void AddSegment(VertexHelper vh, Vector2 start, Vector2 end, float thickness)
-        {
-            var delta = end - start;
-            if (delta.sqrMagnitude <= 0.001f)
-            {
-                return;
-            }
-
-            var normal = new Vector2(-delta.y, delta.x).normalized * (thickness * 0.5f);
-            AddQuad(vh, start + normal, end + normal, end - normal, start - normal);
-        }
-
-        private void AddQuad(VertexHelper vh, Vector2 a, Vector2 b, Vector2 c, Vector2 d)
-        {
-            var startIndex = vh.currentVertCount;
-            var vertexColor = color;
-            vh.AddVert(a, vertexColor, Vector2.zero);
-            vh.AddVert(b, vertexColor, Vector2.zero);
-            vh.AddVert(c, vertexColor, Vector2.zero);
-            vh.AddVert(d, vertexColor, Vector2.zero);
-            vh.AddTriangle(startIndex, startIndex + 1, startIndex + 2);
-            vh.AddTriangle(startIndex, startIndex + 2, startIndex + 3);
         }
     }
 

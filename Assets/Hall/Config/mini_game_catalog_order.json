@@ -30,6 +30,8 @@
     "blockpuzzle",
     "bulls-cows",
     "arrow-escape",
-    "bracelet-unlink"
+    "bracelet-unlink",
+    "bubble-pop",
+    "cabinet-sort"
   ]
 }

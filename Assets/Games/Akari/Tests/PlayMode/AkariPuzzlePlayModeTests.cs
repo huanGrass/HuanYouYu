@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using HuanYouYu.MiniGameHall;
 using NUnit.Framework;
@@ -11,6 +11,35 @@ namespace Tests
 {
     public class AkariPuzzlePlayModeTests
     {
+        private readonly string[] preferenceKeys = {
+            "huanyouyu.dropdown.akari.Difficulty",
+            "huanyouyu.dropdown.akari.GridSize"
+
+        };
+        private int?[] savedPreferences;
+
+        [SetUp]
+        public void IsolatePreferences()
+        {
+            savedPreferences = new int?[preferenceKeys.Length];
+            for (var i = 0; i < preferenceKeys.Length; i++)
+            {
+                savedPreferences[i] = PlayerPrefs.HasKey(preferenceKeys[i]) ? (int?)PlayerPrefs.GetInt(preferenceKeys[i]) : null;
+                PlayerPrefs.DeleteKey(preferenceKeys[i]);
+            }
+        }
+
+        [TearDown]
+        public void RestorePreferences()
+        {
+            for (var i = 0; i < preferenceKeys.Length; i++)
+            {
+                if (savedPreferences[i].HasValue) PlayerPrefs.SetInt(preferenceKeys[i], savedPreferences[i].Value);
+                else PlayerPrefs.DeleteKey(preferenceKeys[i]);
+            }
+            PlayerPrefs.Save();
+        }
+
         [Test]
         public void GeneratorCreatesUniqueValidPuzzlesForFixedSeeds()
         {
@@ -133,6 +162,41 @@ namespace Tests
             yield return null;
         }
 
+        [UnityTest]
+        public IEnumerator RememberedDropdownsRestorePuzzleGeneration()
+        {
+            var root = new GameObject("AkariMemoryTestRoot", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+            root.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+            var host = root.AddComponent<TestHost>();
+            MiniGameAkariGameView view = null;
+            try
+            {
+                view = new MiniGameAkariGameView(host, root.transform, null, null);
+                yield return null;
+                GameObject.Find("DifficultyDropdown").GetComponent<Button>().onClick.Invoke();
+                yield return null;
+                GameObject.Find("Item3").GetComponent<Button>().onClick.Invoke();
+                GameObject.Find("GridSizeDropdown").GetComponent<Button>().onClick.Invoke();
+                yield return null;
+                GameObject.Find("Item1").GetComponent<Button>().onClick.Invoke();
+                Assert.AreEqual(3, PlayerPrefs.GetInt(preferenceKeys[0], -1));
+                Assert.AreEqual(1, PlayerPrefs.GetInt(preferenceKeys[1], -1));
+                view.Dispose();
+                yield return null;
+                view = new MiniGameAkariGameView(host, root.transform, null, null);
+                yield return null;
+                Assert.AreEqual(3, GameObject.Find("DifficultyDropdown").GetComponent<MiniGameDropdown>().Value);
+                Assert.AreEqual(1, GameObject.Find("GridSizeDropdown").GetComponent<MiniGameDropdown>().Value);
+                Assert.AreEqual(AkariDifficulty.Hard, view.CurrentPuzzleForTests.Difficulty);
+                Assert.AreEqual(AkariPuzzleGenerator.MinGridSize, view.CurrentPuzzleForTests.GridSize);
+            }
+            finally
+            {
+                view?.Dispose();
+                UnityEngine.Object.Destroy(root);
+            }
+            yield return null;
+        }
         [UnityTest]
         public IEnumerator FixedGenerationOptionsCreateRequestedPuzzle()
         {

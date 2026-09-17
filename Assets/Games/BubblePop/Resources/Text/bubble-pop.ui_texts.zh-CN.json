@@ -1,0 +1,100 @@
+﻿{
+  "entries": [
+    {
+      "value": "彩色泡泡板",
+      "key": "game.bubble-pop.name"
+    },
+    {
+      "value": "点一点、划一划，随手按出好心情。",
+      "key": "game.bubble-pop.description"
+    },
+    {
+      "value": "随手按，慢慢玩",
+      "key": "bubble-pop.hint"
+    },
+    {
+      "value": "换一板",
+      "key": "bubble-pop.reset"
+    },
+    {
+      "value": "点按或滑动连续按压泡泡。顶部可以选择大小、配色和回弹时间。不回弹会保持凹下，直到手动换板；5秒、1秒会让每颗泡泡独立回弹；瞬间回弹会在按压动画结束后立即回弹。切换回弹选项时，已按泡泡按新时长重新计时，暂停时停止计时。切换大小生成新板，切换配色保留按压状态。所有尺寸完整显示，可随时点击“换一板”。",
+      "key": "game.bubble-pop.help"
+    },
+    {
+      "value": "大小",
+      "key": "bubble-pop.size"
+    },
+    {
+      "value": "配色",
+      "key": "bubble-pop.color"
+    },
+    {
+      "value": "小板 4×5",
+      "key": "bubble-pop.size.small"
+    },
+    {
+      "value": "中板 6×7",
+      "key": "bubble-pop.size.medium"
+    },
+    {
+      "value": "大板 8×9",
+      "key": "bubble-pop.size.large"
+    },
+    {
+      "value": "彩虹条纹",
+      "key": "bubble-pop.color.rainbow"
+    },
+    {
+      "value": "多色混合",
+      "key": "bubble-pop.color.mixed"
+    },
+    {
+      "value": "单色·天蓝",
+      "key": "bubble-pop.color.blue"
+    },
+    {
+      "value": "单色·薄荷",
+      "key": "bubble-pop.color.mint"
+    },
+    {
+      "value": "单色·粉红",
+      "key": "bubble-pop.color.pink"
+    },
+    {
+      "value": "单色·浅紫",
+      "key": "bubble-pop.color.purple"
+    },
+    {
+      "value": "单色·奶黄",
+      "key": "bubble-pop.color.yellow"
+    },
+    {
+      "key": "bubble-pop.size.extra_large",
+      "value": "特大板 12×16"
+    },
+    {
+      "key": "bubble-pop.size.huge",
+      "value": "超大板 20×24"
+    },
+    {
+      "key": "bubble-pop.rebound",
+      "value": "回弹"
+    },
+    {
+      "key": "bubble-pop.rebound.never",
+      "value": "不回弹"
+    },
+    {
+      "key": "bubble-pop.rebound.five",
+      "value": "5秒回弹"
+    },
+    {
+      "key": "bubble-pop.rebound.one",
+      "value": "1秒回弹"
+    },
+    {
+      "key": "bubble-pop.rebound.instant",
+      "value": "瞬间回弹"
+    }
+  ]
+}

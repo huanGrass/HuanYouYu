@@ -76,10 +76,12 @@ namespace Tests
             allGamesTab.GetComponent<Button>().onClick.Invoke();
             yield return null;
 
+            AssertCardIconTextureName("cabinet-sort_Card", "cabinet-sort");
             AssertCardIconTextureName("tetris_Card", "tetris");
             AssertCardIconTextureName("watermelon-merge_Card", "watermelon-merge");
             AssertCardIconTextureName("water-sort_Card", "water-sort");
             AssertCardIconTextureName("memory-flip_Card", "memory-flip");
+            AssertCardIconTextureName("bubble-pop_Card", "bubble-pop");
             AssertCardIconTextureName("breakout_Card", "breakout");
             AssertCardIconTextureName("goldminer_Card", "goldminer");
             AssertCardIconTextureName("gomoku_Card", "gomoku");
@@ -375,7 +377,7 @@ namespace Tests
             Assert.IsNull(popup.Find("Dialog/Sidebar/Tab_Feedback"), "Announcement popup should not include the feedback tab.");
             Assert.IsNull(popup.Find("Dialog/Sidebar/Tab_Preview"), "Announcement popup should not include the preview tab.");
             Assert.IsNull(popup.Find("Dialog/Sidebar/Tab_Events"), "Announcement popup should not include the events tab.");
-            var latestUpdateCard = popup.Find("Dialog/ContentFrame/Viewport/Content/VersionCard_20260901");
+            var latestUpdateCard = popup.Find("Dialog/ContentFrame/Viewport/Content/VersionCard_20260917");
             var juneUpdateCard = popup.Find("Dialog/ContentFrame/Viewport/Content/VersionCard_20260610");
             var mayUpdateCard = popup.Find("Dialog/ContentFrame/Viewport/Content/VersionCard_20260505");
             var firstUpdateCard = popup.Find("Dialog/ContentFrame/Viewport/Content/VersionCard_20260501");
@@ -384,9 +386,8 @@ namespace Tests
             Assert.IsNotNull(mayUpdateCard, "Announcement popup should render the 2026-05-05 update card.");
             Assert.IsNotNull(firstUpdateCard, "Announcement popup should render the 2026-05-01 update card.");
             AssertAnnouncementText(popup.Find("Dialog/ContentFrame/Viewport/Content/TitleRow/Title"), "最近更新");
-            AssertAnnouncementText(latestUpdateCard.Find("VersionBadge/Label"), "2026-09-01");
-            AssertAnnouncementText(latestUpdateCard.Find("Body"), "新增小游戏：旋转解环");
-            AssertAnnouncementText(latestUpdateCard.Find("Body"), "大厅切换更流畅");
+            AssertAnnouncementText(latestUpdateCard.Find("VersionBadge/Label"), "2026-09-17");
+            AssertAnnouncementText(latestUpdateCard.Find("Body"), "新增小游戏：彩色泡泡板、柜子收纳");
             AssertAnnouncementText(juneUpdateCard.Find("VersionBadge/Label"), "2026-06-10");
             AssertAnnouncementText(juneUpdateCard.Find("Body"), "优化大厅体验");
             AssertAnnouncementText(juneUpdateCard.Find("Body"), "连连看新增首局提示");

@@ -374,128 +374,13 @@ namespace FarmPrototype
 
         private void UpdatePlayerVisual(Vector2 movementDelta)
         {
-            if (_playerRenderer == null || _playerShadow == null)
-            {
-                return;
-            }
-
-            bool isMoving = movementDelta.sqrMagnitude > 0.0001f;
-            bool useSideWalkSkeleton = isMoving && _facing.x != 0;
-            _playerRenderer.sprite = FarmPixelArtFactory.GetSprite(useSideWalkSkeleton
-                ? FarmSpriteArt.PlayerSideBody
-                : GetCurrentPlayerSprite(isMoving));
-
-            if (_facing.x != 0)
-            {
-                _playerRenderer.flipX = _facing.x < 0;
-            }
-            else
-            {
-                _playerRenderer.flipX = false;
-            }
-
-            float bobOffset = isMoving
-                ? Mathf.Abs(Mathf.Sin(Time.time * PlayerWalkAnimationRate * Mathf.PI * 0.5f)) * PlayerWalkBobAmplitude
-                : Mathf.Sin(Time.time * 2.1f) * PlayerIdleBobAmplitude;
-            float actionProgress = GetToolActionProgress();
-            float bodyTilt = GetToolActionBodyTilt(actionProgress);
-            float bodyStretch = actionProgress > 0f ? 1f + (Mathf.Sin(actionProgress * Mathf.PI) * 0.04f) : 1f;
-
-            float sideWalkPhase = useSideWalkSkeleton
-                ? Mathf.Sin(Time.time * PlayerWalkAnimationRate * Mathf.PI)
-                : 0f;
-            float visualBodyTilt = bodyTilt + (useSideWalkSkeleton
-                ? sideWalkPhase * PlayerSideWalkBodyTilt * (_facing.x < 0f ? -1f : 1f)
-                : 0f);
-
-            _playerRenderer.transform.position = _playerPosition + new Vector2(0f, bobOffset);
-            _playerRenderer.transform.rotation = Quaternion.Euler(0f, 0f, visualBodyTilt);
-            _playerRenderer.transform.localScale = new Vector3(bodyStretch, 1f + ((bodyStretch - 1f) * 0.3f), 1f);
-            _playerShadow.transform.position = _playerPosition + new Vector2(0f, -0.34f);
-
+            if (_playerRig == null || _playerShadow == null) return;
+            _playerRig.transform.position = _playerPosition + new Vector2(0f, -.34f);
             int sortBase = GetActorSortBase(_playerPosition.y);
+            _playerRig.Pose(_facing, GetToolActionProgress(), sortBase);
+            _playerShadow.transform.position = _playerPosition + new Vector2(0f, -.34f);
             _playerShadow.sortingOrder = sortBase - 1;
-            _playerRenderer.sortingOrder = sortBase;
-            UpdatePlayerSideWalkSkeleton(useSideWalkSkeleton, sideWalkPhase, bobOffset, visualBodyTilt, bodyStretch, sortBase);
-            if (useSideWalkSkeleton)
-            {
-                _playerShadow.sortingOrder = sortBase - 3;
-            }
-
-            if (isMoving)
-            {
-                float shadowScale = 0.92f + (Mathf.Abs(Mathf.Sin(Time.time * PlayerWalkAnimationRate * Mathf.PI * 0.5f)) * 0.1f);
-                _playerShadow.transform.localScale = new Vector3(shadowScale, shadowScale, 1f);
-            }
-            else
-            {
-                float idleScale = 0.98f + (Mathf.Sin(Time.time * 2.1f) * 0.02f);
-                _playerShadow.transform.localScale = new Vector3(idleScale, idleScale, 1f);
-            }
-        }
-
-        private void UpdatePlayerSideWalkSkeleton(
-            bool isActive,
-            float phase,
-            float bobOffset,
-            float bodyTilt,
-            float bodyStretch,
-            int sortBase)
-        {
-            if (_playerSideFrontLegRoot == null ||
-                _playerSideBackLegRoot == null ||
-                _playerSideFrontLegRenderer == null ||
-                _playerSideBackLegRenderer == null)
-            {
-                return;
-            }
-
-            _playerSideFrontLegRenderer.enabled = isActive;
-            _playerSideBackLegRenderer.enabled = isActive;
-            if (!isActive)
-            {
-                _playerSideFrontLegRoot.rotation = Quaternion.identity;
-                _playerSideBackLegRoot.rotation = Quaternion.identity;
-                return;
-            }
-
-            float facingSign = _facing.x < 0f ? -1f : 1f;
-            UpdateSideWalkLegRenderer(
-                _playerSideFrontLegRenderer,
-                phase,
-                facingSign,
-                bobOffset,
-                bodyTilt,
-                bodyStretch,
-                sortBase + 1);
-            UpdateSideWalkLegRenderer(
-                _playerSideBackLegRenderer,
-                -phase,
-                facingSign,
-                bobOffset,
-                bodyTilt,
-                bodyStretch,
-                sortBase - 2);
-        }
-
-        private void UpdateSideWalkLegRenderer(
-            SpriteRenderer renderer,
-            float phase,
-            float facingSign,
-            float bobOffset,
-            float bodyTilt,
-            float bodyStretch,
-            int sortingOrder)
-        {
-            Transform legRoot = renderer.transform.parent;
-            renderer.flipX = facingSign < 0f;
-            renderer.transform.localPosition = new Vector3(0f, -PlayerSideWalkHipOffsetY, 0f);
-            renderer.transform.localRotation = Quaternion.identity;
-            renderer.transform.localScale = Vector3.one;
-            legRoot.position = _playerPosition + new Vector2(0f, bobOffset + PlayerSideWalkHipOffsetY);
-            legRoot.rotation = Quaternion.Euler(0f, 0f, bodyTilt + (phase * PlayerSideWalkLegTilt * facingSign));
-            legRoot.localScale = new Vector3(bodyStretch, 1f, 1f);
-            renderer.sortingOrder = sortingOrder;
+            _playerShadow.color = new Color(1, 1, 1, .32f);
         }
 
         private void UpdateToolActionAnimation()
@@ -516,11 +401,7 @@ namespace FarmPrototype
             _toolActionTimer = Mathf.Max(0f, _toolActionTimer - Time.deltaTime);
             float progress = GetToolActionProgress();
             Vector2 facing = new Vector2(_toolActionFacing.x, _toolActionFacing.y);
-            Vector2 sideways = new Vector2(facing.y, -facing.x);
-            float reach = Mathf.Lerp(0.22f, 0.72f, Mathf.Sin(progress * Mathf.PI * 0.5f));
-            float sweep = Mathf.Sin(progress * Mathf.PI) * 0.12f;
-            float lift = 0.16f + (Mathf.Sin(progress * Mathf.PI) * 0.08f);
-            Vector2 toolPosition = _playerPosition + (facing * reach) + (sideways * sweep) + new Vector2(0f, lift);
+            Vector2 toolPosition = (Vector2)_playerRig.FrontHand.position + facing * .12f;
 
             _playerToolRenderer.enabled = true;
             _playerToolRenderer.sprite = FarmPixelArtFactory.GetSprite(GetToolActionSprite(_toolActionTool));
@@ -569,42 +450,6 @@ namespace FarmPrototype
             {
                 _toolHitEffectRenderer.enabled = false;
             }
-        }
-
-        private FarmSpriteArt GetCurrentPlayerSprite(bool isMoving)
-        {
-            int frame = isMoving
-                ? Mathf.FloorToInt(Time.time * PlayerWalkAnimationRate) % 4
-                : 0;
-
-            if (_facing.x != 0)
-            {
-                return GetAnimatedDirectionalSprite(
-                    FarmSpriteArt.PlayerSideStepA,
-                    FarmSpriteArt.PlayerSideStepB,
-                    frame);
-            }
-
-            if (_facing.y >= 0)
-            {
-                return GetAnimatedDirectionalSprite(
-                    FarmSpriteArt.PlayerUpStepA,
-                    FarmSpriteArt.PlayerUpStepB,
-                    frame);
-            }
-
-            return GetAnimatedDirectionalSprite(
-                FarmSpriteArt.PlayerDownStepA,
-                FarmSpriteArt.PlayerDownStepB,
-                frame);
-        }
-
-        private static FarmSpriteArt GetAnimatedDirectionalSprite(
-            FarmSpriteArt stepA,
-            FarmSpriteArt stepB,
-            int frame)
-        {
-            return frame % 2 == 0 ? stepA : stepB;
         }
 
         private void TriggerToolActionAnimation(ToolType tool)

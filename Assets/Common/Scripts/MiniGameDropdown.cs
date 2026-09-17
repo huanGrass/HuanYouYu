@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -25,6 +25,7 @@ namespace HuanYouYu.MiniGameHall
         private Canvas rootCanvas;
         private Action<int> onValueChanged;
         private int value;
+        private string preferenceKey;
         private float popupWidth = 196f;
         private float itemHeight = 36f;
         private int maxVisibleItems = 5;
@@ -46,7 +47,8 @@ namespace HuanYouYu.MiniGameHall
             float height,
             float optionHeight,
             int visibleItemCount,
-            Color labelColor)
+            Color labelColor,
+            string preferenceKey = null)
         {
             EnsureView();
 
@@ -76,7 +78,10 @@ namespace HuanYouYu.MiniGameHall
             background.color = buttonColor;
             captionText.color = textColor;
             arrowText.color = textColor;
-            SetValueWithoutNotify(initialValue);
+            this.preferenceKey = preferenceKey;
+            var savedValue = string.IsNullOrEmpty(preferenceKey) ? initialValue : PlayerPrefs.GetInt(preferenceKey, initialValue);
+            SetValueWithoutNotify(savedValue >= 0 && savedValue < options.Count ? savedValue : initialValue);
+            if (!string.IsNullOrEmpty(preferenceKey)) onValueChanged?.Invoke(value);
         }
 
         public void SetValueWithoutNotify(int newValue)
@@ -290,6 +295,11 @@ namespace HuanYouYu.MiniGameHall
             value = clamped;
             RefreshCaption();
             Close();
+            if (changed && !string.IsNullOrEmpty(preferenceKey))
+            {
+                PlayerPrefs.SetInt(preferenceKey, value);
+                PlayerPrefs.Save();
+            }
             if (changed && onValueChanged != null)
             {
                 onValueChanged(value);

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace HuanYouYu.MiniGameHall
@@ -32,6 +32,7 @@ namespace HuanYouYu.MiniGameHall
             { "watermelon-merge", "watermelon-merge" },
             { "memory-flip", "memory-flip" },
             { "akari", "akari" },
+            { "bubble-pop", "bubble-pop" },
             { "jumpjump", "jumpjump" },
             { "whacamole", "whacamole" },
             { "lightsout", "lightsout" },
@@ -40,7 +41,8 @@ namespace HuanYouYu.MiniGameHall
             { "towerofhanoi", "towerofhanoi" },
             { "bracelet-unlink", "bracelet-unlink" },
             { "waterpouring", "waterpouring" },
-            { "stack-match", "stack-match" }
+            { "stack-match", "stack-match" },
+            { "cabinet-sort", "cabinet-sort" }
         };
 
         private static readonly Dictionary<string, Texture2D> TextureCache = new Dictionary<string, Texture2D>();

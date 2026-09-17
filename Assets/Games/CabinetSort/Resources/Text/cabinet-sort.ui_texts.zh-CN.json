@@ -1,0 +1,44 @@
+﻿{
+  "entries": [
+    {
+      "value": "柜子收纳",
+      "key": "game.cabinet-sort.name"
+    },
+    {
+      "value": "24 种物品分批登场，三列柜格自由收纳，同格三件相同即可消除。",
+      "key": "game.cabinet-sort.description"
+    },
+    {
+      "value": "拖动物品到另一件物品上，或依次点击两个物品交换位置。拖到格外会回到原位。每个小格内横排三个相同物品即可消除，清空整座柜子完成整理。柜子为三列九排，每格三件。共 144 件、24 种物品，开局显示 81 件，其余 63 件在消除后从空格中逐批出现。所有物品收纳完才结算，没有关卡、限时和步数限制。提示会标出一次有助于收齐的交换；重排只打乱剩余物品。隐藏物品用完后，清空的小格不再补充。新出现的同类三件也会连续消除。",
+      "key": "game.cabinet-sort.help"
+    },
+    {
+      "value": "收纳 {0}/{1} · 待出现 {2} · 交换 {3} 次",
+      "key": "cabinet-sort.hud"
+    },
+    {
+      "value": "拖动或点击交换 · 消除后冒出新物品",
+      "key": "cabinet-sort.instruction"
+    },
+    {
+      "value": "交换绿色标记物品，逐步收齐同类",
+      "key": "cabinet-sort.hint"
+    },
+    {
+      "value": "收纳了 {0} 件物品，交换 {1} 次。",
+      "key": "cabinet-sort.summary"
+    },
+    {
+      "value": "收纳物品",
+      "key": "cabinet-sort.cleared"
+    },
+    {
+      "value": "交换次数",
+      "key": "cabinet-sort.moves"
+    },
+    {
+      "value": "柜子整理完成",
+      "key": "cabinet-sort.win"
+    }
+  ]
+}

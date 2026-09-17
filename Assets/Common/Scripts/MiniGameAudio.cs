@@ -180,83 +180,111 @@ namespace HuanYouYu.MiniGameHall
 
         private static AudioClip BuildUiTap()
         {
-            return BuildClip("sfx_ui_tap", 0.07f, delegate(float[] samples)
+            return BuildClip("sfx_ui_tap", 0.10f, delegate(float[] samples)
             {
-                AddSineSweep(samples, 0f, 0.07f, 1500f, 980f, 0.24f, 0.006f, 0.85f);
+                AddMallet(samples, 0f, 0.10f, 660f, 0.20f);
             });
         }
 
         private static AudioClip BuildUiBack()
         {
-            return BuildClip("sfx_ui_back", 0.09f, delegate(float[] samples)
+            return BuildClip("sfx_ui_back", 0.16f, delegate(float[] samples)
             {
-                AddSineSweep(samples, 0f, 0.09f, 900f, 420f, 0.23f, 0.004f, 0.92f);
+                AddMallet(samples, 0f, 0.10f, 587.33f, 0.15f);
+                AddMallet(samples, 0.055f, 0.105f, 440f, 0.13f);
             });
         }
 
         private static AudioClip BuildTileSelect()
         {
-            return BuildClip("sfx_tile_select", 0.08f, delegate(float[] samples)
+            return BuildClip("sfx_tile_select", 0.085f, delegate(float[] samples)
             {
-                AddSineSweep(samples, 0f, 0.08f, 1040f, 760f, 0.26f, 0.004f, 0.88f);
+                AddMallet(samples, 0f, 0.085f, 523.25f, 0.22f);
+                AddNoise(samples, 0f, 0.025f, 0.025f, 0.003f, 0.88f);
             });
         }
 
         private static AudioClip BuildMatchSuccess()
         {
-            return BuildClip("sfx_match_success", 0.20f, delegate(float[] samples)
+            return BuildClip("sfx_match_success", 0.30f, delegate(float[] samples)
             {
-                AddSineSweep(samples, 0.00f, 0.09f, 760f, 1020f, 0.23f, 0.005f, 0.80f);
-                AddSineSweep(samples, 0.08f, 0.11f, 940f, 1360f, 0.20f, 0.005f, 0.80f);
+                AddMallet(samples, 0f, 0.18f, 659.25f, 0.20f);
+                AddMallet(samples, 0.075f, 0.225f, 783.99f, 0.19f);
             });
         }
 
         private static AudioClip BuildMatchFail()
         {
-            return BuildClip("sfx_match_fail", 0.16f, delegate(float[] samples)
+            return BuildClip("sfx_match_fail", 0.18f, delegate(float[] samples)
             {
-                AddSquareSweep(samples, 0f, 0.16f, 340f, 230f, 0.15f, 0.004f, 0.86f);
-                AddNoise(samples, 0f, 0.10f, 0.04f, 0.003f, 0.90f);
+                AddMallet(samples, 0f, 0.12f, 349.23f, 0.17f);
+                AddMallet(samples, 0.06f, 0.12f, 293.66f, 0.14f);
             });
         }
 
         private static AudioClip BuildShuffle()
         {
-            return BuildClip("sfx_shuffle", 0.22f, delegate(float[] samples)
+            return BuildClip("sfx_shuffle", 0.26f, delegate(float[] samples)
             {
-                AddNoise(samples, 0.00f, 0.22f, 0.16f, 0.004f, 0.65f);
-                AddSineSweep(samples, 0.05f, 0.16f, 320f, 560f, 0.09f, 0.005f, 0.85f);
+                AddNoise(samples, 0f, 0.22f, 0.09f, 0.035f, 0.80f);
+                AddMallet(samples, 0.015f, 0.07f, 392f, 0.10f);
+                AddMallet(samples, 0.075f, 0.07f, 523.25f, 0.11f);
+                AddMallet(samples, 0.135f, 0.125f, 659.25f, 0.12f);
             });
         }
 
         private static AudioClip BuildCombo()
         {
-            return BuildClip("sfx_combo", 0.26f, delegate(float[] samples)
+            return BuildClip("sfx_combo", 0.38f, delegate(float[] samples)
             {
-                AddSineSweep(samples, 0.00f, 0.09f, 820f, 1080f, 0.21f, 0.005f, 0.80f);
-                AddSineSweep(samples, 0.07f, 0.09f, 1040f, 1380f, 0.20f, 0.005f, 0.80f);
-                AddSineSweep(samples, 0.14f, 0.12f, 1240f, 1650f, 0.18f, 0.005f, 0.80f);
+                AddMallet(samples, 0f, 0.18f, 523.25f, 0.18f);
+                AddMallet(samples, 0.07f, 0.20f, 659.25f, 0.18f);
+                AddMallet(samples, 0.14f, 0.24f, 783.99f, 0.18f);
             });
         }
 
         private static AudioClip BuildSettle()
         {
-            return BuildClip("sfx_settle", 0.34f, delegate(float[] samples)
+            return BuildClip("sfx_settle", 0.62f, delegate(float[] samples)
             {
-                AddSineSweep(samples, 0.00f, 0.10f, 520f, 700f, 0.19f, 0.005f, 0.78f);
-                AddSineSweep(samples, 0.10f, 0.10f, 680f, 920f, 0.18f, 0.005f, 0.78f);
-                AddSineSweep(samples, 0.20f, 0.14f, 900f, 1260f, 0.17f, 0.005f, 0.78f);
+                AddMallet(samples, 0f, 0.26f, 523.25f, 0.17f);
+                AddMallet(samples, 0.10f, 0.28f, 659.25f, 0.16f);
+                AddMallet(samples, 0.20f, 0.30f, 783.99f, 0.16f);
+                AddMallet(samples, 0.30f, 0.32f, 1046.5f, 0.14f);
+                AddMallet(samples, 0.30f, 0.32f, 523.25f, 0.07f);
             });
         }
 
         private static AudioClip BuildCollision()
         {
-            return BuildClip("sfx_collision", 0.11f, delegate(float[] samples)
+            return BuildClip("sfx_collision", 0.10f, delegate(float[] samples)
             {
-                AddSineSweep(samples, 0f, 0.08f, 520f, 250f, 0.20f, 0.002f, 0.92f);
-                AddSineSweep(samples, 0f, 0.11f, 290f, 180f, 0.12f, 0.002f, 0.96f);
-                AddNoise(samples, 0f, 0.045f, 0.10f, 0.001f, 0.88f);
+                AddSineSweep(samples, 0f, 0.10f, 220f, 150f, 0.16f, 0.003f, 0.97f);
+                AddMallet(samples, 0f, 0.055f, 440f, 0.08f);
+                AddNoise(samples, 0f, 0.025f, 0.045f, 0.002f, 0.92f);
             });
+        }
+
+        // 基音保留温暖主体，较快衰减的泛音提供轻敲质感。
+        private static void AddMallet(float[] data, float startSeconds, float durationSeconds, float frequency, float amplitude)
+        {
+            var startIndex = Mathf.FloorToInt(startSeconds * SampleRate);
+            var length = Mathf.Max(1, Mathf.CeilToInt(durationSeconds * SampleRate));
+            var endIndex = Mathf.Min(data.Length, startIndex + length);
+            for (var i = startIndex; i < endIndex; i++)
+            {
+                var time = (i - startIndex) / (float)SampleRate;
+                var progress = (i - startIndex) / (float)Mathf.Max(1, length - 1);
+                var attack = Mathf.Clamp01(time / 0.004f);
+                attack *= attack * (3f - 2f * attack);
+                var tail = 1f - progress;
+                var envelope = attack * tail * tail * Mathf.Exp(-3f * progress);
+                var phase = 2f * Mathf.PI * frequency * time;
+                var tone = Mathf.Sin(phase)
+                    + 0.22f * Mathf.Sin(phase * 2f) * Mathf.Exp(-8f * progress)
+                    + 0.08f * Mathf.Sin(phase * 3f) * Mathf.Exp(-12f * progress);
+                data[i] += tone * amplitude * envelope;
+            }
         }
 
         private static AudioClip BuildClip(string name, float durationSeconds, Action<float[]> writer)
@@ -290,26 +318,6 @@ namespace HuanYouYu.MiniGameHall
                 phase += (2f * Mathf.PI * freq) / SampleRate;
                 var env = Envelope((i - startIndex) / (float)SampleRate, attackSeconds, sustainSeconds, releaseSeconds);
                 data[i] += Mathf.Sin(phase) * amplitude * env;
-            }
-        }
-
-        private static void AddSquareSweep(float[] data, float startSeconds, float durationSeconds, float startFreq, float endFreq, float amplitude, float attackSeconds, float releaseFactor)
-        {
-            var startIndex = Mathf.FloorToInt(startSeconds * SampleRate);
-            var length = Mathf.Max(1, Mathf.CeilToInt(durationSeconds * SampleRate));
-            var endIndex = Mathf.Min(data.Length, startIndex + length);
-            var phase = 0f;
-            var releaseSeconds = Mathf.Max(0.001f, durationSeconds * Mathf.Clamp01(releaseFactor));
-            var sustainSeconds = Mathf.Max(0f, durationSeconds - attackSeconds - releaseSeconds);
-
-            for (var i = startIndex; i < endIndex; i++)
-            {
-                var t = (i - startIndex) / (float)Mathf.Max(1, length - 1);
-                var freq = Mathf.Lerp(startFreq, endFreq, t);
-                phase += (2f * Mathf.PI * freq) / SampleRate;
-                var env = Envelope((i - startIndex) / (float)SampleRate, attackSeconds, sustainSeconds, releaseSeconds);
-                var square = Mathf.Sign(Mathf.Sin(phase));
-                data[i] += square * amplitude * env;
             }
         }
 

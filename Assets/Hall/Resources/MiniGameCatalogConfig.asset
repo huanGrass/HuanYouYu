@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entries:
   - Id: classic-link
-    UpdatedAt: 2026-05-07
     NameKey: game.classic_link.name
     Name: "\u7ECF\u5178\u8FDE\u8FDE\u770B"
     DescriptionKey: game.classic_link.description
@@ -23,8 +22,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: eliminate
-  - Id: match-3
     UpdatedAt: 2026-05-07
+  - Id: match-3
     NameKey: game.match3.name
     Name: "\u852C\u679C\u6D88\u6D88\u4E50"
     DescriptionKey: game.match3.description
@@ -33,8 +32,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: eliminate
-  - Id: snake
     UpdatedAt: 2026-05-07
+  - Id: snake
     NameKey: game.snake.name
     Name: "\u8D2A\u5403\u86C7"
     DescriptionKey: game.snake.description
@@ -43,8 +42,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: action
+    UpdatedAt: 2026-05-07
   - Id: tetris
-    UpdatedAt: 2026-08-12
     NameKey: game.tetris.name
     Name: "\u4FC4\u7F57\u65AF\u65B9\u5757"
     DescriptionKey: game.tetris.description
@@ -53,8 +52,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: eliminate
+    UpdatedAt: 2026-08-12
   - Id: game2048
-    UpdatedAt: 2026-08-31
     NameKey: game.2048.name
     Name: 2048
     DescriptionKey: game.2048.description
@@ -64,8 +63,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: number
+    UpdatedAt: 2026-08-31
   - Id: watermelon-merge
-    UpdatedAt: 2026-08-12
     NameKey: game.watermelon_merge.name
     Name: "\u5408\u6210\u5927\u897F\u74DC"
     DescriptionKey: game.watermelon_merge.description
@@ -74,8 +73,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: merge
+    UpdatedAt: 2026-08-12
   - Id: water-sort
-    UpdatedAt: 2026-08-13
     NameKey: game.water_sort.name
     Name: "\u6C34\u6392\u5E8F"
     DescriptionKey: game.water_sort.description
@@ -84,8 +83,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: eliminate
+    UpdatedAt: 2026-08-13
   - Id: memory-flip
-    UpdatedAt: 2026-05-07
     NameKey: game.memory_flip.name
     Name: "\u8BB0\u5FC6\u7FFB\u724C"
     DescriptionKey: game.memory_flip.description
@@ -94,8 +93,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: puzzle
+    UpdatedAt: 2026-05-07
   - Id: minesweeper
-    UpdatedAt: 2026-08-12
     NameKey: game.minesweeper.name
     Name: "\u626B\u96F7"
     DescriptionKey: game.minesweeper.description
@@ -104,8 +103,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: puzzle
+    UpdatedAt: 2026-08-12
   - Id: sudoku
-    UpdatedAt: 2026-05-07
     NameKey: game.sudoku.name
     Name: "\u6570\u72EC"
     DescriptionKey: game.sudoku.description
@@ -114,8 +113,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: number
+    UpdatedAt: 2026-05-07
   - Id: nonogram
-    UpdatedAt: 2026-08-31
     NameKey: game.nonogram.name
     Name: "\u6570\u7EC7"
     DescriptionKey: game.nonogram.description
@@ -124,8 +123,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: puzzle
+    UpdatedAt: 2026-08-31
   - Id: gomoku
-    UpdatedAt: 2026-08-12
     NameKey: game.gomoku.name
     Name: "\u4E94\u5B50\u68CB"
     DescriptionKey: game.gomoku.description
@@ -134,8 +133,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: puzzle
+    UpdatedAt: 2026-08-12
   - Id: reversi
-    UpdatedAt: 2026-08-31
     NameKey: game.reversi.name
     Name: "\u9ED1\u767D\u68CB"
     DescriptionKey: game.reversi.description
@@ -144,8 +143,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: puzzle
+    UpdatedAt: 2026-08-31
   - Id: breakout
-    UpdatedAt: 2026-08-12
     NameKey: game.breakout.name
     Name: "\u7ECF\u5178\u6253\u7816\u5757"
     DescriptionKey: game.breakout.description
@@ -154,8 +153,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: action
+    UpdatedAt: 2026-08-12
   - Id: goldminer
-    UpdatedAt: 2026-05-07
     NameKey: game.goldminer.name
     Name: "\u94A9\u722A\u62FE\u5B9D"
     DescriptionKey: game.goldminer.description
@@ -164,8 +163,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: action
-  - Id: needlehit
     UpdatedAt: 2026-05-07
+  - Id: needlehit
     NameKey: game.needlehit.name
     Name: "\u89C1\u7F1D\u63D2\u9488"
     DescriptionKey: game.needlehit.description
@@ -174,8 +173,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: action
+    UpdatedAt: 2026-05-07
   - Id: stardewai
-    UpdatedAt: 2026-05-10
     NameKey: game.stardewai.name
     Name: "AI\u661F\u9732\u8C37"
     DescriptionKey: game.stardewai.description
@@ -184,8 +183,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: simulation
+    UpdatedAt: 2026-05-10
   - Id: control-point
-    UpdatedAt: 2026-05-07
     NameKey: game.control_point.name
     Name: "\u5360\u70B9\u653B\u9632"
     DescriptionKey: game.control_point.description
@@ -194,8 +193,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: puzzle
-  - Id: whacamole
     UpdatedAt: 2026-05-07
+  - Id: whacamole
     NameKey: game.whacamole.name
     Name: "\u6253\u5730\u9F20"
     DescriptionKey: game.whacamole.description
@@ -204,8 +203,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: action
-  - Id: jumpjump
     UpdatedAt: 2026-05-07
+  - Id: jumpjump
     NameKey: game.jumpjump.name
     Name: "\u8DF3\u4E00\u8DF3"
     DescriptionKey: game.jumpjump.description
@@ -214,8 +213,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: action
-  - Id: lightsout
     UpdatedAt: 2026-05-07
+  - Id: lightsout
     NameKey: game.lightsout.name
     Name: "\u6570\u5B66\u7535\u706F"
     DescriptionKey: game.lightsout.description
@@ -224,8 +223,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: number
-  - Id: rivercrossing
     UpdatedAt: 2026-05-07
+  - Id: rivercrossing
     NameKey: game.rivercrossing.name
     Name: "\u8FC7\u6CB3\u95EE\u9898"
     DescriptionKey: game.rivercrossing.description
@@ -234,8 +233,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: puzzle
-  - Id: slidingpuzzle
     UpdatedAt: 2026-05-07
+  - Id: slidingpuzzle
     NameKey: game.slidingpuzzle.name
     Name: "\u6570\u5B57\u534E\u5BB9\u9053"
     DescriptionKey: game.slidingpuzzle.description
@@ -244,8 +243,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: number
-  - Id: towerofhanoi
     UpdatedAt: 2026-05-07
+  - Id: towerofhanoi
     NameKey: game.towerofhanoi.name
     Name: "\u6C49\u8BFA\u5854"
     DescriptionKey: game.towerofhanoi.description
@@ -254,8 +253,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: puzzle
+    UpdatedAt: 2026-05-07
   - Id: waterpouring
-    UpdatedAt: 2026-08-12
     NameKey: game.waterpouring.name
     Name: "\u5012\u6C34\u91CF\u676F"
     DescriptionKey: game.waterpouring.description
@@ -264,8 +263,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: puzzle
-  - Id: akari
     UpdatedAt: 2026-08-12
+  - Id: akari
     NameKey: game.akari.name
     Name: "\u70B9\u706F\u8C1C\u9898"
     DescriptionKey: game.akari.description
@@ -274,8 +273,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: puzzle
-  - Id: stack-match
     UpdatedAt: 2026-08-12
+  - Id: stack-match
     NameKey: game.stack-match.name
     Name: "\u53E0\u724C\u6D88\u6D88"
     DescriptionKey: game.stack-match.description
@@ -284,8 +283,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: eliminate
-  - Id: blockpuzzle
     UpdatedAt: 2026-08-12
+  - Id: blockpuzzle
     NameKey: game.blockpuzzle.name
     Name: "\u65B9\u5757\u6D88\u9664"
     DescriptionKey: game.blockpuzzle.description
@@ -294,8 +293,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: eliminate
-  - Id: bulls-cows
     UpdatedAt: 2026-08-12
+  - Id: bulls-cows
     NameKey: game.bulls-cows.name
     Name: "\u731C\u6570\u5B57"
     DescriptionKey: game.bulls-cows.description
@@ -304,8 +303,8 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: number
-  - Id: arrow-escape
     UpdatedAt: 2026-08-12
+  - Id: arrow-escape
     NameKey: game.arrow-escape.name
     Name: "\u7BAD\u5934\u8FF7\u9635"
     DescriptionKey: game.arrow-escape.description
@@ -314,13 +313,34 @@ MonoBehaviour:
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: puzzle
+    UpdatedAt: 2026-08-12
   - Id: bracelet-unlink
-    UpdatedAt: 2026-08-31
     NameKey: game.bracelet-unlink.name
     Name: "\u65CB\u8F6C\u89E3\u73AF"
     DescriptionKey: game.bracelet-unlink.description
-    Description: "\u65CB\u8F6C\u624B\u73AF\uFF0C\u5C06\u4E24\u4E2A\u5F00\u53E3\u540C\u65F6\u653E\u5165\u5730\u56FE\u91D1\u6263\u3002"
+    Description: "\u65CB\u8F6C\u624B\u73AF\uFF0C\u5C06\u4E24\u4E2A\u5F00\u53E3\u540C\u65F6\u653E\u5165\u5730\u56FE\u91D1\u73AF\u3002"
     IsPlayable: 1
     StatusLabelKey: status.playable
     StatusLabel: "\u53EF\u6E38\u73A9"
     Category: puzzle
+    UpdatedAt: 2026-08-31
+  - Id: bubble-pop
+    NameKey: game.bubble-pop.name
+    Name: "\u5F69\u8272\u6CE1\u6CE1\u677F"
+    DescriptionKey: game.bubble-pop.description
+    Description: "\u70B9\u4E00\u70B9\u3001\u5212\u4E00\u5212\uFF0C\u968F\u624B\u6309\u51FA\u597D\u5FC3\u60C5\u3002"
+    IsPlayable: 1
+    StatusLabelKey: status.playable
+    StatusLabel: "\u53EF\u6E38\u73A9"
+    Category: simulation
+    UpdatedAt: 2026-09-16
+  - Id: cabinet-sort
+    NameKey: game.cabinet-sort.name
+    Name: "\u67DC\u5B50\u6536\u7EB3"
+    DescriptionKey: game.cabinet-sort.description
+    Description: "24 \u79CD\u7269\u54C1\u5206\u6279\u767B\u573A\uFF0C\u4E09\u5217\u67DC\u683C\u81EA\u7531\u6536\u7EB3\uFF0C\u540C\u683C\u4E09\u4EF6\u76F8\u540C\u5373\u53EF\u6D88\u9664\u3002"
+    IsPlayable: 1
+    StatusLabelKey: status.playable
+    StatusLabel: "\u53EF\u6E38\u73A9"
+    Category: eliminate
+    UpdatedAt: 2026-09-16

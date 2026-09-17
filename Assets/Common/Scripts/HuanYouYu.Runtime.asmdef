@@ -1,9 +1,10 @@
-{
+﻿{
   "name": "HuanYouYu.Runtime",
   "rootNamespace": "HuanYouYu",
   "references": [
     "Unity.TextMeshPro",
-    "UnityEngine.UI"
+    "UnityEngine.UI",
+    "Unity.2D.IK.Runtime"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

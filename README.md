@@ -1,4 +1,4 @@
-# 幻游域
+﻿# 幻游域
 
 幻游域 是一个基于 Unity / 团结引擎开发的小游戏合集项目，面向微信小游戏平台。
 
@@ -64,6 +64,8 @@
 - 汉诺塔（TowerOfHanoi）
 - 倒水量杯（WaterPouring）
 - 打地鼠（WhacAMole）
+- 彩色泡泡板（BubblePop）
+- 柜子收纳（CabinetSort）
 
 ## 参与贡献
 

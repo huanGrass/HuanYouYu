@@ -1,0 +1,270 @@
+﻿{
+  "items": [
+    {
+      "name": "CharacterSprites/NpcAzhai",
+      "width": 0.625,
+      "height": 1.25,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.5
+    },
+    {
+      "name": "CharacterSprites/NpcHaiyinAwa",
+      "width": 0.75,
+      "height": 1.3125,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.5
+    },
+    {
+      "name": "CharacterSprites/NpcLumi",
+      "width": 0.75,
+      "height": 1.3125,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.5
+    },
+    {
+      "name": "CharacterSprites/NpcQianran",
+      "width": 0.625,
+      "height": 1.25,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.5
+    },
+    {
+      "name": "CharacterSprites/NpcXiaoTuanzi",
+      "width": 0.625,
+      "height": 1.25,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.5
+    },
+    {
+      "name": "EffectSprites/EffectHarvestHit",
+      "width": 0.625,
+      "height": 0.6875,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "EffectSprites/EffectHoeHit",
+      "width": 0.75,
+      "height": 0.625,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "EffectSprites/EffectSeedHit",
+      "width": 0.625,
+      "height": 0.6875,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "EffectSprites/EffectWaterHit",
+      "width": 0.625,
+      "height": 0.625,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "EffectSprites/Shadow",
+      "width": 0.65,
+      "height": 0.17,
+      "canvasWidth": 1.25,
+      "canvasHeight": 0.5
+    },
+    {
+      "name": "EffectSprites/TargetOutline",
+      "width": 1.0,
+      "height": 1.0,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "ItemIcons/CropRipe",
+      "width": 0.5,
+      "height": 0.8125,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "ItemIcons/CropSeed",
+      "width": 0.25,
+      "height": 0.1875,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "PropSprites/Bush",
+      "width": 1.25,
+      "height": 0.625,
+      "canvasWidth": 1.5,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "PropSprites/Cabin",
+      "width": 2.5,
+      "height": 1.75,
+      "canvasWidth": 3.0,
+      "canvasHeight": 2.5
+    },
+    {
+      "name": "PropSprites/SeedChest",
+      "width": 1.0,
+      "height": 0.875,
+      "canvasWidth": 1.25,
+      "canvasHeight": 1.125
+    },
+    {
+      "name": "PropSprites/ShippingBin",
+      "width": 1.125,
+      "height": 0.875,
+      "canvasWidth": 1.25,
+      "canvasHeight": 1.25
+    },
+    {
+      "name": "PropSprites/TreeRound",
+      "width": 1.5,
+      "height": 1.875,
+      "canvasWidth": 2.0,
+      "canvasHeight": 2.5
+    },
+    {
+      "name": "PropSprites/TreeTall",
+      "width": 1.5,
+      "height": 2.0625,
+      "canvasWidth": 2.0,
+      "canvasHeight": 2.75
+    },
+    {
+      "name": "TerrainTiles/CropLeafy",
+      "width": 0.4375,
+      "height": 0.5,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "TerrainTiles/CropRipe",
+      "width": 0.375,
+      "height": 0.5625,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "TerrainTiles/CropSeed",
+      "width": 0.25,
+      "height": 0.125,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "TerrainTiles/CropSprout",
+      "width": 0.3125,
+      "height": 0.3125,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "TerrainTiles/Fence",
+      "width": 0.75,
+      "height": 0.75,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "TerrainTiles/FieldBase",
+      "width": 1.0,
+      "height": 1.0,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "TerrainTiles/FlowerOrange",
+      "width": 0.1875,
+      "height": 0.25,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "TerrainTiles/FlowerYellow",
+      "width": 0.1875,
+      "height": 0.25,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "TerrainTiles/GrassA",
+      "width": 1.0,
+      "height": 1.0,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "TerrainTiles/GrassB",
+      "width": 1.0,
+      "height": 1.0,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "TerrainTiles/GrassFlowers",
+      "width": 1.0,
+      "height": 1.0,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "TerrainTiles/Path",
+      "width": 1.0,
+      "height": 1.0,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "TerrainTiles/SoilDry",
+      "width": 1.0,
+      "height": 1.0,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "TerrainTiles/SoilWet",
+      "width": 1.0,
+      "height": 1.0,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "TerrainTiles/Water",
+      "width": 1.0,
+      "height": 1.0,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "ToolSprites/ToolHoe",
+      "width": 0.4375,
+      "height": 0.6875,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "ToolSprites/ToolSeedBag",
+      "width": 0.5,
+      "height": 0.625,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "ToolSprites/ToolSickle",
+      "width": 0.625,
+      "height": 0.5625,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    },
+    {
+      "name": "ToolSprites/ToolWateringCan",
+      "width": 0.875,
+      "height": 0.5625,
+      "canvasWidth": 1.0,
+      "canvasHeight": 1.0
+    }
+  ]
+}

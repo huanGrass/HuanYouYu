@@ -75,6 +75,10 @@ namespace HuanYouYu.MiniGameHall
                     return new ArrowEscapeGameView(this, rootCanvas.transform, CompleteCurrentGame, ExitCurrentGameToHall);
                 case BraceletUnlinkGameView.GameIdConstant:
                     return new BraceletUnlinkGameView(this, rootCanvas.transform, CompleteCurrentGame, ExitCurrentGameToHall);
+                case BubblePopGameView.GameIdConstant:
+                    return new BubblePopGameView(this, rootCanvas.transform, CompleteCurrentGame, ExitCurrentGameToHall);
+                case CabinetSortGameView.GameIdConstant:
+                    return new CabinetSortGameView(this, rootCanvas.transform, CompleteCurrentGame, ExitCurrentGameToHall);
 
                 default:
                     Debug.LogWarning("未注册小游戏运行时: " + gameId);

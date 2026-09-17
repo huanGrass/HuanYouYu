@@ -1,0 +1,9 @@
+﻿{
+  "gameId": "bubble-pop",
+  "nameKey": "game.bubble-pop.name",
+  "descriptionKey": "game.bubble-pop.description",
+  "isPlayable": true,
+  "statusLabelKey": "status.playable",
+  "category": "simulation",
+  "updatedAt": "2026-09-16"
+}

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -29,18 +29,6 @@ namespace FarmPrototype
         {
             { FarmSpriteArt.Shadow, "Art/Generated/EffectSprites/Shadow" },
             { FarmSpriteArt.TargetOutline, "Art/Generated/EffectSprites/TargetOutline" },
-            { FarmSpriteArt.PlayerDown, "Art/Generated/CharacterSprites/PlayerDown" },
-            { FarmSpriteArt.PlayerDownStepA, "Art/Generated/CharacterSprites/PlayerDownStepA" },
-            { FarmSpriteArt.PlayerDownStepB, "Art/Generated/CharacterSprites/PlayerDownStepB" },
-            { FarmSpriteArt.PlayerUp, "Art/Generated/CharacterSprites/PlayerUp" },
-            { FarmSpriteArt.PlayerUpStepA, "Art/Generated/CharacterSprites/PlayerUpStepA" },
-            { FarmSpriteArt.PlayerUpStepB, "Art/Generated/CharacterSprites/PlayerUpStepB" },
-            { FarmSpriteArt.PlayerSide, "Art/Generated/CharacterSprites/PlayerSide" },
-            { FarmSpriteArt.PlayerSideStepA, "Art/Generated/CharacterSprites/PlayerSideStepA" },
-            { FarmSpriteArt.PlayerSideStepB, "Art/Generated/CharacterSprites/PlayerSideStepB" },
-            { FarmSpriteArt.PlayerSideBody, "Art/Generated/CharacterSprites/PlayerSideBody" },
-            { FarmSpriteArt.PlayerSideLeg, "Art/Generated/CharacterSprites/PlayerSideLeg" },
-            { FarmSpriteArt.PlayerSideBackLeg, "Art/Generated/CharacterSprites/PlayerSideBackLeg" },
             { FarmSpriteArt.ToolHoe, "Art/Generated/ToolSprites/ToolHoe" },
             { FarmSpriteArt.ToolWateringCan, "Art/Generated/ToolSprites/ToolWateringCan" },
             { FarmSpriteArt.ToolSeedBag, "Art/Generated/ToolSprites/ToolSeedBag" },

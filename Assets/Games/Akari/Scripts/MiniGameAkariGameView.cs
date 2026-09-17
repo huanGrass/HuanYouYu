@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -291,7 +291,8 @@ namespace HuanYouYu.MiniGameHall
                 44f,
                 40f,
                 5,
-                StatusTextColor);
+                StatusTextColor,
+                "huanyouyu.dropdown." + GameIdConstant + "." + name);
             return dropdown;
         }
 

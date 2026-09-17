@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using FarmPrototype;
 using TMPro;
 using UnityEngine;
@@ -69,6 +69,7 @@ namespace HuanYouYu.MiniGameHall
             overlayRoot.offsetMax = Vector2.zero;
 
             hudView = FarmHudView.Create(Shell.TopHost, Shell.BottomHost, overlayRoot, MiniGameFontProvider.DefaultFont);
+            hudView.WardrobePanel.SetParent(Shell.PopupHost, false);
             hudView.ApplyLayout(Screen.safeArea, new Vector2Int(Screen.width, Screen.height));
 
             farmRoot = new GameObject("FarmPrototype");

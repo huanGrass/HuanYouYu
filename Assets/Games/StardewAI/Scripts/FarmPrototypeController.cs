@@ -231,14 +231,8 @@ namespace FarmPrototype
         private const int FieldWidth = 14;
         private const int FieldHeight = 10;
         private const int CropDaysToRipen = 3;
-        private const float MoveSpeed = 4.25f;
+        private const float MoveSpeed = ForestCharacterRig.WalkSpeed;
         private const float AutoMoveArrivalDistance = 0.05f;
-        private const float PlayerWalkAnimationRate = 8f;
-        private const float PlayerIdleBobAmplitude = 0.02f;
-        private const float PlayerWalkBobAmplitude = 0f;
-        private const float PlayerSideWalkHipOffsetY = 0.38f;
-        private const float PlayerSideWalkLegTilt = 14f;
-        private const float PlayerSideWalkBodyTilt = 1.6f;
         private const float ToolActionDuration = 0.22f;
         private const float ToolHitEffectDuration = 0.26f;
         private const int ActorSortingBase = 120;
@@ -322,11 +316,7 @@ namespace FarmPrototype
         private Transform _sceneryRoot = null!;
         private Transform _actorsRoot = null!;
         private SpriteRenderer _playerShadow = null!;
-        private SpriteRenderer _playerRenderer = null!;
-        private Transform _playerSideFrontLegRoot = null!;
-        private Transform _playerSideBackLegRoot = null!;
-        private SpriteRenderer _playerSideFrontLegRenderer = null!;
-        private SpriteRenderer _playerSideBackLegRenderer = null!;
+        private ForestCharacterRig _playerRig = null!;
         private SpriteRenderer _playerToolRenderer = null!;
         private SpriteRenderer _npcShadow = null!;
         private SpriteRenderer _npcRenderer = null!;
@@ -522,7 +512,9 @@ namespace FarmPrototype
             HandleMouseInput();
 
             Vector2 moveInput = (_isDialogueOpen || _isMerchantShopOpen) ? Vector2.zero : ReadMovement();
+            Vector2 previousPlayerPosition = _playerPosition;
             UpdatePlayerMovement(moveInput);
+            _playerRig.Advance(_playerPosition - previousPlayerPosition, Time.deltaTime);
             UpdateTimeOfDay();
             UpdateNpcMovement();
             UpdatePlayerVisual(_lastPlayerMovementDelta);
@@ -593,6 +585,7 @@ namespace FarmPrototype
             InitializeInventory();
             InitializeDayState();
             BuildWorld();
+            for (int i = 0; i < 6; i++) _hudView.ShowWearOption(i, _playerRig.GetWear((ForestCharacterRig.WearSlot)i));
             ApplyDailyEventAtDayStart();
             BuildFeedbackSystem();
             ConfigureCamera();
@@ -618,6 +611,18 @@ namespace FarmPrototype
         private void BindHud(FarmHudView hudView, Transform overlayRoot)
         {
             _hudView = hudView;
+            for (int i = 0; i < hudView.WardrobeButtons.Length; i++)
+            {
+                int slot = i;
+                hudView.WardrobeButtons[i].onClick.AddListener(() =>
+                {
+                    if (_playerRig == null) return;
+                    var wear = (ForestCharacterRig.WearSlot)slot;
+                    int option = 1 - _playerRig.GetWear(wear);
+                    _playerRig.SetWear(wear, option);
+                    hudView.ShowWearOption(slot, option);
+                });
+            }
             _hudCanvasRect = overlayRoot as RectTransform;
             _infoCardPanel = hudView.InfoCardPanel;
             _inventoryPanel = hudView.InventoryPanel;
@@ -1014,32 +1019,7 @@ namespace FarmPrototype
                 FarmPixelArtFactory.GetSprite(FarmSpriteArt.Shadow),
                 29);
 
-            _playerRenderer = CreateWorldSprite(
-                "Player",
-                _actorsRoot,
-                _playerPosition,
-                FarmPixelArtFactory.GetSprite(FarmSpriteArt.PlayerUp),
-                30);
-
-            _playerSideBackLegRoot = CreateGroup("PlayerSideBackLegBone", _actorsRoot);
-            _playerSideBackLegRenderer = CreateWorldSprite(
-                "PlayerSideBackLeg",
-                _playerSideBackLegRoot,
-                Vector2.zero,
-                FarmPixelArtFactory.GetSprite(FarmSpriteArt.PlayerSideBackLeg),
-                29);
-            _playerSideBackLegRenderer.transform.localPosition = new Vector3(0f, -PlayerSideWalkHipOffsetY, 0f);
-            _playerSideBackLegRenderer.enabled = false;
-
-            _playerSideFrontLegRoot = CreateGroup("PlayerSideFrontLegBone", _actorsRoot);
-            _playerSideFrontLegRenderer = CreateWorldSprite(
-                "PlayerSideFrontLeg",
-                _playerSideFrontLegRoot,
-                Vector2.zero,
-                FarmPixelArtFactory.GetSprite(FarmSpriteArt.PlayerSideLeg),
-                31);
-            _playerSideFrontLegRenderer.transform.localPosition = new Vector3(0f, -PlayerSideWalkHipOffsetY, 0f);
-            _playerSideFrontLegRenderer.enabled = false;
+            _playerRig = CreateGroup("Player", _actorsRoot).gameObject.AddComponent<ForestCharacterRig>();
 
             _playerToolRenderer = CreateWorldSprite(
                 "PlayerTool",

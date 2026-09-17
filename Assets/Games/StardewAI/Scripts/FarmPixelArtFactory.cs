@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -28,18 +28,6 @@ namespace FarmPrototype
     {
         Shadow,
         TargetOutline,
-        PlayerDown,
-        PlayerDownStepA,
-        PlayerDownStepB,
-        PlayerUp,
-        PlayerUpStepA,
-        PlayerUpStepB,
-        PlayerSide,
-        PlayerSideStepA,
-        PlayerSideStepB,
-        PlayerSideBody,
-        PlayerSideLeg,
-        PlayerSideBackLeg,
         ToolHoe,
         ToolWateringCan,
         ToolSeedBag,
@@ -58,7 +46,7 @@ namespace FarmPrototype
         Cabin,
         TreeTall,
         TreeRound,
-        Bush
+        Bush,
     }
 
     internal static class FarmPixelArtFactory

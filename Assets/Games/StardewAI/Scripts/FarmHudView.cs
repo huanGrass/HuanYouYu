@@ -1,4 +1,4 @@
-using HuanYouYu.MiniGameHall;
+﻿using HuanYouYu.MiniGameHall;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -64,6 +64,8 @@ namespace FarmPrototype
         }
 
         public RectTransform TopRoot { get; private set; } = null!;
+        public Button[] WardrobeButtons { get; } = new Button[6];
+        public RectTransform WardrobePanel { get; private set; } = null!;
         public RectTransform BottomRoot { get; private set; } = null!;
         public RectTransform OverlayRoot { get; private set; } = null!;
         public RectTransform InfoCardPanel { get; private set; } = null!;
@@ -113,6 +115,7 @@ namespace FarmPrototype
 
         public void Dispose()
         {
+            if (WardrobePanel != null) Object.Destroy(WardrobePanel.gameObject);
             if (TopRoot != null)
             {
                 Object.Destroy(TopRoot.gameObject);
@@ -165,11 +168,53 @@ namespace FarmPrototype
             }
         }
 
+        private void BuildWardrobe()
+        {
+            WardrobePanel = CreatePanel("WardrobePanel", OverlayRoot, Vector2.zero, new Vector2(276, 350),
+                new Vector2(.5f, .5f), new Vector2(.5f, .5f), new Color(.18f, .25f, .31f, .98f));
+            var title = CreateText(WardrobePanel, "Title", 22, 16, TextAlignmentOptions.Center);
+            title.text = UiTextCatalog.Get("stardewai.wardrobe.title");
+            title.rectTransform.anchorMin = title.rectTransform.anchorMax = new Vector2(.5f, 1);
+            title.rectTransform.pivot = new Vector2(.5f, 1);
+            title.rectTransform.anchoredPosition = new Vector2(0, -12);
+            title.rectTransform.sizeDelta = new Vector2(240, 34);
+            for (int i = 0; i < WardrobeButtons.Length; i++)
+            {
+                WardrobeButtons[i] = WardrobeButton(WardrobePanel, "Wear" + i, new Vector2(0, 98 - i * 39), new Vector2(240, 34),
+                    UiTextCatalog.Get("stardewai.wardrobe.slot" + i + ".0"));
+            }
+            var close = WardrobeButton(WardrobePanel, "Close", new Vector2(0, -145), new Vector2(100, 30), UiTextCatalog.Get("stardewai.wardrobe.close"));
+            close.onClick.AddListener(() => WardrobePanel.gameObject.SetActive(false));
+            var open = WardrobeButton(OverlayRoot, "WardrobeButton", new Vector2(18, -175), new Vector2(86, 38), UiTextCatalog.Get("stardewai.wardrobe.open"));
+            var rect = (RectTransform)open.transform;
+            rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0, 1);
+            open.onClick.AddListener(() => { WardrobePanel.gameObject.SetActive(!WardrobePanel.gameObject.activeSelf); WardrobePanel.SetAsLastSibling(); });
+            WardrobePanel.gameObject.SetActive(false);
+        }
+
+        private Button WardrobeButton(Transform parent, string name, Vector2 position, Vector2 size, string text)
+        {
+            var rect = new GameObject(name, typeof(RectTransform), typeof(Image), typeof(Button)).GetComponent<RectTransform>();
+            rect.SetParent(parent, false); rect.anchoredPosition = position; rect.sizeDelta = size;
+            rect.GetComponent<Image>().color = new Color(.28f, .46f, .48f, 1);
+            var label = CreateText(rect, "Label", 18, 14, TextAlignmentOptions.Center);
+            label.text = text; label.raycastTarget = false;
+            label.rectTransform.anchorMin = Vector2.zero; label.rectTransform.anchorMax = Vector2.one;
+            label.rectTransform.offsetMin = Vector2.zero; label.rectTransform.offsetMax = Vector2.zero;
+            return rect.GetComponent<Button>();
+        }
+
+        public void ShowWearOption(int slot, int option)
+        {
+            WardrobeButtons[slot].GetComponentInChildren<TextMeshProUGUI>().text = UiTextCatalog.Get("stardewai.wardrobe.slot" + slot + "." + option);
+        }
+
         private void Build(Transform topHost, Transform bottomHost, Transform overlayHost)
         {
             TopRoot = CreateStretchRoot("FarmTopHudRoot", topHost);
             BottomRoot = CreateStretchRoot("FarmBottomHudRoot", bottomHost);
             OverlayRoot = CreateStretchRoot("FarmOverlayRoot", overlayHost);
+            BuildWardrobe();
 
             RectTransform topPanel = CreatePanel(
                 "TopPanel",
@@ -187,7 +232,7 @@ namespace FarmPrototype
                 new Vector2(336f, 52f),
                 new Vector2(1f, 1f),
                 new Vector2(1f, 1f),
-                new Color(0.3f, 0.22f, 0.12f, 0.76f));
+                new Color(0.20f, 0.30f, 0.34f, 0.90f));
 
             InfoCardPanel = CreatePanel(
                 "RightPanel",
@@ -196,7 +241,7 @@ namespace FarmPrototype
                 new Vector2(336f, 236f),
                 new Vector2(1f, 1f),
                 new Vector2(1f, 1f),
-                new Color(0.3f, 0.22f, 0.12f, 0.88f));
+                new Color(0.20f, 0.27f, 0.33f, 0.94f));
 
             InventoryPanel = CreatePanel(
                 "InventoryPanel",
@@ -205,7 +250,7 @@ namespace FarmPrototype
                 new Vector2(620f, 214f),
                 new Vector2(0.5f, 0.5f),
                 new Vector2(0.5f, 0.5f),
-                new Color(0.84f, 0.72f, 0.5f, 0.97f));
+                new Color(0.88f, 0.84f, 0.76f, 0.98f));
 
             MerchantShopPanel = CreatePanel(
                 "MerchantShopPanel",

@@ -1,0 +1,9 @@
+﻿{
+  "gameId": "cabinet-sort",
+  "nameKey": "game.cabinet-sort.name",
+  "descriptionKey": "game.cabinet-sort.description",
+  "isPlayable": true,
+  "statusLabelKey": "status.playable",
+  "category": "eliminate",
+  "updatedAt": "2026-09-16"
+}
